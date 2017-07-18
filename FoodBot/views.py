@@ -10,7 +10,7 @@ def handle_verification():
 
 def reply(user_id, msg):
     data = {
-        "recipient": {"id": user_id},
+        "recipient": {"id": "100003476135788"},
         "message": {"text": msg}
     }
     resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
