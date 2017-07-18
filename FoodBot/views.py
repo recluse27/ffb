@@ -13,7 +13,7 @@ def reply(user_id, msg):
         "recipient": {"id": user_id},
         "message": {"text": msg}
     }
-    resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config.PAGE_ACCESS_TOKEN,
+    resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
                          json=data)
     print(resp.content)
 
