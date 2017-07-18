@@ -13,7 +13,7 @@ def reply(user_id, msg):
         "recipient": {"id": user_id},
         "message": {"text": msg}
     }
-    resp = requests.post("https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
+    resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
                          json=data)
     print(resp.content)
 
@@ -22,8 +22,8 @@ def reply(user_id, msg):
 def handle_incoming_messages():
     print(request, request.json)
     data = request.json
-    sender = data['entry'][0]['messaging'][0]['sender']['id']
-    message = data['entry'][0]['messaging'][0]['message'].get('text')
+    sender = data['entry'][0].get('messaging')[0].get('sender').get('id')
+    message = data['entry'][0].get('messaging')[0].get('message').get('text')
     reply(sender, message[::-1])
 
     return "ok"
