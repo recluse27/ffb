@@ -28,7 +28,6 @@ def reply_with_message(user_id):
         "message": {"text": "Сделай свой выбор",
                     "quick_replies": QUICK_REPLIES}
     }
-    print(data)
     resp = requests.post(
         "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
         json=data)
