@@ -14,8 +14,9 @@ def reply_with_attachment(user_id, payload):
     data = {
         "recipient": {"id": user_id},
         "message": {"attachment": payload,
-                    "quick_replies": QUICK_REPLIES}
+                    "quick_reply": QUICK_REPLIES}
     }
+    print(data)
     resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
                          json=data)
     print(resp.text)
@@ -25,8 +26,9 @@ def reply_with_message(user_id):
     data = {
         "recipient": {"id": user_id},
         "message": {"message": {"text": "Сделай свой выбор"},
-                    "quick_replies": QUICK_REPLIES}
+                    "quick_reply": QUICK_REPLIES}
     }
+    print(data)
     resp = requests.post(
         "https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
         json=data)
