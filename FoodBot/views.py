@@ -17,9 +17,9 @@ def reply_with_attachment(user_id, payload):
                     "quick_replies": QUICK_REPLIES}
     }
     print(data)
-    resp = requests.post("https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
-                         json=data)
-    print(resp.text)
+    #resp = requests.post("https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
+    #                     json=data)
+    #print(resp.text)
 
 
 def reply_with_message(user_id):
@@ -28,10 +28,10 @@ def reply_with_message(user_id):
         "message": {"text": "Сделай свой выбор",
                     "quick_replies": QUICK_REPLIES}
     }
-    resp = requests.post(
-        "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
-        json=data)
-    print(resp.text)
+    #resp = requests.post(
+    #    "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
+    #    json=data)
+    #print(resp.text)
 
 @app.route('/', methods=['POST'])
 def handle_incoming_messages():
