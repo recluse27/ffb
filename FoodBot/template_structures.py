@@ -11,13 +11,13 @@ PRODUCT_LIST = lambda items: {
                 "image_url": item['image_url'],
                 "default_action": {
                     "type": "postback",
-                    "payload": str({"type": "get_receipt", "item_name": item["title"]})
+                    "payload": "get_product/" + items.index(item)
                 },
                 "buttons": [
                     {
                         "title": "Buy",
                         "type": "postback",
-                        "payload": str({"type": "get_receipt", "item_name": item["title"]})
+                        "payload":"get_product/" + items.index(item)
                     }
                 ]
             } for item in items]
@@ -61,12 +61,12 @@ QUICK_REPLIES = [
     {
         "content_type": "text",
         "title": "Menu",
-        "payload": "get_products"
+        "payload": "get_all_products"
     },
 {
         "content_type": "text",
         "title": "Choose product",
-        "payload": "get_products"
+        "payload": "get_all_products"
     }
 ]
 
