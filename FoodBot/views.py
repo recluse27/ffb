@@ -48,7 +48,8 @@ def handle_incoming_messages():
             sender = data['entry'][0].get('messaging')[0].get('sender').get('id')
             reply_with_attachment(sender, payload)
     else:
-
+        sender = data['entry'][0].get('messaging')[0].get('sender').get('id')
+        reply_with_message(sender)
     return "ok"
 
 
