@@ -64,6 +64,11 @@ QUICK_REPLIES = [
         "content_type": "text",
         "title": "Menu",
         "payload": {"type": "get_products"}
+    },
+{
+        "content_type": "text",
+        "title": "Choose product",
+        "payload": {"type": "get_products"}
     }
 ]
 
