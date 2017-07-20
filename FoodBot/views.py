@@ -42,9 +42,11 @@ def handle_incoming_messages():
     if data and not 'delivery' in data and not 'read' in data and not 'is_echo' in data.get('message', {}):
         if data.get('messages', {}).get('quick_reply'):
             if data.get('messages', {}).get('quick_reply', {}).get('payload') == "get_products":
+                print('product list')
                 payload = PRODUCT_LIST(PRODUCTS)
-            if eval(data.get('messages', '{}').get('quick_reply', '{}').get('payload', '{}')).get(
+            elif eval(data.get('messages', '{}').get('quick_reply', '{}').get('payload', '{}')).get(
                     'type') == "get_receipt":
+                print('receipt')
                 item = find_in_list(eval(data.get('messages').get('quick_reply'))['item_name'], PRODUCTS)
                 payload = RECEIPT_TEMPLATE(item)
             if payload:
