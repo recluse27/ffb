@@ -59,11 +59,13 @@ RECEIPT_ELEMENT_TEMPLATE = lambda item: {
     "image_url": item['image_url']
 }
 
-QUICK_REPLIES = {
-    "content_type": "text",
-    "title": "Menu",
-    "payload": {"type": "get_products"}
-}
+QUICK_REPLIES = [
+    {
+        "content_type": "text",
+        "title": "Menu",
+        "payload": {"type": "get_products"}
+    }
+]
 
 PRODUCTS = [{"title": "Classic Fries",
              "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/desktop/t-mcdonalds-Fries-Small-Medium.png?$THUMBNAIL_MEDIUM$",
