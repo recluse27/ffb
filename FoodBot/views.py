@@ -17,7 +17,7 @@ def reply_with_attachment(user_id, payload):
                     "quick_replies": QUICK_REPLIES}
     }
     print(data)
-    resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
+    resp = requests.post("https://graph.facebook.com/v2.8/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
                          json=data)
     print(resp.text)
 
@@ -30,7 +30,7 @@ def reply_with_message(user_id):
     }
     print(data)
     resp = requests.post(
-        "https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
+        "https://graph.facebook.com/v2.8/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
         json=data)
     print(resp.text)
 
