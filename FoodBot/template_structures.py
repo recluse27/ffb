@@ -11,13 +11,13 @@ PRODUCT_LIST = lambda items: {
                 "image_url": item['image_url'],
                 "default_action": {
                     "type": "postback",
-                    "payload": "get_product/" + items.index(item)
+                    "payload": "get_product/" + str(items.index(item))
                 },
                 "buttons": [
                     {
                         "title": "Buy",
                         "type": "postback",
-                        "payload":"get_product/" + items.index(item)
+                        "payload":"get_product/" + str(items.index(item))
                     }
                 ]
             } for item in items]
