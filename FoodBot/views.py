@@ -39,10 +39,10 @@ def handle_incoming_messages():
     data = request.json['entry'][0].get('messaging')[0]
     print(data)
     payload = None
-    if data.get('messages').get('quick_reply'):
+    if data.get('messages', {}).get('quick_reply'):
         if data.get('messages').get('quick_reply') == "get_products":
             payload = PRODUCT_LIST(PRODUCTS)
-        if eval(data.get('messages').get('quick_reply'))['type'] == "get_receipt":
+        if eval(data.get('messages', '{}').get('quick_reply', '{}')).get('type') == "get_receipt":
             item = find_in_list(eval(data.get('messages').get('quick_reply'))['item_name'], PRODUCTS)
             payload = RECEIPT_TEMPLATE(item)
         if payload:
