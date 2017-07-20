@@ -32,11 +32,9 @@ def reply_with_message(user_id):
     resp = requests.post(
         "https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
         json=data)
-    print(resp.text) \
- \
-    @app.route('/', methods=['POST'])
+    print(resp.text)
 
-
+@app.route('/', methods=['POST'])
 def handle_incoming_messages():
     data = request.json
     print(data)
