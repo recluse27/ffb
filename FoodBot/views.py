@@ -39,7 +39,7 @@ def handle_incoming_messages():
     data = request.json['entry'][0].get('messaging')[0]
     print(data)
     payload = None
-    if not 'delivery' in data:
+    if not 'delivery' in data or not 'is_echo' in data.get('message'):
         if data.get('messages', {}).get('quick_reply'):
             if data.get('messages').get('quick_reply') == "get_products":
                 payload = PRODUCT_LIST(PRODUCTS)
