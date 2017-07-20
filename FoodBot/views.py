@@ -25,17 +25,18 @@ def reply_with_attachment(user_id, payload):
 def reply_with_message(user_id):
     data = {
         "recipient": {"id": user_id},
-        "message": {"message": {"text": "Сделай свой выбор"},
+        "message": {"text": "Сделай свой выбор",
                     "quick_replies": QUICK_REPLIES}
     }
     print(data)
     resp = requests.post(
         "https://graph.facebook.com/v2.6/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
         json=data)
-    print(resp.text)
+    print(resp.text) \
+ \
+    @app.route('/', methods=['POST'])
 
 
-@app.route('/', methods=['POST'])
 def handle_incoming_messages():
     data = request.json
     print(data)
