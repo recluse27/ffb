@@ -13,7 +13,7 @@ PRODUCT_LIST = lambda items: {
                     {
                         "title": "Buy",
                         "type": "postback",
-                        "payload":"get_product/" + str(items.index(item))
+                        "payload": "get_product/" + str(items.index(item))
                     }
                 ]
             } for item in items]

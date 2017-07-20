@@ -40,12 +40,12 @@ def handle_incoming_messages():
     print(data)
     payload = None
     if data and not 'delivery' in data and not 'read' in data and not 'is_echo' in data.get('message', {}):
-        if data.get('messages', {}).get('quick_reply'):
-            if data.get('messages', {}).get('quick_reply', {}).get('payload') == "get_all_products":
+        if data.get('message', {}).get('quick_reply'):
+            if data.get('message', {}).get('quick_reply', {}).get('payload') == "get_all_products":
                 print('product list')
                 payload = PRODUCT_LIST(PRODUCTS)
-            elif "get_product" in data.get('messages', {}).get('quick_reply', {}).get('payload'):
-                num = int(data.get('messages', {}).get('quick_reply', {}).get('payload').split('/')[1])
+            elif 'postback' in data:
+                num = int(data.get('postback', {}).get('payload').split('/')[1])
                 item = PRODUCTS[num]
                 payload = RECEIPT_TEMPLATE(item)
             if payload:
