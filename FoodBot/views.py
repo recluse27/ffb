@@ -49,7 +49,7 @@ def handle_incoming_messages():
                 item = PRODUCTS[num]
                 payload = RECEIPT_TEMPLATE(item)
             if payload:
-                sender = data['entry'][0].get('messaging')[0].get('sender').get('id')
+                sender = data.get('sender').get('id')
                 reply_with_attachment(sender, payload)
         else:
             sender = data.get('sender').get('id')
