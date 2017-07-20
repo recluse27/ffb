@@ -9,10 +9,6 @@ PRODUCT_LIST = lambda items: {
                 "title": item['title'],
                 "subtitle": str(item['price']) + ' UAH',
                 "image_url": item['image_url'],
-                "default_action": {
-                    "type": "postback",
-                    "payload": "get_product/" + str(items.index(item))
-                },
                 "buttons": [
                     {
                         "title": "Buy",
