@@ -117,7 +117,7 @@ def reply_with_message(user_id, text, msg_type, delimiter):
     }
 
     quick_replies = construct_quick_replies(msg_type, delimiter)
-    if quick_replies:
+    if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
 
     print(data)
