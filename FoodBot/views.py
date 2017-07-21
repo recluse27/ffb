@@ -46,7 +46,7 @@ def handle_incoming_messages():
 
 def construct_quick_replies(msg_type, delimiter=None):
     quick_replies = dict()
-    if msg_type == 'first_msg' or msg_type == 'star_over':
+    if msg_type == 'first_msg' or msg_type == 'start_over':
         quick_replies.update(QUICK_REPLIES_MENU())
     if msg_type == 'get_more':
         quick_replies.update(QUICK_REPLIES_GET_MORE(delimiter[0], delimiter[1]))
