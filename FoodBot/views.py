@@ -102,7 +102,7 @@ def reply_with_attachment(user_id, msg_type, delimiter=None):
     }
 
     quick_replies = construct_quick_replies(msg_type, delimiter)
-    if quick_replies:
+    if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
 
     print(data)
@@ -120,6 +120,7 @@ def reply_with_message(user_id, text, msg_type, delimiter):
     if quick_replies:
         data.get('message', {}).update({"quick_replies": quick_replies})
 
+    print(data)
     resp = make_request(data)
     print(resp.text)
 
