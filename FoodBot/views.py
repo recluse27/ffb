@@ -49,7 +49,8 @@ def construct_quick_replies(msg_type, delimiter=None):
     if msg_type == 'first_msg' or msg_type == 'start_over':
         quick_replies.update(QUICK_REPLIES_MENU())
     if msg_type == 'get_more':
-        quick_replies.update(QUICK_REPLIES_GET_MORE(delimiter[0], delimiter[1]))
+        if delimiter[1] != len(PRODUCTS):
+            quick_replies.update(QUICK_REPLIES_GET_MORE(delimiter[0], delimiter[1]))
     return [quick_replies]
 
 
