@@ -26,6 +26,10 @@ def handle_incoming_messages():
                 msg_type = "get_all_products"
                 delimiter = (0, 4)
 
+            if "get_more" in data.get('message', {}).get('quick_reply', {}).get('payload'):
+                msg_type = "get_more"
+                delimiter = make_delimiter(data.get('postback', {}).get('payload').split('/')[1])
+
             sender = data.get('sender').get('id')
             reply(sender, msg_type, delimiter)
 
@@ -62,7 +66,7 @@ def construct_message_body(msg_type, delimiter=None):
     if msg_type == "get_all_products" or msg_type == "get_more":
         payload.update(PRODUCT_LIST(PRODUCTS[delimiter[0]: delimiter[1]]))
     if msg_type == "get_product":
-        payload.update(RECEIPT_TEMPLATE(PRODUCTS(delimiter)))
+        payload.update(RECEIPT_TEMPLATE(PRODUCTS[delimiter]))
     return payload
 
 
