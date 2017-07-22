@@ -24,7 +24,7 @@ def handle_incoming_messages():
 
             if data.get('message', {}).get('quick_reply', {}).get('payload') == "get_all_products":
                 msg_type = "get_all_products"
-                delimiter = (0, 9)
+                delimiter = (0, 4)
 
             if 'postback' in data:
                 if "get_product" in data.get('postback', {}):
@@ -64,8 +64,8 @@ def construct_message_body(msg_type, delimiter=None):
 
 def make_delimiter(str_from_to):
     _from = int(str_from_to.split('-')[1]) + 1
-    if len(PRODUCTS[_from:]) > 10:
-        _to = _from + 10
+    if len(PRODUCTS[_from:]) > 5:
+        _to = _from + 5
     else:
         _to = len(PRODUCTS)
     return _from, _to
