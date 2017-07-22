@@ -26,14 +26,17 @@ def handle_incoming_messages():
                 msg_type = "get_all_products"
                 delimiter = (0, 4)
 
-            if 'postback' in data:
-                if "get_product" in data.get('postback', {}):
-                    msg_type = "get_product"
-                    delimiter = int(data.get('postback', {}).get('payload').split('/')[1])
+            sender = data.get('sender').get('id')
+            reply(sender, msg_type, delimiter)
 
-                if "get_more" in data.get('postback', {}):
-                    msg_type = "get_more"
-                    delimiter = make_delimiter(data.get('postback', {}).get('payload').split('/')[1])
+        elif 'postback' in data:
+            if "get_product" in data.get('postback', {}):
+                msg_type = "get_product"
+                delimiter = int(data.get('postback', {}).get('payload').split('/')[1])
+
+            if "get_more" in data.get('postback', {}):
+                msg_type = "get_more"
+                delimiter = make_delimiter(data.get('postback', {}).get('payload').split('/')[1])
 
             sender = data.get('sender').get('id')
             reply(sender, msg_type, delimiter)
@@ -48,7 +51,7 @@ def construct_quick_replies(msg_type, delimiter=None):
     quick_replies = dict()
     if msg_type == 'first_msg' or msg_type == 'start_over':
         quick_replies.update(QUICK_REPLIES_MENU())
-    if msg_type == 'get_more':
+    if msg_type == 'get_more' or msg_type == "get_all_products":
         if delimiter[1] != len(PRODUCTS):
             quick_replies.update(QUICK_REPLIES_GET_MORE(delimiter[0], delimiter[1]))
     return [quick_replies]
