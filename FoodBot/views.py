@@ -30,11 +30,11 @@ def handle_incoming_messages():
             reply(sender, msg_type, delimiter)
 
         elif 'postback' in data:
-            if "get_product" in data.get('postback', {}):
+            if "get_product" in data.get('postback', {}).get('payload'):
                 msg_type = "get_product"
                 delimiter = int(data.get('postback', {}).get('payload').split('/')[1])
 
-            if "get_more" in data.get('postback', {}):
+            if "get_more" in data.get('postback', {}).get('payload'):
                 msg_type = "get_more"
                 delimiter = make_delimiter(data.get('postback', {}).get('payload').split('/')[1])
 
