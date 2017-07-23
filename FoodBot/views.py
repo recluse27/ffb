@@ -28,7 +28,7 @@ def handle_incoming_messages():
 
             if "get_more" in data.get('message', {}).get('quick_reply', {}).get('payload'):
                 msg_type = "get_more"
-                delimiter = make_delimiter(data.get('postback', {}).get('payload').split('/')[1])
+                delimiter = make_delimiter(data.get('message', {}).get('quick_reply', {}).get('payload').split('/')[1])
 
             sender = data.get('sender').get('id')
             reply(sender, msg_type, delimiter)
