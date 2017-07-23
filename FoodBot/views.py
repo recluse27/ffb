@@ -73,7 +73,7 @@ def construct_message_body(msg_type, delimiter=None):
 def make_delimiter(str_from_to):
     _from = int(str_from_to.split('-')[1]) + 1
     if len(PRODUCTS[_from:]) > 4:
-        _to = _from + 3
+        _to = _from + 4
     else:
         _to = len(PRODUCTS)
     return _from, _to
