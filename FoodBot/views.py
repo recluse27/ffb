@@ -12,7 +12,7 @@ def handle_verification():
 @app.route('/', methods=['POST'])
 def handle_incoming_messages():
     data = request.json.get('entry')[0].get('messaging')[0]
-    print(data)
+    print('Request data', data)
     msg_type = ""
     delimiter = None
     if check_valid_response(data):
@@ -115,9 +115,9 @@ def reply_with_attachment(user_id, msg_type, delimiter=None):
     if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
 
-    print(data)
+    print("Constructed data", data)
     resp = make_request(data)
-    print(resp.text)
+    print("Response data", resp.text)
 
 
 def reply_with_message(user_id, text, msg_type, delimiter):
@@ -130,9 +130,9 @@ def reply_with_message(user_id, text, msg_type, delimiter):
     if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
 
-    print(data)
+    print("Constructed data", data)
     resp = make_request(data)
-    print(resp.text)
+    print("Response data", resp.text)
 
 
 def make_request(data):
