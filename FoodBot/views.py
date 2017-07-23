@@ -47,7 +47,7 @@ def handle_incoming_messages():
         else:
             sender = data.get('sender', {}).get('id')
             reply_with_message(sender, "Сделай заказ", "start_over", delimiter)
-
+    delimiter = None
     return "ok"
 
 
@@ -74,7 +74,7 @@ def construct_message_body(msg_type, delimiter=None):
 
 def make_delimiter(str_from_to):
     _from = int(str_from_to.split('-')[1])
-    if len(PRODUCTS[_from:]) > 8:
+    if len(PRODUCTS[_from:]) > 7:
         _to = _from + 4
     else:
         _to = len(PRODUCTS)
