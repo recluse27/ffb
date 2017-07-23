@@ -73,7 +73,7 @@ def QUICK_REPLIES_GET_MORE(_from, _to):
 def QUICK_REPLIES_REPEAT():
     return {
         "content_type": "text",
-        "title": "Get more",
+        "title": "Repeat",
         "payload": "get_more/0-4"
     }
 
