@@ -38,21 +38,18 @@ def handle_incoming_messages():
                 msg_type = "get_product"
                 delimiter = int(data.get('postback', {}).get('payload').split('/')[1])
 
-            if "get_more" in data.get('postback', {}).get('payload'):
-                msg_type = "get_more"
-                delimiter = make_delimiter(data.get('postback', {}).get('payload').split('/')[1])
-
-            sender = data.get('sender').get('id')
-            reply(sender, msg_type, delimiter)
+                sender = data.get('sender').get('id')
+                reply(sender, msg_type, delimiter)
         else:
             sender = data.get('sender', {}).get('id')
             reply_with_message(sender, "Сделай заказ", "start_over", delimiter)
-    delimiter = None
+
     return "ok"
 
 
 def construct_quick_replies(msg_type, delimiter=None):
     quick_replies = dict()
+
     if msg_type == 'first_msg' or msg_type == 'start_over':
         quick_replies.update(QUICK_REPLIES_MENU())
 
@@ -60,28 +57,35 @@ def construct_quick_replies(msg_type, delimiter=None):
         quick_replies.update(QUICK_REPLIES_GET_MORE(4, 8))
 
     if msg_type == 'get_more':
-        if delimiter[1] != len(PRODUCTS):
-            quick_replies.update(QUICK_REPLIES_GET_MORE(delimiter[0], delimiter[1]))
+
+        if delimiter[1] < len(PRODUCTS):
+            quick_replies.update(QUICK_REPLIES_GET_MORE(delimiter[0] + 4, delimiter[1] + 4))
         else:
             quick_replies.update(QUICK_REPLIES_REPEAT())
+
     return [quick_replies]
 
 
 def construct_message_body(msg_type, delimiter=None):
     payload = dict()
+
     if msg_type == "get_all_products" or msg_type == "get_more":
         payload.update(PRODUCT_LIST(PRODUCTS[delimiter[0]: delimiter[1]]))
+
     if msg_type == "get_product":
         payload.update(RECEIPT_TEMPLATE(PRODUCTS[delimiter]))
+
     return payload
 
 
 def make_delimiter(str_from_to):
-    _from = int(str_from_to.split('-')[1])
-    if len(PRODUCTS[_from:]) > 7:
-        _to = _from + 4
-    else:
+
+    _from = int(str_from_to.split('-')[0])
+    _to = int(str_from_to.split('-')[1])
+
+    if len(PRODUCTS[_to:]) < 4:
         _to = len(PRODUCTS)
+
     return _from, _to
 
 
