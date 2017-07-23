@@ -58,6 +58,8 @@ def construct_quick_replies(msg_type, delimiter=None):
     if msg_type == 'get_more' or msg_type == "get_all_products":
         if delimiter[1] != len(PRODUCTS):
             quick_replies.update(QUICK_REPLIES_GET_MORE(delimiter[0], delimiter[1]))
+        else:
+            quick_replies.update(QUICK_REPLIES_REPEAT())
     return [quick_replies]
 
 
@@ -71,8 +73,8 @@ def construct_message_body(msg_type, delimiter=None):
 
 
 def make_delimiter(str_from_to):
-    _from = int(str_from_to.split('-')[1]) + 1
-    if len(PRODUCTS[_from:]) > 4:
+    _from = int(str_from_to.split('-')[1])
+    if len(PRODUCTS[_from:]) > 8:
         _to = _from + 4
     else:
         _to = len(PRODUCTS)

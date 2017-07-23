@@ -37,13 +37,6 @@ def RECEIPT_TEMPLATE(item):
             "elements": [
                 RECEIPT_ELEMENT_TEMPLATE(item=item)
             ],
-            "address": {
-                "street_1": "1 Hacker Way",
-                "city": "Menlo Park",
-                "postal_code": "94025",
-                "state": "CA",
-                "country": "US"
-            },
             "summary": {
                 "total_cost": item['price']
             }
@@ -75,6 +68,13 @@ def QUICK_REPLIES_GET_MORE(_from, _to):
         "title": "Get more",
         "payload": "get_more/{_from}-{_to}".format(_from=_from,
                                                    _to=_to)
+    }
+
+def QUICK_REPLIES_REPEAT():
+    return {
+        "content_type": "text",
+        "title": "Get more",
+        "payload": "get_more/0-4"
     }
 
 
