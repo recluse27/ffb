@@ -1,7 +1,7 @@
 from FoodBot import app
 
 app.run(debug=True,
-        host="10.0.0.254",
-        port=800,
+        host="127.0.0.1",
+        port=8000,
         use_reloader=True,
         threaded=True)
