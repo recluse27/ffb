@@ -8,12 +8,13 @@ def CATEGORY_LIST():
             "template_type": "list",
             "elements": [
                 {
-                    "title": item,
+                    "title": item['title'],
+                    "image_url": item['image_url'],
                     "buttons": [
                         {
-                            "title": item,
+                            "title": item['title'],
                             "type": "postback",
-                            "payload": "get_category/" + item
+                            "payload": "get_category/" + item['title']
                         }
                     ]
                 } for item in PRODUCT_CATEGORIES]
@@ -109,12 +110,14 @@ def QUICK_REPLIES_REPEAT(category):
         "payload": "get_more/{category}/0-4".format(category=category)
     }
 
+
 def QUICK_REPLIES_CATEGORIES():
     return {
         "content_type": "text",
         "title": "Categories",
         "payload": "get_categories"
     }
+
 
 def QUICK_REPLIES_GET_BASKET():
     return {
@@ -123,12 +126,14 @@ def QUICK_REPLIES_GET_BASKET():
         "payload": "get_basket"
     }
 
+
 def QUICK_REPLIES_CHECKOUT():
     return {
         "content_type": "text",
         "title": "Checkout",
         "payload": "checkout"
     }
+
 
 PRODUCTS = [{"title": "Classic Fries",
              "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
@@ -211,4 +216,12 @@ PRODUCTS = [{"title": "Classic Fries",
              "category": "Burgers",
              "price": 22}]
 
-PRODUCT_CATEGORIES = ['Drinks', 'Burgers', 'Salads', 'Other']
+PRODUCT_CATEGORIES = [
+    {'title': 'Drinks', 'image_url': "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
+                                     "desktop/t-mcdonalds-Coca-Cola-Classic-Small.png?$THUMBNAIL_MEDIUM$"},
+    {'title': 'Burgers', 'image_url': "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
+                                      "desktop/t-mcdonalds-Double-Quarter-Pounder-with-Cheese.png?$THUMBNAIL_MEDIUM$"},
+    {'title': 'Salads', 'image_url': "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
+                                     "desktop/t-mcdonalds-Premium-Southwest-Salad-with-Grilled-Chicken.png?$THUMBNAIL_MEDIUM$"},
+    {'title': 'Other', 'image_url': "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
+                                    "desktop/t-mcdonalds-Fries-Small-Medium.png?$THUMBNAIL_MEDIUM$"}]
