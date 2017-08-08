@@ -11,7 +11,7 @@ def handle_valid_message(data):
 
     if data.get('message', {}).get('quick_reply'):
 
-        payload = data.get('message', {}).get('get_started', {}).get('payload')
+        payload = data.get('message', {}).get('quick_reply', {}).get('payload')
         if payload == "get_started" or payload == "get_categories":
             msg_type = payload
 
