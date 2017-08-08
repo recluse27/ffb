@@ -141,14 +141,19 @@ def reply(user_id, msg_type, delimiter, category):
         reply_with_attachment(user_id, msg_type, delimiter, category)
 
     if msg_type == 'checkout':
-        reply_with_attachment(user_id, msg_type, delimiter, category)
-        text = ("Вы только что совершили покупку с помощью Friendly Food Bot. "
-                "Перешлите предыдущее сообщение вашему другу, которого хотите угостить, "
-                "и он сможет получить подарок в любое удобное для него время. "
-                "Friendly Food Bot с удовольствием поможет вам ещё. Для этого "
-                "нужно написать и отправить любое текстовое сообщение в чат с Friendly Food Bot. "
-                "Ждём вас снова! Всего наилучшего!")
+        orders = get_orders(user_id)
+        if orders:
+            reply_with_attachment(user_id, msg_type, delimiter, category)
+            text = ("Вы только что совершили покупку с помощью Friendly Food Bot. "
+                    "Перешлите предыдущее сообщение вашему другу, которого хотите угостить, "
+                    "и он сможет получить подарок в любое удобное для него время. "
+                    "Friendly Food Bot с удовольствием поможет вам ещё. Для этого "
+                    "нужно написать и отправить любое текстовое сообщение в чат с Friendly Food Bot. "
+                    "Ждём вас снова! Всего наилучшего!")
+        else:
+            text = "У вас нет заказов в корзине"
         reply_with_message(user_id, text, "start_over", delimiter, category)
+
 
 
 def reply_with_attachment(user_id, msg_type, delimiter, category):
