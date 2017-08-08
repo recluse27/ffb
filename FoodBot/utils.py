@@ -10,13 +10,20 @@ def handle_valid_message(data):
     category = None
 
     if data.get('message', {}).get('quick_reply'):
+        sender = data.get('sender').get('id')
 
         payload = data.get('message', {}).get('quick_reply', {}).get('payload')
         if payload == "get_started" or payload == "get_categories":
             msg_type = payload
 
         if payload == 'get_basket':
-            msg_type = payload
+            orders = get_orders(sender)
+            if orders:
+                reply_with_basket(sender)
+            else:
+                text = "У вас нет заказов в корзине"
+                reply_with_message(sender, text, "start_over", delimiter, category)
+            return
 
         if payload == "checkout":
             userid = data.get('sender').get('id')
@@ -33,7 +40,6 @@ def handle_valid_message(data):
             delimiter = make_delimiter(payload.split('/')[-1])
             category = payload.split('/')[1]
 
-        sender = data.get('sender').get('id')
         reply(sender, msg_type, delimiter, category)
 
     elif 'postback' in data:
@@ -67,7 +73,7 @@ def handle_valid_message(data):
         reply_with_message(sender, "Сделай заказ", "start_over", delimiter, category)
 
 
-def construct_quick_replies(msg_type, delimiter, category):
+def construct_quick_replies(msg_type, delimiter=None, category=None):
     quick_replies = list()
     filtered_products = list(filter(lambda p: p['category'] == category, PRODUCTS))
 
@@ -152,14 +158,6 @@ def reply(user_id, msg_type, delimiter, category):
     if msg_type == 'get_more' or msg_type == 'add_product' or msg_type == 'get_categories':
         reply_with_attachment(user_id, msg_type, delimiter, category)
 
-    if msg_type == 'get_basket':
-        orders = get_orders(user_id)
-        if orders:
-            reply_with_attachment(user_id, msg_type, delimiter, category)
-        else:
-            text = "У вас нет заказов в корзине"
-            reply_with_message(user_id, text, "start_over", delimiter, category)
-
     if msg_type == 'checkout':
         orders = get_orders(user_id)
         if orders:
@@ -206,6 +204,26 @@ def reply_with_message(user_id, text, msg_type, delimiter, category):
     print("Response data", resp.text)
 
 
+def reply_with_basket(sender):
+    orders = get_orders(sender)
+
+    transformed = transform(orders)
+    for order in transformed:
+        data = {
+            "recipient": {"id": sender},
+            "message": {"attachment": GET_BASKET(order)}
+        }
+
+        quick_replies = construct_quick_replies("get_basket")
+        if quick_replies and quick_replies[0]:
+            data.get('message', {}).update({"quick_replies": quick_replies})
+        print("Constructed data", data)
+        resp = make_request(data)
+        print("Response data", resp.text)
+
+
+
+
 def make_request(data):
     resp = requests.post(
         "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
@@ -224,6 +242,18 @@ def check_valid_response(data):
         return False
     return True
 
+
+def transform(orders):
+    if len(orders) < 7:
+        return [orders]
+    result = []
+    temp = []
+    for i in orders:
+        temp.append(i)
+        if len(temp) == 4:
+            result.append(temp)
+            temp = []
+    return result
 
 def get_orders(userid):
     return mongo.db.orders.find_one({'userid': userid}, {'_id': 0, 'orders': 1})
