@@ -159,7 +159,7 @@ def reply(user_id, msg_type, delimiter, category):
 def reply_with_attachment(user_id, msg_type, delimiter, category):
     data = {
         "recipient": {"id": user_id},
-        "message": {"attachment": construct_message_body(msg_type, delimiter)}
+        "message": {"attachment": construct_message_body(msg_type, delimiter, user_id)}
     }
 
     quick_replies = construct_quick_replies(msg_type, delimiter, category)
