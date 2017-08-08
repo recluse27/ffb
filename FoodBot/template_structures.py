@@ -104,10 +104,13 @@ def QUICK_REPLIES_GET_MORE(category, _from, _to):
 
 
 def QUICK_REPLIES_REPEAT(category):
+    filtered_products = list(filter(lambda p: p['category'] == category, PRODUCTS))
     return {
         "content_type": "text",
         "title": "Repeat",
-        "payload": "get_more/{category}/0-4".format(category=category)
+        "payload": "get_more/{category}/0-{size}".format(category=category,
+                                                         size=(4 if len(filtered_products) > 5
+                                                               else len(filtered_products)))
     }
 
 

@@ -64,6 +64,7 @@ def handle_valid_message(data):
 
 def construct_quick_replies(msg_type, delimiter, category):
     quick_replies = list()
+    filtered_products = list(filter(lambda p: p['category'] == category, PRODUCTS))
 
     if msg_type == 'first_msg' or msg_type == 'start_over':
         quick_replies.append(QUICK_REPLIES_CATEGORIES())
@@ -74,12 +75,15 @@ def construct_quick_replies(msg_type, delimiter, category):
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
 
     if msg_type == "get_category":
-        quick_replies.append(QUICK_REPLIES_GET_MORE(category, 0, 4))
+        if 5 < len(filtered_products):
+            quick_replies.append(QUICK_REPLIES_GET_MORE(category, 0, 4))
+        else:
+            quick_replies.append(QUICK_REPLIES_REPEAT(category))
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
 
     if msg_type == 'get_more':
 
-        if delimiter[1] < len(PRODUCTS):
+        if delimiter[1] < len(filtered_products):
             quick_replies.append(QUICK_REPLIES_GET_MORE(category,
                                                         delimiter[0] + 4,
                                                         delimiter[1] + 4))
