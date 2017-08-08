@@ -107,7 +107,8 @@ def construct_message_body(msg_type, delimiter, userid):
         payload.update(CATEGORY_LIST())
 
     if msg_type == "get_basket":
-        pass
+        orders = get_orders(userid)
+        payload.update(GET_BASKET(orders))
 
     if msg_type == 'checkout':
         orders = get_orders(userid)
@@ -137,8 +138,17 @@ def reply(user_id, msg_type, delimiter, category):
         text = "Выбери из меню то, что хочешь подарить."
         reply_with_message(user_id, text, "first_msg", delimiter, category)
 
-    if msg_type == 'get_more' or msg_type == 'add_product' or msg_type == 'get_basket':
+    if msg_type == 'get_more' or msg_type == 'add_product' or msg_type == 'get_categories':
         reply_with_attachment(user_id, msg_type, delimiter, category)
+
+    if msg_type == 'get_basket':
+        orders = get_orders(user_id)
+        if orders:
+            reply_with_attachment(user_id, msg_type, delimiter, category)
+        else:
+            text = "У вас нет заказов в корзине"
+            reply_with_message(user_id, text, "start_over", delimiter, category)
+
 
     if msg_type == 'checkout':
         orders = get_orders(user_id)
@@ -163,6 +173,7 @@ def reply_with_attachment(user_id, msg_type, delimiter, category):
     }
 
     quick_replies = construct_quick_replies(msg_type, delimiter, category)
+
     if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
 

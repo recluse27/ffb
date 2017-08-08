@@ -21,6 +21,21 @@ def CATEGORY_LIST():
     }
 
 
+def GET_BASKET(items):
+    return {
+        "type": "template",
+        "payload": {
+            "template_type": "list",
+            "elements": [
+                {
+                    "title": item['title'],
+                    "subtitle": str(item['price']) + ' UAH',
+                    "image_url": item['image_url'],
+                } for item in items]
+        }
+    }
+
+
 def PRODUCT_LIST(items, category=None):
     filtered_items = list(filter(lambda product: product['category'] == category, items))
 
