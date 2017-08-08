@@ -234,7 +234,7 @@ def add_product(delimiter, sender):
     if check:
         mongo.db.orders.update({'userid': sender}, {"$push": {'orders': PRODUCTS[delimiter]}})
     else:
-        mongo.db.orders.insert({'userid': sender, 'orders': PRODUCTS[delimiter]})
+        mongo.db.orders.insert({'userid': sender, 'orders': [PRODUCTS[delimiter]]})
 
 
 def remove_product(delimiter, sender):
