@@ -56,12 +56,6 @@ def handle_valid_message(data):
 
             reply_with_attachment(sender, msg_type, delimiter, category)
 
-        if "get_more" in payload:
-            msg_type = "get_more"
-            delimiter = make_delimiter(payload.split('/')[-1])
-            category = payload.split('/')[1]
-
-            reply(sender, msg_type, delimiter, category)
 
     else:
         sender = data.get('sender', {}).get('id')
@@ -116,6 +110,9 @@ def construct_message_body(msg_type, delimiter, userid, category):
     if msg_type == "get_basket":
         orders = get_orders(userid)
         payload.update(GET_BASKET(orders))
+
+    if msg_type == "get_category":
+        payload.update(PRODUCT_LIST(PRODUCTS[delimiter[0]: delimiter[1]], category))
 
     if msg_type == 'checkout':
         orders = get_orders(userid)
