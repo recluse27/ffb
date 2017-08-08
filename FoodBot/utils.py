@@ -118,10 +118,6 @@ def construct_message_body(msg_type, delimiter, userid, category):
     if msg_type == 'get_categories':
         payload.update(CATEGORY_LIST())
 
-    if msg_type == "get_basket":
-        orders = get_orders(userid)
-        payload.update(GET_BASKET(orders))
-
     if msg_type == "get_category":
         if delimiter[1] > len(list(filter(lambda p: p['category'] == category, PRODUCTS))):
             delimiter[1] = len(list(filter(lambda p: p['category'] == category, PRODUCTS)))
@@ -205,7 +201,7 @@ def reply_with_message(user_id, text, msg_type, delimiter, category):
 
 
 def reply_with_basket(sender):
-    orders = get_orders(sender)
+    orders = get_orders(sender)['orders']
     if len(orders) <= 2:
         for order in orders:
             data = {
@@ -269,8 +265,9 @@ def transform(orders):
             temp = []
     return result
 
+
 def get_orders(userid):
-    return mongo.db.orders.find_one({'userid': userid}, {'_id': 0, 'orders': 1})
+    return mongo.db.orders.find_one({'userid': userid}, {'_id': 0, 'orders': 1})['orders']
 
 
 def add_product(delimiter, sender):
