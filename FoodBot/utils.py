@@ -54,6 +54,13 @@ def handle_valid_message(data):
 
             reply_with_attachment(sender, msg_type, delimiter, category)
 
+        if "remove_product" in payload:
+            msg_type = "remove_product"
+            delimiter = int(payload.split('/')[-1])
+            remove_product(delimiter, sender)
+
+            reply_with_message(sender, 'Удалено', msg_type, delimiter, category)
+
 
     else:
         sender = data.get('sender', {}).get('id')
@@ -110,6 +117,8 @@ def construct_message_body(msg_type, delimiter, userid, category):
         payload.update(GET_BASKET(orders))
 
     if msg_type == "get_category":
+        if delimiter[1] > len(list(filter(lambda p: p['category'] == category, PRODUCTS))):
+            delimiter[1] = len(list(filter(lambda p: p['category'] == category, PRODUCTS)))
         payload.update(PRODUCT_LIST(PRODUCTS[delimiter[0]: delimiter[1]], category))
 
     if msg_type == 'checkout':
@@ -226,3 +235,7 @@ def add_product(delimiter, sender):
         mongo.db.orders.update({'userid': sender}, {"$push": {'orders': PRODUCTS[delimiter]}})
     else:
         mongo.db.orders.insert({'userid': sender, 'orders': PRODUCTS[delimiter]})
+
+
+def remove_product(delimiter, sender):
+    mongo.db.orders.update({'userid': sender}, {"$pull": {'orders': PRODUCTS[delimiter]}})

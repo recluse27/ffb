@@ -32,6 +32,12 @@ def GET_BASKET(items):
                     "title": item['title'],
                     "subtitle": str(item['price']) + ' UAH',
                     "image_url": item['image_url'],
+                    "buttons": [
+                        {
+                            "title": "Remove",
+                            "type": "postback",
+                            "payload": "remove_product/" + str(PRODUCTS.index(item))
+                        }]
                 } for item in items]
         }
     }
