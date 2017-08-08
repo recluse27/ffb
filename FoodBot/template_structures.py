@@ -43,8 +43,9 @@ def GET_BASKET(items):
     }
 
 
-def PRODUCT_LIST(items, category):
-    filtered_items = list(filter(lambda product: product['category'] == category, items))
+def PRODUCT_LIST(category, delimiter):
+    filtered_items = list(filter(lambda product: product['category'] == category,
+                                 PRODUCTS))[delimiter[0]: delimiter[1]]
 
     return {
         "type": "template",
@@ -149,6 +150,16 @@ PRODUCTS = [{"title": "Classic Fries",
                           "desktop/t-mcdonalds-Fries-Small-Medium.png?$THUMBNAIL_MEDIUM$",
              "category": "Other",
              "price": 15},
+            {"title": "Fruit n Yogurt Parfai",
+             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
+                          "desktop/t-mcdonalds-Fruit-n-Yogurt-Parfait.png?$THUMBNAIL_MEDIUM$",
+             "category": "Other",
+             "price": 16},
+            {"title": "Apple Slices",
+             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
+                          "desktop/t-mcdonalds-Apple-Slices.png?$THUMBNAIL_MEDIUM$",
+             "category": "Other",
+             "price": 14},
             {"title": "Big Mac",
              "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
                           "desktop/t-mcdonalds-Big-Mac.png?$THUMBNAIL_MEDIUM$",

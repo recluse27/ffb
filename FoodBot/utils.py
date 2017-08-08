@@ -80,8 +80,8 @@ def construct_quick_replies(msg_type, delimiter, category):
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
 
     if msg_type == "get_category":
-        if 5 < len(filtered_products):
-            quick_replies.append(QUICK_REPLIES_GET_MORE(category, 0, 4))
+        if 7 < len(filtered_products):
+            quick_replies.append(QUICK_REPLIES_GET_MORE(category, 4, 8))
         else:
             quick_replies.append(QUICK_REPLIES_REPEAT(category))
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
@@ -119,7 +119,7 @@ def construct_message_body(msg_type, delimiter, userid, category):
     if msg_type == "get_category":
         if delimiter[1] > len(list(filter(lambda p: p['category'] == category, PRODUCTS))):
             delimiter[1] = len(list(filter(lambda p: p['category'] == category, PRODUCTS)))
-        payload.update(PRODUCT_LIST(PRODUCTS[delimiter[0]: delimiter[1]], category))
+        payload.update(PRODUCT_LIST(category, delimiter))
 
     if msg_type == 'checkout':
         orders = get_orders(userid)
