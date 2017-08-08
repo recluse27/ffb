@@ -52,13 +52,10 @@ def handle_valid_message(data):
 
         if "get_category" in payload:
             msg_type = "get_category"
-            delimiter = int(payload.split('/')[-1])
             category = payload.split('/')[1]
-
             sender = data.get('sender').get('id')
-            add_product(delimiter, sender)
 
-            reply_with_message(sender, 'Добавлено', msg_type, delimiter, category)
+            reply_with_attachment(sender, msg_type, delimiter, category)
 
     else:
         sender = data.get('sender', {}).get('id')
@@ -97,11 +94,11 @@ def clean_order(userid):
     mongo.db.orders.remove({"userid": userid})
 
 
-def construct_message_body(msg_type, delimiter, userid):
+def construct_message_body(msg_type, delimiter, userid, category):
     payload = dict()
 
     if msg_type == "get_more":
-        payload.update(PRODUCT_LIST(PRODUCTS[delimiter[0]: delimiter[1]]))
+        payload.update(PRODUCT_LIST(PRODUCTS[delimiter[0]: delimiter[1]], category))
 
     if msg_type == 'get_categories':
         payload.update(CATEGORY_LIST())
@@ -149,7 +146,6 @@ def reply(user_id, msg_type, delimiter, category):
             text = "У вас нет заказов в корзине"
             reply_with_message(user_id, text, "start_over", delimiter, category)
 
-
     if msg_type == 'checkout':
         orders = get_orders(user_id)
         if orders:
@@ -165,11 +161,10 @@ def reply(user_id, msg_type, delimiter, category):
         reply_with_message(user_id, text, "start_over", delimiter, category)
 
 
-
 def reply_with_attachment(user_id, msg_type, delimiter, category):
     data = {
         "recipient": {"id": user_id},
-        "message": {"attachment": construct_message_body(msg_type, delimiter, user_id)}
+        "message": {"attachment": construct_message_body(msg_type, delimiter, user_id, category)}
     }
 
     quick_replies = construct_quick_replies(msg_type, delimiter, category)

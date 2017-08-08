@@ -37,7 +37,7 @@ def GET_BASKET(items):
     }
 
 
-def PRODUCT_LIST(items, category=None):
+def PRODUCT_LIST(items, category):
     filtered_items = list(filter(lambda product: product['category'] == category, items))
 
     return {
