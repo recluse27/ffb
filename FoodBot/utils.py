@@ -41,11 +41,11 @@ def handle_valid_message(data):
 
     elif 'postback' in data:
         payload = data.get('postback', {}).get('payload')
+        sender = data.get('sender').get('id')
+
         if "add_product" in payload:
             msg_type = "add_product"
             delimiter = int(payload.split('/')[-1])
-
-            sender = data.get('sender').get('id')
             add_product(delimiter, sender)
 
             reply_with_message(sender, 'Добавлено', msg_type, delimiter, category)
@@ -53,9 +53,15 @@ def handle_valid_message(data):
         if "get_category" in payload:
             msg_type = "get_category"
             category = payload.split('/')[1]
-            sender = data.get('sender').get('id')
 
             reply_with_attachment(sender, msg_type, delimiter, category)
+
+        if "get_more" in payload:
+            msg_type = "get_more"
+            delimiter = make_delimiter(payload.split('/')[-1])
+            category = payload.split('/')[1]
+
+            reply(sender, msg_type, delimiter, category)
 
     else:
         sender = data.get('sender', {}).get('id')
