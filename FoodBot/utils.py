@@ -107,7 +107,7 @@ def construct_message_body(msg_type, delimiter, userid, category):
     payload = dict()
 
     if msg_type == "get_more":
-        payload.update(PRODUCT_LIST(PRODUCTS[delimiter[0]: delimiter[1]], category))
+        payload.update(PRODUCT_LIST(category, delimiter))
 
     if msg_type == 'get_categories':
         payload.update(CATEGORY_LIST())
