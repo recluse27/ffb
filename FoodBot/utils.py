@@ -206,6 +206,20 @@ def reply_with_message(user_id, text, msg_type, delimiter, category):
 
 def reply_with_basket(sender):
     orders = get_orders(sender)
+    if len(orders) <= 2:
+        for order in orders:
+            data = {
+                "recipient": {"id": sender},
+                "message": {"attachment": GET_GENERIC_BASKET(order)}
+            }
+
+            quick_replies = construct_quick_replies("get_basket")
+            if quick_replies and quick_replies[0]:
+                data.get('message', {}).update({"quick_replies": quick_replies})
+            print("Constructed data", data)
+            resp = make_request(data)
+            print("Response data", resp.text)
+        return
 
     transformed = transform(orders)
     for order in transformed:

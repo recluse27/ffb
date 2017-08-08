@@ -43,6 +43,29 @@ def GET_BASKET(items):
     }
 
 
+def GET_GENERIC_BASKET(item):
+    return {
+        "type": "template",
+        "payload": {
+            "template_type": "generic",
+            "elements": [
+                {
+                    "title": item['title'],
+                    "subtitle": str(item['price']) + ' UAH',
+                    "image_url": item['image_url'],
+                    "buttons": [
+                        {
+                            "title": "Remove",
+                            "type": "postback",
+                            "payload": "remove_product/" + str(PRODUCTS.index(item))
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
+
 def PRODUCT_LIST(category, delimiter):
     filtered_items = list(filter(lambda product: product['category'] == category,
                                  PRODUCTS))[delimiter[0]: delimiter[1]]
