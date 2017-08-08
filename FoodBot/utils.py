@@ -15,9 +15,6 @@ def handle_valid_message(data):
         if payload == "get_started" or payload == "get_categories":
             msg_type = payload
 
-        if payload == "get_categories":
-            msg_type = payload
-
         if payload == 'get_basket':
             msg_type = payload
 
@@ -53,6 +50,7 @@ def handle_valid_message(data):
         if "get_category" in payload:
             msg_type = "get_category"
             category = payload.split('/')[1]
+            delimiter = (0, 4)
 
             reply_with_attachment(sender, msg_type, delimiter, category)
 
