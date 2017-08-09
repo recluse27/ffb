@@ -92,6 +92,10 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
             quick_replies.append(QUICK_REPLIES_REPEAT(category))
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
 
+    if msg_type == 'add_product' or msg_type == 'remove_product':
+        quick_replies.append(QUICK_REPLIES_CATEGORIES())
+        quick_replies.append(QUICK_REPLIES_GET_BASKET())
+
     if msg_type == 'get_more':
 
         if delimiter[1] < len(filtered_products):
@@ -202,7 +206,7 @@ def reply_with_message(user_id, text, msg_type, delimiter, category):
 
 def reply_with_basket(sender):
     orders = get_orders(sender)['orders']
-    if len(orders) <= 2:
+    if len(orders) < 3:
         for order in orders:
             data = {
                 "recipient": {"id": sender},
@@ -232,8 +236,6 @@ def reply_with_basket(sender):
         print("Response data", resp.text)
 
 
-
-
 def make_request(data):
     resp = requests.post(
         "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
@@ -254,15 +256,15 @@ def check_valid_response(data):
 
 
 def transform(orders):
-    if len(orders) < 7:
-        return [orders]
     result = []
     temp = []
     for i in orders:
         temp.append(i)
-        if len(temp) == 4:
+        if len(temp) == 3:
             result.append(temp)
             temp = []
+    if temp:
+        result[-1].extend(temp)
     return result
 
 
