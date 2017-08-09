@@ -111,6 +111,10 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
         quick_replies.append(QUICK_REPLIES_CHECKOUT())
 
+    if msg_type == 'get_basket':
+        quick_replies.append(QUICK_REPLIES_CATEGORIES())
+        quick_replies.append(QUICK_REPLIES_CHECKOUT())
+
     return quick_replies
 
 
