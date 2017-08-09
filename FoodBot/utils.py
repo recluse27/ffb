@@ -79,11 +79,13 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
 
     if msg_type == 'first_msg' or msg_type == 'start_over':
         quick_replies.append(QUICK_REPLIES_CATEGORIES())
+        quick_replies.append(QUICK_REPLIES_CHECKOUT())
         if msg_type == 'start_over':
             quick_replies.append(QUICK_REPLIES_GET_BASKET())
 
     if msg_type == "get_categories":
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
+        quick_replies.append(QUICK_REPLIES_CHECKOUT())
 
     if msg_type == "get_category":
         if 7 < len(filtered_products):
@@ -91,10 +93,12 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
         else:
             quick_replies.append(QUICK_REPLIES_REPEAT(category))
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
+        quick_replies.append(QUICK_REPLIES_CHECKOUT())
 
     if msg_type == 'add_product' or msg_type == 'remove_product':
         quick_replies.append(QUICK_REPLIES_CATEGORIES())
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
+        quick_replies.append(QUICK_REPLIES_CHECKOUT())
 
     if msg_type == 'get_more':
 
@@ -105,6 +109,7 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
         else:
             quick_replies.append(QUICK_REPLIES_REPEAT(category))
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
+        quick_replies.append(QUICK_REPLIES_CHECKOUT())
 
     return quick_replies
 
