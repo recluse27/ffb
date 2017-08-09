@@ -128,7 +128,7 @@ def construct_message_body(msg_type, delimiter, userid, category):
         payload.update(PRODUCT_LIST(category, delimiter))
 
     if msg_type == 'checkout':
-        orders = get_orders(userid)
+        orders = get_orders(userid)['orders']
         if orders:
             clean_order(userid)
             payload.update(RECEIPT_TEMPLATE(orders))
@@ -208,32 +208,17 @@ def reply_with_basket(sender):
     orders = get_orders(sender)['orders']
     if len(orders) < 3:
         for order in orders:
-            data = {
-                "recipient": {"id": sender},
-                "message": {"attachment": GET_GENERIC_BASKET(order)}
-            }
-
-            quick_replies = construct_quick_replies("get_basket")
-            if quick_replies and quick_replies[0]:
-                data.get('message', {}).update({"quick_replies": quick_replies})
-            print("Constructed data", data)
-            resp = make_request(data)
-            print("Response data", resp.text)
+            basket_messages_generic(order, sender)
         return
 
     transformed = transform(orders)
     for order in transformed:
-        data = {
-            "recipient": {"id": sender},
-            "message": {"attachment": GET_BASKET(order)}
-        }
-
-        quick_replies = construct_quick_replies("get_basket")
-        if quick_replies and quick_replies[0]:
-            data.get('message', {}).update({"quick_replies": quick_replies})
-        print("Constructed data", data)
-        resp = make_request(data)
-        print("Response data", resp.text)
+        if order > 4:
+            basket_messages_list(order[:4], sender)
+            for o in order[4:]:
+                basket_messages_generic(o, sender)
+        else:
+            basket_messages_list(order, sender)
 
 
 def make_request(data):
@@ -241,6 +226,34 @@ def make_request(data):
         "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
         json=data)
     return resp
+
+
+def basket_messages_list(order, sender):
+    data = {
+        "recipient": {"id": sender},
+        "message": {"attachment": GET_BASKET(order)}
+    }
+
+    quick_replies = construct_quick_replies("get_basket")
+    if quick_replies and quick_replies[0]:
+        data.get('message', {}).update({"quick_replies": quick_replies})
+    print("Constructed data", data)
+    resp = make_request(data)
+    print("Response data", resp.text)
+
+
+def basket_messages_generic(order, sender):
+    data = {
+        "recipient": {"id": sender},
+        "message": {"attachment": GET_GENERIC_BASKET(order)}
+    }
+
+    quick_replies = construct_quick_replies("get_basket")
+    if quick_replies and quick_replies[0]:
+        data.get('message', {}).update({"quick_replies": quick_replies})
+    print("Constructed data", data)
+    resp = make_request(data)
+    print("Response data", resp.text)
 
 
 def check_valid_response(data):
