@@ -294,4 +294,7 @@ def add_product(delimiter, sender):
 
 
 def remove_product(delimiter, sender):
-    mongo.db.orders.update({'userid': sender}, {"$pull": {'orders': PRODUCTS[delimiter]}})
+    orders = get_orders(sender)['orders']
+    product = PRODUCTS[delimiter]
+    orders.remove(product)
+    mongo.db.orders.update({'userid': sender}, {"$set": {'orders': orders}})
