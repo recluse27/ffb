@@ -213,7 +213,7 @@ def reply_with_basket(sender):
 
     transformed = transform(orders)
     for order in transformed:
-        if order > 4:
+        if len(order) > 4:
             basket_messages_list(order[:4], sender)
             for o in order[4:]:
                 basket_messages_generic(o, sender)
