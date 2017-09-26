@@ -84,7 +84,7 @@ def handle_valid_message(data):
 
 def construct_quick_replies(msg_type, delimiter=None, category=None):
     quick_replies = list()
-    filtered_products = list(filter(lambda p: p['category'] == category, PRODUCTS))
+    filtered_products = list(filter(lambda p: p['category_id'] == category, PRODUCTS))
 
     if msg_type == 'first_msg' or msg_type == 'start_over':
         quick_replies.append(QUICK_REPLIES_CATEGORIES())
