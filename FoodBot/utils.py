@@ -3,11 +3,20 @@ from . import app, mongo
 
 import requests
 
+PRODUCTS = []
+CATEGORIS = []
+
 
 def handle_valid_message(data):
     msg_type = ""
     delimiter = None
     category = None
+    global PRODUCTS
+    global CATEGORIS
+    if not PRODUCTS:
+        PRODUCTS = get_products()
+    if not CATEGORIS:
+        CATEGORIS = get_categories()
 
     if data.get('message', {}).get('quick_reply'):
         sender = data.get('sender').get('id')
@@ -91,7 +100,7 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
         if 7 < len(filtered_products):
             quick_replies.append(QUICK_REPLIES_GET_MORE(category, 4, 8))
         else:
-            quick_replies.append(QUICK_REPLIES_REPEAT(category))
+            quick_replies.append(QUICK_REPLIES_REPEAT(category, PRODUCTS))
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
         quick_replies.append(QUICK_REPLIES_CHECKOUT())
 
@@ -107,7 +116,7 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
                                                         delimiter[0] + 4,
                                                         delimiter[1] + 4))
         else:
-            quick_replies.append(QUICK_REPLIES_REPEAT(category))
+            quick_replies.append(QUICK_REPLIES_REPEAT(category, PRODUCTS))
         quick_replies.append(QUICK_REPLIES_GET_BASKET())
         quick_replies.append(QUICK_REPLIES_CHECKOUT())
 

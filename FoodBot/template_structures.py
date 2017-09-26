@@ -1,7 +1,17 @@
 import time
+import json
+
+import requests as rq
+
+unit_url = "https://unit.cafe/api/v1/ua/%s?token=jhy48fnc9sd"
+headers = {'Content-Type': 'application/json',
+           'user-agent': 'Mozilla/5.0 (Macintosh; '
+                         'Intel Mac OS X 10_13_0) '
+                         'AppleWebKit/537.36 (KHTML, like Gecko) '
+                         'Chrome/61.0.3163.100 Safari/537.36'}
 
 
-def CATEGORY_LIST():
+def CATEGORY_LIST(CATEGORIES):
     return {
         "type": "template",
         "payload": {
@@ -14,10 +24,10 @@ def CATEGORY_LIST():
                         {
                             "title": item['title'],
                             "type": "postback",
-                            "payload": "get_category/" + item['title']
+                            "payload": "get_category/" + item['category_id']
                         }
                     ]
-                } for item in PRODUCT_CATEGORIES]
+                } for item in CATEGORIES]
         }
     }
 
@@ -36,7 +46,7 @@ def GET_BASKET(items):
                         {
                             "title": "Remove",
                             "type": "postback",
-                            "payload": "remove_product/" + str(PRODUCTS.index(item))
+                            "payload": "remove_product/" + str(item['product_id'])
                         }]
                 } for item in items]
         }
@@ -57,7 +67,7 @@ def GET_GENERIC_BASKET(item):
                         {
                             "title": "Remove",
                             "type": "postback",
-                            "payload": "remove_product/" + str(PRODUCTS.index(item))
+                            "payload": "remove_product/" + str(item['product_id'])
                         }
                     ]
                 }
@@ -66,7 +76,7 @@ def GET_GENERIC_BASKET(item):
     }
 
 
-def PRODUCT_LIST(category, delimiter):
+def PRODUCT_LIST(category, delimiter, PRODUCTS):
     filtered_items = list(filter(lambda product: product['category'] == category,
                                  PRODUCTS))[delimiter[0]: delimiter[1]]
 
@@ -83,7 +93,7 @@ def PRODUCT_LIST(category, delimiter):
                         {
                             "title": "Add",
                             "type": "postback",
-                            "payload": "add_product/" + str(PRODUCTS.index(item))
+                            "payload": "add_product/" + str(item['product_id'])
                         }
                     ]
                 } for item in filtered_items]
@@ -133,8 +143,8 @@ def QUICK_REPLIES_GET_MORE(category, _from, _to):
     }
 
 
-def QUICK_REPLIES_REPEAT(category):
-    filtered_products = list(filter(lambda p: p['category'] == category, PRODUCTS))
+def QUICK_REPLIES_REPEAT(category, PRODUCTS):
+    filtered_products = list(filter(lambda p: p['category_id'] == category, PRODUCTS))
     return {
         "content_type": "text",
         "title": "Repeat",
@@ -168,103 +178,25 @@ def QUICK_REPLIES_CHECKOUT():
     }
 
 
-PRODUCTS = [{"title": "Classic Fries",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Fries-Small-Medium.png?$THUMBNAIL_MEDIUM$",
-             "category": "Other",
-             "price": 15},
-            {"title": "Fruit n Yogurt Parfai",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Fruit-n-Yogurt-Parfait.png?$THUMBNAIL_MEDIUM$",
-             "category": "Other",
-             "price": 16},
-            {"title": "Apple Slices",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Apple-Slices.png?$THUMBNAIL_MEDIUM$",
-             "category": "Other",
-             "price": 14},
-            {"title": "Big Mac",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Big-Mac.png?$THUMBNAIL_MEDIUM$",
-             "category": "Burgers",
-             "price": 30},
-            {"title": "Coca-Cola",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Coca-Cola-Classic-Small.png?$THUMBNAIL_MEDIUM$",
-             "category": "Drinks",
-             "price": 10},
-            {"title": "Double Royal Cheesburger",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Double-Quarter-Pounder-with-Cheese.png?$THUMBNAIL_MEDIUM$",
-             "category": "Burgers",
-             "price": 20},
-            {"title": "Maple Bacon Dijon Crispy Chicken Artisan",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-maplebacondijon-crispychicken-artisan.png?$THUMBNAIL_MEDIUM$",
-             "category": "Burgers",
-             "price": 20},
-            {"title": "Sweet BBQ Bacon Crispy Chicken Artisan",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-sweetbbqbacon-crispychicken-artisan.png?$THUMBNAIL_MEDIUM$",
-             "category": "Burgers",
-             "price": 19},
-            {"title": "Picoguac Grilled Chicken Artisan",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-picoguac-grilledchicken-artisan.png?$THUMBNAIL_MEDIUM$",
-             "category": "Burgers",
-             "price": 22},
-            {"title": "Chicken McNuggets",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Chicken-McNuggets-4pc.png?$THUMBNAIL_MEDIUM$",
-             "category": "Other",
-             "price": 16},
-            {"title": "Artisan Grilled Chicken Sandwich",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Artisan-Grilled-Chicken-Sandwich.png?$THUMBNAIL_MEDIUM$",
-             "category": "Burgers",
-             "price": 25},
-            {"title": "Premium Bacon Ranch Salad with Grilled Chicken",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Premium-Bacon-Ranch-Salad-with-Grilled-Chicken.png?$THUMBNAIL_MEDIUM$",
-             "category": "Salads",
-             "price": 17},
-            {"title": "Premium Bacon Ranch Salad with Buttermilk Crispy Chicken",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Premium-Bacon-Ranch-Salad-with-Buttermilk-Crispy-Chicken.png?$THUMBNAIL_MEDIUM$",
-             "category": "Salads",
-             "price": 17},
-            {"title": "Premium Southwest Salad with Grilled Chicken",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Premium-Southwest-Salad-with-Grilled-Chicken.png?$THUMBNAIL_MEDIUM$",
-             "category": "Salads",
-             "price": 17},
-            {"title": "Chocolate McCafe Shake",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Chocolate-McCafe-Shake-Medium.png?$THUMBNAIL_MEDIUM$",
-             "category": "Drinks",
-             "price": 12},
-            {"title": "Strawberry McCafe Shake",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Strawberry-McCafe-Shake-Medium.png?$THUMBNAIL_MEDIUM$",
-             "category": "Drinks",
-             "price": 12},
-            {"title": "Vanilla McCafe Shake",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-Vanilla-McCafe-Shake-Medium.png?$THUMBNAIL_MEDIUM$",
-             "category": "Drinks",
-             "price": 12},
-            {"title": "Sweet BBQ Bacon Grilled Chicken Artisan",
-             "image_url": "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                          "desktop/t-mcdonalds-sweetbbqbacon-grilledchicken-artisan.png?$THUMBNAIL_MEDIUM$",
-             "category": "Burgers",
-             "price": 22}]
+def get_products():
+    result = rq.get(url=(unit_url % 'products'), headers=headers)
+    products = json.loads(result)
+    new_products = [
+        {'title': product.get('name'),
+         'price': product.get('price'),
+         'product_id': product.get('product_id'),
+         'category_id': product.get('category_id'),
+         'image_url': product.get('image', [{}])[0].get('image1')}
+        for product in products]
+    return new_products
 
-PRODUCT_CATEGORIES = [
-    {'title': 'Drinks', 'image_url': "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                                     "desktop/t-mcdonalds-Coca-Cola-Classic-Small.png?$THUMBNAIL_MEDIUM$"},
-    {'title': 'Burgers', 'image_url': "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                                      "desktop/t-mcdonalds-Double-Quarter-Pounder-with-Cheese.png?$THUMBNAIL_MEDIUM$"},
-    {'title': 'Salads', 'image_url': "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                                     "desktop/t-mcdonalds-Premium-Southwest-Salad-with-Grilled-Chicken.png?$THUMBNAIL_MEDIUM$"},
-    {'title': 'Other', 'image_url': "https://www.mcdonalds.com/is/image/content/dam/usa/nutrition/items/regular/"
-                                    "desktop/t-mcdonalds-Fries-Small-Medium.png?$THUMBNAIL_MEDIUM$"}]
+def get_categories():
+    result = rq.get(url=(unit_url % 'category'), headers=headers)
+    categories = json.loads(result)
+    new_categories = [
+        {'title': category.get('name'),
+         'category_id': category.get('category_id'),
+         'image_url': category.get('image')}
+        for category in categories
+    ]
+    return new_categories
