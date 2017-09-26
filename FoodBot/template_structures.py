@@ -77,7 +77,7 @@ def GET_GENERIC_BASKET(item):
 
 
 def PRODUCT_LIST(category, delimiter, PRODUCTS):
-    filtered_items = list(filter(lambda product: product['category'] == category,
+    filtered_items = list(filter(lambda product: product['category_id'] == category,
                                  PRODUCTS))[delimiter[0]: delimiter[1]]
 
     return {
