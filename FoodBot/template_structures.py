@@ -180,7 +180,7 @@ def QUICK_REPLIES_CHECKOUT():
 
 def get_products():
     result = rq.get(url=(unit_url % 'products'), headers=headers)
-    products = json.loads(result)
+    products = json.loads(result.text)
     new_products = [
         {'title': product.get('name'),
          'price': product.get('price'),
@@ -192,7 +192,7 @@ def get_products():
 
 def get_categories():
     result = rq.get(url=(unit_url % 'category'), headers=headers)
-    categories = json.loads(result)
+    categories = json.loads(result.text)
     new_categories = [
         {'title': category.get('name'),
          'category_id': category.get('category_id'),
