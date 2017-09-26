@@ -179,7 +179,7 @@ def QUICK_REPLIES_CHECKOUT():
 
 
 def get_products():
-    result = rq.get(url=(unit_url % 'products'), headers=headers)
+    result = rq.get(url=(unit_url % 'product'), headers=headers)
     products = json.loads(result.text)
     new_products = [
         {'title': product.get('name'),
