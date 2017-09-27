@@ -201,7 +201,7 @@ def reply_with_attachment(user_id, msg_type, delimiter, category):
     flag = False
     if len(elements) > 4:
         flag = True
-        transform(elements)
+        elements = transform(elements)
 
     quick_replies = construct_quick_replies(msg_type, delimiter, category)
 
