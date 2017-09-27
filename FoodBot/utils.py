@@ -45,9 +45,12 @@ def handle_valid_message(data):
                 return
 
         if "get_more" in payload:
-            msg_type = "get_more"
             delimiter = make_delimiter(payload.split('/')[-1])
             category = payload.split('/')[1]
+            products = list(filter(lambda product: str(product['category_id']) == str(category),
+                                   PRODUCTS))[delimiter[0]: delimiter[1]]
+            reply_with_products(products)
+            return
 
         reply(sender, msg_type, delimiter, category)
 
@@ -169,8 +172,8 @@ def unit_checkout(user_id, phone, order_time, orders):
     data = {'name': 'test_user',
             'phone': phone,
             'order_time': order_time,
-            'delivery_type': 1, # in unit
-            'coock_type': 2, # all at once
+            'delivery_type': 1,  # in unit
+            'coock_type': 2,  # all at once
             'guests_count': 1,
             'products': [{'product_id': int(product.get('product_id')),
                           'quantity': 1}
@@ -272,6 +275,22 @@ def reply_with_basket(sender):
             basket_messages_list(order, sender)
 
 
+def reply_with_products(products, sender):
+    if len(products) < 3:
+        for product in products:
+            products_messages_generic(product, sender)
+        return
+
+    transformed = transform(products)
+    for product in transformed:
+        if len(product) > 4:
+            products_messages_list(product[:4], sender)
+            for o in product[4:]:
+                products_messages_generic(o, sender)
+        else:
+            products_messages_list(product, sender)
+
+
 def make_request(data):
     resp = requests.post(
         "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
@@ -307,6 +326,34 @@ def basket_messages_generic(order, sender):
     print("Response data", resp.text)
 
 
+def products_messages_list(products, sender):
+    data = {
+        "recipient": {"id": sender},
+        "message": {"attachment": GET_PRODUCTS(products)}
+    }
+
+    quick_replies = construct_quick_replies("get_basket")
+    if quick_replies and quick_replies[0]:
+        data.get('message', {}).update({"quick_replies": quick_replies})
+    print("Constructed data", data)
+    resp = make_request(data)
+    print("Response data", resp.text)
+
+
+def products_messages_generic(product, sender):
+    data = {
+        "recipient": {"id": sender},
+        "message": {"attachment": GET_GENERIC_PRODUCT(product)}
+    }
+
+    quick_replies = construct_quick_replies("get_basket")
+    if quick_replies and quick_replies[0]:
+        data.get('message', {}).update({"quick_replies": quick_replies})
+    print("Constructed data", data)
+    resp = make_request(data)
+    print("Response data", resp.text)
+
+
 def check_valid_response(data):
     if not data:
         return False
@@ -328,11 +375,7 @@ def transform(orders):
             result.append(temp)
             temp = []
     if temp:
-        if len(temp) == 1:
-            result[-1].extend(temp)
-        else:
-            result[-1].append(temp[-1])
-            result[-2].append(temp[-2])
+        result[-1].extend(temp)
     return result
 
 

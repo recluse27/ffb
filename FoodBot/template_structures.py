@@ -101,6 +101,51 @@ def PRODUCT_LIST(category, delimiter, PRODUCTS):
     }
 
 
+def GET_PRODUCTS(products):
+    return {
+        "type": "template",
+        "payload": {
+            "template_type": "list",
+            "elements": [
+                {
+                    "title": item['title'],
+                    "subtitle": str(item['price']) + ' UAH',
+                    "image_url": item['image_url'],
+                    "buttons": [
+                        {
+                            "title": "Add",
+                            "type": "postback",
+                            "payload": "add_product/" + str(item['product_id'])
+                        }
+                    ]
+                } for item in products]
+        }
+    }
+
+
+def GET_GENERIC_PRODUCT(item):
+    return {
+        "type": "template",
+        "payload": {
+            "template_type": "generic",
+            "elements": [
+                {
+                    "title": item['title'],
+                    "subtitle": str(item['price']) + ' UAH',
+                    "image_url": item['image_url'],
+                    "buttons": [
+                        {
+                            "title": "Add",
+                            "type": "postback",
+                            "payload": "add_product/" + str(item['product_id'])
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
+
 def RECEIPT_TEMPLATE(items):
     return {
         "type": "template",
