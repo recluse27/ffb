@@ -308,9 +308,12 @@ def transform(orders):
             result.append(temp)
             temp = []
     if temp:
-        result[-1].extend(temp)
+        if len(temp) == 1:
+            result[-1].extend(temp)
+        else:
+            result[-1].append(temp[-1])
+            result[-2].append(temp[-2])
     return result
-
 
 def get_orders(userid):
     return mongo.db.orders.find_one({'userid': userid}, {'_id': 0, 'orders': 1})
