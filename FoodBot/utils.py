@@ -419,7 +419,7 @@ def transform(orders):
     temp = []
     for i in orders:
         temp.append(i)
-        if len(temp) == 4:
+        if len(temp) == 3:
             result.append(temp)
             temp = []
     if temp:
