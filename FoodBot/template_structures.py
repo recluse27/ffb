@@ -24,7 +24,7 @@ def CATEGORY_LIST(CATEGORIES):
                         {
                             "title": item['title'],
                             "type": "postback",
-                            "payload": "get_category/" + item['category_id']
+                            "payload": "get_category/" + str(item['category_id'])
                         }
                     ]
                 } for item in CATEGORIES]
