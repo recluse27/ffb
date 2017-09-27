@@ -210,7 +210,7 @@ def reply_with_attachment(user_id, msg_type, delimiter, category):
 
     if flag:
         for element in elements:
-            data['message']['attahment']['payload']['elements'] = element
+            data['message']['attachment']['payload']['elements'] = element
             print("Constructed data", data)
             resp = make_request(data)
             print("Response data", resp.text)
