@@ -141,8 +141,8 @@ def construct_message_body(msg_type, delimiter, userid, category):
         payload.update(CATEGORY_LIST(CATEGORIES))
 
     if msg_type == "get_category":
-        if delimiter[1] > len(list(filter(lambda p: p['category'] == category, PRODUCTS))):
-            delimiter = (delimiter[0], len(list(filter(lambda p: p['category'] == category, PRODUCTS))))
+        if delimiter[1] > len(list(filter(lambda p: p['category_id'] == category, PRODUCTS))):
+            delimiter = (delimiter[0], len(list(filter(lambda p: p['category_id'] == category, PRODUCTS))))
         payload.update(PRODUCT_LIST(category, delimiter, PRODUCTS))
 
     if msg_type == 'checkout':
