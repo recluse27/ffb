@@ -231,6 +231,12 @@ def QUICK_REPLIES_GET_MORE(category, _from, _to):
     }
 
 
+def BUTTONS_SHARE():
+    return {
+        "type": "element_share"
+    }
+
+
 def QUICK_REPLIES_REPEAT(category, PRODUCTS):
     filtered_products = list(filter(lambda p: str(p['category_id']) == str(category), PRODUCTS))
     return {

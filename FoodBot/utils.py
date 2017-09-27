@@ -53,7 +53,7 @@ def handle_valid_message(data):
             category = payload.split('/')[1]
             products = list(filter(lambda product: str(product['category_id']) == str(category),
                                    PRODUCTS))[delimiter[0]: delimiter[1]]
-            reply_with_products(products, sender)
+            reply_with_products(products, sender, delimiter, category)
             return
 
         reply(sender, msg_type, delimiter, category)
@@ -118,7 +118,7 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
 
     if msg_type == 'get_more':
 
-        if delimiter[1] < len(filtered_products):
+        if delimiter and delimiter[1] < len(filtered_products):
             quick_replies.append(QUICK_REPLIES_GET_MORE(category,
                                                         delimiter[0] + 4,
                                                         delimiter[1] + 4))
@@ -204,7 +204,7 @@ def reply(user_id, msg_type, delimiter, category):
             reply_with_attachment(user_id, msg_type, delimiter, category)
             data = unit_checkout(user_id, '380671234567', 'some time', orders['orders'])
             text = ("Вы только что совершили покупку с помощью Friendly Food Bot. "
-                    "ID заказа - {order_id}, код заказа - {order_code}, код подтверждения - {confirm_code}"
+                    "ID заказа - {order_id}, код заказа - {order_code}, код подтверждения - {confirm_code}. "
                     "Перешлите предыдущее сообщение вашему другу, которого хотите угостить, "
                     "и он сможет получить подарок в любое удобное для него время. "
                     "Friendly Food Bot с удовольствием поможет вам ещё. Для этого "
@@ -279,20 +279,20 @@ def reply_with_basket(sender):
             basket_messages_list(order, sender)
 
 
-def reply_with_products(products, sender):
+def reply_with_products(products, sender, delimiter, category):
     if len(products) < 3:
         for product in products:
-            products_messages_generic(product, sender)
+            products_messages_generic(product, sender, delimiter, category)
         return
 
     transformed = transform(products)
     for product in transformed:
         if len(product) > 4:
-            products_messages_list(product[:4], sender)
+            products_messages_list(product[:4], sender, delimiter, category)
             for o in product[4:]:
-                products_messages_generic(o, sender)
+                products_messages_generic(o, sender, delimiter, category)
         else:
-            products_messages_list(product, sender)
+            products_messages_list(product, sender, delimiter, category)
 
 
 def reply_with_categories(categories, sender):
@@ -346,13 +346,13 @@ def basket_messages_generic(order, sender):
     print("Response data", resp.text)
 
 
-def products_messages_list(products, sender):
+def products_messages_list(products, sender, delimiter, category):
     data = {
         "recipient": {"id": sender},
         "message": {"attachment": GET_PRODUCTS(products)}
     }
 
-    quick_replies = construct_quick_replies("get_more")
+    quick_replies = construct_quick_replies('get_more', delimiter=delimiter, category=category)
     if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
     print("Constructed data", data)
@@ -360,13 +360,13 @@ def products_messages_list(products, sender):
     print("Response data", resp.text)
 
 
-def products_messages_generic(product, sender):
+def products_messages_generic(product, sender, delimiter, category):
     data = {
         "recipient": {"id": sender},
         "message": {"attachment": GET_GENERIC_PRODUCT(product)}
     }
 
-    quick_replies = construct_quick_replies("get_more")
+    quick_replies = construct_quick_replies('get_more', delimiter=delimiter, category=category)
     if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
     print("Constructed data", data)
