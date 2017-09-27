@@ -32,6 +32,49 @@ def CATEGORY_LIST(CATEGORIES):
     }
 
 
+def GET_CATEGORIES(categories):
+    return {
+        "type": "template",
+        "payload": {
+            "template_type": "list",
+            "elements": [
+                {
+                    "title": item['title'],
+                    "image_url": item['image_url'],
+                    "buttons": [
+                        {
+                            "title": item['title'],
+                            "type": "postback",
+                            "payload": "get_category/" + str(item['category_id'])
+                        }
+                    ]
+                } for item in categories]
+        }
+    }
+
+
+def GET_GENERIC_CATEGORY(category):
+    return {
+        "type": "template",
+        "payload": {
+            "template_type": "generic",
+            "elements": [
+                {
+                    "title": category['title'],
+                    "image_url": category['image_url'],
+                    "buttons": [
+                        {
+                            "title": category['title'],
+                            "type": "postback",
+                            "payload": "get_category/" + str(category['category_id'])
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
+
 def GET_BASKET(items):
     return {
         "type": "template",

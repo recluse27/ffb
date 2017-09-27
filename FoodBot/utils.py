@@ -22,8 +22,12 @@ def handle_valid_message(data):
         sender = data.get('sender').get('id')
 
         payload = data.get('message', {}).get('quick_reply', {}).get('payload')
-        if payload == "get_started" or payload == "get_categories":
+        if payload == "get_started":
             msg_type = payload
+
+        if payload == "get_categories":
+            reply_with_categories(CATEGORIES, sender)
+            return
 
         if payload == 'get_basket':
             orders = get_orders(sender)
@@ -291,6 +295,22 @@ def reply_with_products(products, sender):
             products_messages_list(product, sender)
 
 
+def reply_with_categories(categories, sender):
+    if len(categories) < 3:
+        for category in categories:
+            categories_messages_generic(category, sender)
+        return
+
+    transformed = transform(categories)
+    for category in transformed:
+        if len(category) > 4:
+            categories_messages_list(category[:4], sender)
+            for o in category[4:]:
+                categories_messages_generic(o, sender)
+        else:
+            categories_messages_list(category, sender)
+
+
 def make_request(data):
     resp = requests.post(
         "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
@@ -332,7 +352,7 @@ def products_messages_list(products, sender):
         "message": {"attachment": GET_PRODUCTS(products)}
     }
 
-    quick_replies = construct_quick_replies("get_basket")
+    quick_replies = construct_quick_replies("get_more")
     if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
     print("Constructed data", data)
@@ -346,7 +366,35 @@ def products_messages_generic(product, sender):
         "message": {"attachment": GET_GENERIC_PRODUCT(product)}
     }
 
-    quick_replies = construct_quick_replies("get_basket")
+    quick_replies = construct_quick_replies("get_more")
+    if quick_replies and quick_replies[0]:
+        data.get('message', {}).update({"quick_replies": quick_replies})
+    print("Constructed data", data)
+    resp = make_request(data)
+    print("Response data", resp.text)
+
+
+def categories_messages_list(categories, sender):
+    data = {
+        "recipient": {"id": sender},
+        "message": {"attachment": GET_CATEGORIES(categories)}
+    }
+
+    quick_replies = construct_quick_replies("get_categories")
+    if quick_replies and quick_replies[0]:
+        data.get('message', {}).update({"quick_replies": quick_replies})
+    print("Constructed data", data)
+    resp = make_request(data)
+    print("Response data", resp.text)
+
+
+def categories_messages_generic(category, sender):
+    data = {
+        "recipient": {"id": sender},
+        "message": {"attachment": GET_GENERIC_CATEGORY(category)}
+    }
+
+    quick_replies = construct_quick_replies("get_categories")
     if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
     print("Constructed data", data)
