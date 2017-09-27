@@ -1,5 +1,5 @@
-import time
 import json
+import time
 
 import requests as rq
 
@@ -77,7 +77,7 @@ def GET_GENERIC_BASKET(item):
 
 
 def PRODUCT_LIST(category, delimiter, PRODUCTS):
-    filtered_items = list(filter(lambda product: product['category_id'] == category,
+    filtered_items = list(filter(lambda product: str(product['category_id']) == str(category),
                                  PRODUCTS))[delimiter[0]: delimiter[1]]
 
     return {
@@ -144,7 +144,7 @@ def QUICK_REPLIES_GET_MORE(category, _from, _to):
 
 
 def QUICK_REPLIES_REPEAT(category, PRODUCTS):
-    filtered_products = list(filter(lambda p: p['category_id'] == category, PRODUCTS))
+    filtered_products = list(filter(lambda p: str(p['category_id']) == str(category), PRODUCTS))
     return {
         "content_type": "text",
         "title": "Repeat",
@@ -189,6 +189,7 @@ def get_products():
          'image_url': product.get('image', [{}])[0].get('image1')}
         for product in products]
     return new_products
+
 
 def get_categories():
     result = rq.get(url=(unit_url % 'category'), headers=headers)
