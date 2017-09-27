@@ -419,11 +419,13 @@ def transform(orders):
     temp = []
     for i in orders:
         temp.append(i)
-        if len(temp) == 3:
+        if len(temp) == 4:
             result.append(temp)
             temp = []
-    if temp:
+    if len(temp) <= 2:
         result[-1].extend(temp)
+    else:
+        result.append(temp)
     return result
 
 
