@@ -197,14 +197,27 @@ def reply_with_attachment(user_id, msg_type, delimiter, category):
         "message": {"attachment": construct_message_body(msg_type, delimiter, user_id, category)}
     }
 
+    elements = data.get('message').get('attachment', {}).get('payload', {}).get('elements', {})
+    flag = False
+    if len(elements) > 4:
+        flag = True
+        transform(elements)
+
     quick_replies = construct_quick_replies(msg_type, delimiter, category)
 
     if quick_replies and quick_replies[0]:
         data.get('message', {}).update({"quick_replies": quick_replies})
 
-    print("Constructed data", data)
-    resp = make_request(data)
-    print("Response data", resp.text)
+    if flag:
+        for element in elements:
+            data['elements'] = element
+            print("Constructed data", data)
+            resp = make_request(data)
+            print("Response data", resp.text)
+    else:
+        print("Constructed data", data)
+        resp = make_request(data)
+        print("Response data", resp.text)
 
 
 def reply_with_message(user_id, text, msg_type, delimiter, category):
