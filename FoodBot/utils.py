@@ -164,6 +164,21 @@ def make_delimiter(str_from_to):
     return _from, _to
 
 
+def unit_checkout(user_id, phone, order_time):
+    orders = get_orders(user_id)
+    data = {'name': 'test_user',
+            'phone': phone,
+            'order_time': order_time,
+            'delivery_type': 1, # in unit
+            'coock_type': 2, # all at once
+            'guests_count': 1,
+            'products': [{'product_id': int(product.get('product_id')),
+                          'quantity': 1}
+                         for product in orders]}
+    result = requests.post(url=(unit_url % 'order'), headers=headers, json=data)
+    return json.loads(result.text)
+
+
 def reply(user_id, msg_type, delimiter, category):
     if msg_type == "get_started":
         text = ("Привет! Я Friendly Food Bot. С моей помощью ты "
@@ -180,12 +195,17 @@ def reply(user_id, msg_type, delimiter, category):
         orders = get_orders(user_id)
         if orders:
             reply_with_attachment(user_id, msg_type, delimiter, category)
+            data = unit_checkout(user_id, '380671234567', 'some time')
             text = ("Вы только что совершили покупку с помощью Friendly Food Bot. "
+                    "ID заказа - {order_id}, код заказа - {order_code}, код подтверждения - {confirm_code}"
                     "Перешлите предыдущее сообщение вашему другу, которого хотите угостить, "
                     "и он сможет получить подарок в любое удобное для него время. "
                     "Friendly Food Bot с удовольствием поможет вам ещё. Для этого "
                     "нужно написать и отправить любое текстовое сообщение в чат с Friendly Food Bot. "
-                    "Ждём вас снова! Всего наилучшего!")
+                    "Ждём вас снова! Всего наилучшего!"
+                    .format(order_id=data.get('order_id', ''),
+                            order_code=data.get('order_code', ''),
+                            confirm_code=data.get('confirm_code', '')))
         else:
             text = "У вас нет заказов в корзине"
         reply_with_message(user_id, text, "start_over", delimiter, category)
@@ -315,16 +335,19 @@ def transform(orders):
             result[-2].append(temp[-2])
     return result
 
+
 def get_orders(userid):
     return mongo.db.orders.find_one({'userid': userid}, {'_id': 0, 'orders': 1})
 
 
 def add_product(delimiter, sender):
     check = mongo.db.orders.find_one({'userid': sender})
-    if check:
-        mongo.db.orders.update({'userid': sender}, {"$push": {'orders': PRODUCTS[delimiter]}})
-    else:
-        mongo.db.orders.insert({'userid': sender, 'orders': [PRODUCTS[delimiter]]})
+    product = list(filter(lambda p: p.get('product_id') == delimiter, PRODUCTS))
+    if product:
+        if check:
+            mongo.db.orders.update({'userid': sender}, {"$push": {'orders': product[0]}})
+        else:
+            mongo.db.orders.insert({'userid': sender, 'orders': product})
 
 
 def remove_product(delimiter, sender):
