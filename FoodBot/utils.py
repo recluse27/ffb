@@ -165,6 +165,7 @@ def make_delimiter(str_from_to):
 
 
 def unit_checkout(user_id, phone, order_time, orders):
+    print('Orders: ', orders)
     data = {'name': 'test_user',
             'phone': phone,
             'order_time': order_time,
@@ -194,7 +195,7 @@ def reply(user_id, msg_type, delimiter, category):
         orders = get_orders(user_id)
         if orders:
             reply_with_attachment(user_id, msg_type, delimiter, category)
-            data = unit_checkout(user_id, '380671234567', 'some time', orders)
+            data = unit_checkout(user_id, '380671234567', 'some time', orders['orders'])
             text = ("Вы только что совершили покупку с помощью Friendly Food Bot. "
                     "ID заказа - {order_id}, код заказа - {order_code}, код подтверждения - {confirm_code}"
                     "Перешлите предыдущее сообщение вашему другу, которого хотите угостить, "
