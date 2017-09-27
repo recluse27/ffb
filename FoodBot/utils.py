@@ -49,7 +49,7 @@ def handle_valid_message(data):
             category = payload.split('/')[1]
             products = list(filter(lambda product: str(product['category_id']) == str(category),
                                    PRODUCTS))[delimiter[0]: delimiter[1]]
-            reply_with_products(products)
+            reply_with_products(products, sender)
             return
 
         reply(sender, msg_type, delimiter, category)
