@@ -12,11 +12,11 @@ def handle_valid_message(data):
     delimiter = None
     category = None
     global PRODUCTS
-    global CATEGOREIS
+    global CATEGORIES
     if not PRODUCTS:
         PRODUCTS = get_products()
     if not CATEGORIES:
-        CATEGORIS = get_categories()
+        CATEGORIES = get_categories()
 
     if data.get('message', {}).get('quick_reply'):
         sender = data.get('sender').get('id')
