@@ -1,10 +1,10 @@
-from .template_structures import *
-from . import app, mongo
-
 import requests
 
+from . import app, mongo
+from .template_structures import *
+
 PRODUCTS = []
-CATEGORIS = []
+CATEGORIES = []
 
 
 def handle_valid_message(data):
@@ -12,10 +12,10 @@ def handle_valid_message(data):
     delimiter = None
     category = None
     global PRODUCTS
-    global CATEGORIS
+    global CATEGOREIS
     if not PRODUCTS:
         PRODUCTS = get_products()
-    if not CATEGORIS:
+    if not CATEGORIES:
         CATEGORIS = get_categories()
 
     if data.get('message', {}).get('quick_reply'):
@@ -135,15 +135,15 @@ def construct_message_body(msg_type, delimiter, userid, category):
     payload = dict()
 
     if msg_type == "get_more":
-        payload.update(PRODUCT_LIST(category, delimiter))
+        payload.update(PRODUCT_LIST(category, delimiter, PRODUCTS))
 
     if msg_type == 'get_categories':
-        payload.update(CATEGORY_LIST())
+        payload.update(CATEGORY_LIST(CATEGORIES))
 
     if msg_type == "get_category":
         if delimiter[1] > len(list(filter(lambda p: p['category'] == category, PRODUCTS))):
             delimiter = (delimiter[0], len(list(filter(lambda p: p['category'] == category, PRODUCTS))))
-        payload.update(PRODUCT_LIST(category, delimiter))
+        payload.update(PRODUCT_LIST(category, delimiter, PRODUCTS))
 
     if msg_type == 'checkout':
         orders = get_orders(userid)['orders']
