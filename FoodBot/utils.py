@@ -352,6 +352,7 @@ def add_product(delimiter, sender):
 
 def remove_product(delimiter, sender):
     orders = get_orders(sender)['orders']
-    product = PRODUCTS[delimiter]
-    orders.remove(product)
-    mongo.db.orders.update({'userid': sender}, {"$set": {'orders': orders}})
+    product = list(filter(lambda p: p.get('product_id') == delimiter, PRODUCTS))
+    if product:
+        orders.remove(product)
+        mongo.db.orders.update({'userid': sender}, {"$set": {'orders': orders}})
