@@ -134,18 +134,11 @@ def construct_quick_replies(msg_type, delimiter=None, category=None):
     return quick_replies
 
 
-def clean_order(userid):
-    mongo.db.orders.remove({"userid": userid})
-
-
 def construct_message_body(msg_type, delimiter, userid, category):
     payload = dict()
 
     if msg_type == "get_more":
         payload.update(PRODUCT_LIST(category, delimiter, PRODUCTS))
-
-    if msg_type == 'get_categories':
-        payload.update(CATEGORY_LIST(CATEGORIES))
 
     if msg_type == "get_category":
         if delimiter[1] > len(list(filter(lambda p: str(p['category_id']) == str(category), PRODUCTS))):
@@ -194,9 +187,6 @@ def reply(user_id, msg_type, delimiter, category):
 
         text = "Выбери из меню то, что хочешь подарить."
         reply_with_message(user_id, text, "first_msg", delimiter, category)
-
-    if msg_type == 'get_more' or msg_type == 'add_product' or msg_type == 'get_categories':
-        reply_with_attachment(user_id, msg_type, delimiter, category)
 
     if msg_type == 'checkout':
         orders = get_orders(user_id)
@@ -449,3 +439,7 @@ def remove_product(delimiter, sender):
     if product:
         orders.remove(product[0])
         mongo.db.orders.update({'userid': sender}, {"$set": {'orders': orders}})
+
+
+def clean_order(userid):
+    mongo.db.orders.remove({"userid": userid})
