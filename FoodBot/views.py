@@ -17,9 +17,3 @@ def handle_incoming_messages():
         handle_valid_message(data)
 
     return "ok"
-
-@app.route('/.well-known/acme-challenge/drn60ulDTsX97Hl33dbP-M-5Yq_3l8jEZwFDTP1B2cY', methods=['GET'])
-def checked():
-    file = open('drn60ulDTsX97Hl33dbP-M-5Yq_3l8jEZwFDTP1B2cY.dms', 'r').read()
-    return file
-
