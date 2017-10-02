@@ -2,7 +2,6 @@ from FoodBot import app
 
 app.run(debug=True,
         host="10.0.0.4",
-        port=443,
+        port=80,
         use_reloader=True,
-        threaded=True,
-        ssl_context=('cert.pem', 'key.pem'))
+        threaded=True)
