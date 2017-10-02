@@ -5,4 +5,4 @@ app.run(debug=True,
         port=443,
         use_reloader=True,
         threaded=True,
-        ssl_context='adhoc')
+        ssl_context=('cert.pem', 'key.pem'))
