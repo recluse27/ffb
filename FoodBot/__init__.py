@@ -1,9 +1,9 @@
 from flask import Flask
-from flask_pymongo import PyMongo
+from pymongo import MongoClient
 
 app = Flask('FoodBot')
 app.config.from_object('config')
 app.config.from_envvar('FLASK_TEST_SETTINGS', silent=True)
-mongo = PyMongo(app)
+mongo = MongoClient().bot
 
 from FoodBot import views
