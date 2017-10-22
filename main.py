@@ -5,4 +5,3 @@ app.run(debug=True,
         port=8000, #443,
         use_reloader=True,
         threaded=True)
-        # ssl_context=('download_artur8118@gmail.com.pem', 'download_artur8118@gmail.com.pem'))
