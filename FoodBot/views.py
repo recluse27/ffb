@@ -1,6 +1,9 @@
-from FoodBot import app, mongo
 from flask import request
+
+from .controller import Controller
 from .utils import *
+
+controller = Controller()
 
 
 @app.route('/', methods=['GET'])
@@ -13,7 +16,9 @@ def handle_incoming_messages():
     data = request.json.get('entry')[0].get('messaging')[0]
     print('Request data', data)
 
-    if check_valid_response(data):
-        handle_valid_message(data)
+    if controller.check_valid_response(data):
+        data = controller.make_responses(**data)
+    for item in data:
+        make_request(item)
 
     return "ok"

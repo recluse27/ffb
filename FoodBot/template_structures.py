@@ -11,27 +11,6 @@ headers = {'Content-Type': 'application/json',
                          'Chrome/61.0.3163.100 Safari/537.36'}
 
 
-def CATEGORY_LIST(CATEGORIES):
-    return {
-        "type": "template",
-        "payload": {
-            "template_type": "list",
-            "elements": [
-                {
-                    "title": item['title'],
-                    "image_url": item['image_url'],
-                    "buttons": [
-                        {
-                            "title": item['title'],
-                            "type": "postback",
-                            "payload": "get_category/" + str(item['category_id'])
-                        }
-                    ]
-                } for item in CATEGORIES]
-        }
-    }
-
-
 def GET_CATEGORIES(categories):
     return {
         "type": "template",
@@ -228,12 +207,6 @@ def QUICK_REPLIES_GET_MORE(category, _from, _to):
         "payload": "get_more/{category}/{_from}-{_to}".format(category=category,
                                                               _from=_from,
                                                               _to=_to)
-    }
-
-
-def BUTTONS_SHARE():
-    return {
-        "type": "element_share"
     }
 
 

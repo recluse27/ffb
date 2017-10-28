@@ -1,10 +1,12 @@
 import requests
 
 from . import app, mongo
+from .adapters import unit_adapter
 from .template_structures import *
 
-PRODUCTS = []
-CATEGORIES = []
+adapters = {
+    'unit': unit_adapter.UnitAdapter()
+}
 
 
 def handle_valid_message(data):
@@ -214,12 +216,6 @@ def reply_with_attachment(user_id, msg_type, delimiter, category):
         "message": {"attachment": construct_message_body(msg_type, delimiter, user_id, category)}
     }
 
-    elements = data.get('message').get('attachment', {}).get('payload', {}).get('elements', {})
-    flag = False
-    # if len(elements) > 4:
-    #     flag = True
-    #     elements = transform(elements)
-
     quick_replies = construct_quick_replies(msg_type, delimiter, category)
 
     if quick_replies and quick_replies[0]:
@@ -405,14 +401,14 @@ def check_valid_response(data):
 
 
 def transform(orders):
-    result = []
-    temp = []
+    result, temp = [], []
+    div = 3 if len(orders) % 3 <= len(orders) % 4 else 4
     for i in orders:
         temp.append(i)
-        if len(temp) == 4:
+        if len(temp) == div:
             result.append(temp)
             temp = []
-    if len(temp) <= 2:
+    if len(temp) <= 1:
         result[-1].extend(temp)
     else:
         result.append(temp)
