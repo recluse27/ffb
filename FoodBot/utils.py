@@ -408,7 +408,7 @@ def transform(orders):
         if len(temp) == div:
             result.append(temp)
             temp = []
-    if len(temp) <= 1:
+    if len(temp) <= 1 and result:
         result[-1].extend(temp)
     else:
         result.append(temp)
