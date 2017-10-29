@@ -99,7 +99,7 @@ class Controller:
                                             sender,
                                             payload.get('provider'),
                                             data))
-            responses.extend(self.make_body('start_over',
+            responses.extend(self.make_body('receipt',
                                             sender,
                                             payload.get('provider'),
                                             orders))

@@ -28,7 +28,8 @@ text_types = {
     'add_product': 'Added.',
     'remove_product': 'Removed.',
     'no_products': 'У вас нет продуктов в корзине.',
-    'start_over': UNIT_REPLY_TEXT
+    'checkout': UNIT_REPLY_TEXT,
+    'start_over': 'Сделай заказ.'
 }
 
 
