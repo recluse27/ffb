@@ -80,13 +80,14 @@ class Controller:
         payload_data = self.get_message_payload(data)
         if not payload_data:
             payload_data = '{"type": "get_started","provider": "unit"}'
+
         try:
             payload = json.loads(payload_data)
         except ValueError:
             payload = {'type': 'get_started',
                        'provider': 'unit'}
 
-        print(payload)
+        print(payload, type(payload))
         provider = payload.get('provider')
         print(provider)
 
