@@ -102,16 +102,19 @@ class Controller:
                                             payload.get('provider'),
                                             data))
             clean_order(sender)
+        elif reply_type in adapter.methods.keys():
+            items_to_show = adapter.methods.get(reply_type)(**{'id': payload.get('id'),
+                                                               'user_id': sender,
+                                                               'mongo': mongo,
+                                                               'orders': orders})
+            responses = self.make_body(payload.get('type'),
+                                       sender,
+                                       payload.get('provider'),
+                                       items_to_show)
         else:
-            if reply_type in adapter.methods.keys():
-                items_to_show = adapter.methods.get(reply_type)(**{'id': payload.get('id'),
-                                                                   'user_id': sender,
-                                                                   'mongo': mongo,
-                                                                   'orders': orders})
-                responses = self.make_body(payload.get('type'),
-                                           sender,
-                                           payload.get('provider'),
-                                           items_to_show)
-            else:
-                responses = []
+            items_to_show = get_orders(sender)
+            responses = self.make_body(payload.get('type'),
+                                       sender,
+                                       payload.get('provider'),
+                                       items_to_show)
         return responses
