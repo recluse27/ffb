@@ -40,7 +40,7 @@ class UnitAdapter(IAdapter):
         categories = json.loads(result.text)
         new_categories = [
             {'title': category.get('name'),
-             'id': category.get('category_id'),
+             'category_id': category.get('category_id'),
              'image_url': category.get('image')}
             for category in categories
         ]
