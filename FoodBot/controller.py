@@ -123,6 +123,7 @@ class Controller:
                                        items_to_show)
         else:
             items_to_show = get_orders(sender) or []
+            print(items_to_show)
             responses = self.make_body(payload.get('type'),
                                        sender,
                                        payload.get('provider'),
