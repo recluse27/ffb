@@ -31,7 +31,6 @@ class Controller:
         return data.get('sender').get('id')
 
     def make_body(self, reply_type, user_id, provider, items_to_show):
-        print(reply_type, payloads.keys())
         if reply_type in payloads.keys():
             payload = payloads.get(reply_type, {})
             payload.update({'provider': provider})
@@ -89,23 +88,21 @@ class Controller:
 
         if isinstance(payload, str):
             payload = json.loads(payload)
-        print(payload, type(payload))
         provider = payload.get('provider')
-        print(provider)
 
         adapter = self.adapters.get(provider)
         reply_type = payload.get('type')
         orders = get_orders(sender)
         if reply_type == 'checkout':
+            data = adapter.checkout(**{'orders': orders})
             responses.extend(self.make_body('checkout',
                                             sender,
                                             payload.get('provider'),
-                                            orders))
-            data = adapter.checkout(**{'orders': orders})
+                                            data))
             responses.extend(self.make_body('start_over',
                                             sender,
                                             payload.get('provider'),
-                                            data))
+                                            orders))
             clean_order(sender)
         elif reply_type in adapter.methods.keys():
             id_type = id_types.get(reply_type, {}).get('self_id')
