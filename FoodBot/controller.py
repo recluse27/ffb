@@ -84,6 +84,7 @@ class Controller:
         try:
             payload = json.loads(payload_data)
         except ValueError:
+            print('Error')
             payload = {'type': 'get_started',
                        'provider': 'unit'}
 
