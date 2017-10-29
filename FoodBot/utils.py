@@ -411,7 +411,10 @@ def transform(orders):
     if len(temp) <= 1 and result:
         result[-1].extend(temp)
     else:
-        result.append(temp)
+        if not result:
+            result = temp
+        else:
+            result.append(temp)
     return result
 
 
