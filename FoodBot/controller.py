@@ -103,7 +103,7 @@ class Controller:
                                             sender,
                                             payload.get('provider'),
                                             orders))
-            clean_order(sender)
+            clean_order(sender, provider)
         elif reply_type in adapter.methods.keys():
             id_type = id_types.get(reply_type, {}).get('self_id')
             items_to_show = adapter.methods.get(reply_type)(

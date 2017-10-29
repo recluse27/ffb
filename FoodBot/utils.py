@@ -437,5 +437,5 @@ def remove_product(delimiter, sender):
         mongo.db.orders.update({'userid': sender}, {"$set": {'orders': orders}})
 
 
-def clean_order(userid):
+def clean_order(userid, provider):
     mongo.orders.remove({"userid": userid})
