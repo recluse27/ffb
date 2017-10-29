@@ -438,4 +438,4 @@ def remove_product(delimiter, sender):
 
 
 def clean_order(userid):
-    mongo.db.orders.remove({"userid": userid})
+    mongo.orders.remove({"userid": userid})
