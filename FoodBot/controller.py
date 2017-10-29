@@ -35,7 +35,7 @@ class Controller:
             payload = payloads.get(reply_type, {})
             payload.update({'provider': provider})
 
-            id_type = id_types.get(reply_type)
+            id_type = id_types.get(reply_type).get('next_id')
             button_type = button_types.get(reply_type)
 
             result = []
