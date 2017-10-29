@@ -45,7 +45,7 @@ class Controller:
                 if len(item) == 1:
                     result.append(generic_template(id_type, item, button_type, **payload))
                 else:
-                    result.append((list_template(id_type, item, button_type, **payload)))
+                    result.append((list_template(id_type, button_type, *item, **payload)))
 
             data = [{
                 "recipient": {"id": user_id},
