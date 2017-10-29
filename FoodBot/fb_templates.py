@@ -182,5 +182,7 @@ def quick_replies(reply_type, provider):
                                                             'provider': provider}),
                         quick_replies_template('Get Basket', {'type': 'get_basket',
                                                               'provider': provider})],
+        'checkout': [quick_replies_template('Categories', {'type': 'get_categories',
+                                                           'provider': provider})]
 
     }[reply_type]
