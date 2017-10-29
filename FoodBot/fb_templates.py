@@ -16,7 +16,6 @@ button_types = {
 
 payloads = {
     'start_over': {'type': 'get_category'},
-    'get_started': {'type': 'get_category'},
     'get_categories': {'type': 'get_category'},
     'get_category': {'type': 'add_product'},
     'get_basket': {'type': 'remove_product'}

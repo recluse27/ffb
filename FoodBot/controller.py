@@ -112,7 +112,7 @@ class Controller:
                                        payload.get('provider'),
                                        items_to_show)
         else:
-            items_to_show = get_orders(sender)
+            items_to_show = get_orders(sender) or []
             responses = self.make_body(payload.get('type'),
                                        sender,
                                        payload.get('provider'),
