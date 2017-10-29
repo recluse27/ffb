@@ -13,7 +13,7 @@ class UnitAdapter(IAdapter):
     def __init__(self):
         self.methods = {
             'get_categories': self.get_categories,
-            'get_products': self.get_products,
+            'get_category': self.get_products,
             'checkout': self.checkout
         }
 
