@@ -39,6 +39,7 @@ class Controller:
 
             result = []
             items = transform(items_to_show)
+            print(items)
 
             for item in items:
                 if len(item) == 1:
@@ -116,14 +117,12 @@ class Controller:
                     'orders': orders
                 }
             )
-            print(items_to_show)
             responses = self.make_body(payload.get('type'),
                                        sender,
                                        payload.get('provider'),
                                        items_to_show)
         else:
             items_to_show = get_orders(sender) or []
-            print(items_to_show)
             if not items_to_show and payload.get('type') == 'get_basket':
                 responses = self.make_body('no_products',
                                            sender,
