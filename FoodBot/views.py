@@ -13,6 +13,7 @@ def handle_verification():
 
 @app.route('/', methods=['POST'])
 def handle_incoming_messages():
+    print(request.json)
     data = request.json.get('entry', [{}])[0].get('messaging', [])[0]
     print('Request data', data)
 
