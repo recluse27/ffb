@@ -4,10 +4,10 @@ import time
 from .constants import UNIT_REPLY_TEXT
 
 id_types = {
-    'get_categories': 'category_id',
-    'get_category': 'category_id',
-    'add_product': 'id',
-    'remove_product': 'id'
+    'get_categories': {'self_id': 'category_id', "next_id": 'category_id'},
+    'get_category':  {'self_id': 'category_id', 'next_id': 'id'},
+    'add_product':  {'self_id': 'id', 'next_id': 'id'},
+    'remove_product':  {'self_id': 'id', 'next_id': 'id'},
 }
 
 button_types = {
@@ -33,7 +33,8 @@ text_types = {
 def list_template(id_type, button_type=None, *args, **kwargs):
     for arg in args:
         payload = kwargs
-        payload.update({id_types.get(id_type, 'id'): arg.get(id_types.get(id_type))})
+        next_type = id_types.get(id_type, {}).get('next_type')
+        payload.update({next_type: arg.get(next_type)})
         arg.update({'payload': json.dumps(payload)})
 
     template = {
@@ -59,7 +60,8 @@ def list_template(id_type, button_type=None, *args, **kwargs):
 
 def generic_template(id_type, item, button_type=None, **kwargs):
     payload = kwargs
-    payload.update({id_types.get(id_type, 'id'): item.get(id_types.get(id_type))})
+    next_type = id_types.get(id_type, {}).get('next_type')
+    payload.update({next_type: item.get(next_type)})
     item.update({'payload': payload})
 
     template = {
