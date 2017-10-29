@@ -47,7 +47,7 @@ def list_template(id_type, button_type=None, *args, **kwargs):
             "elements": [
                 {
                     "title": item.get('title'),
-                    "image_url": item.get('image_url'),
+                    "image_url": item.get('image_url', ''),
                     "buttons": [
                         {
                             "title": button_type or item.get('title'),
@@ -75,7 +75,7 @@ def generic_template(id_type, item, button_type=None, **kwargs):
                 {
                     "title": item.get('title'),
                     "subtitle": str(item.get('price')) + ' UAH',
-                    "image_url": item.get('image_url'),
+                    "image_url": item.get('image_url', ''),
                     "buttons": [
                         {
                             "title": button_type or item.get('title'),

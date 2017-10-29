@@ -5,7 +5,7 @@ from .utils import *
 
 class Controller:
     adapters = {
-        'unit': UnitAdapter()
+        'Unit': UnitAdapter()
     }
 
     def check_valid_response(self, data):
@@ -78,13 +78,13 @@ class Controller:
         sender = self.get_sender(data)
         payload_data = self.get_message_payload(data)
         if not payload_data:
-            payload_data = '{"type": "get_started","provider": "unit"}'
+            payload_data = '{"type": "get_started","provider": "Unit"}'
 
         try:
             payload = json.loads(payload_data)
         except ValueError:
             payload = {'type': 'get_started',
-                       'provider': 'unit'}
+                       'provider': 'Unit'}
 
         if isinstance(payload, str):
             payload = json.loads(payload)
