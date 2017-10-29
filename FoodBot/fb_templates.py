@@ -1,7 +1,6 @@
 import json
 import time
 
-from .utils import transform
 from .constants import UNIT_REPLY_TEXT
 
 id_types = {
@@ -32,7 +31,7 @@ text_types = {
 def list_template(id_type, button_type=None, *args, **kwargs):
     for arg in args:
         payload = kwargs
-        payload.update({'id': arg.get(id_type)})
+        payload.update({'id': arg.get('id')})
         arg.update({'payload': json.dumps(payload)})
 
     template = {
@@ -58,7 +57,7 @@ def list_template(id_type, button_type=None, *args, **kwargs):
 
 def generic_template(id_type, item, button_type=None, **kwargs):
     payload = kwargs
-    payload.update({'id': item.get(id_type)})
+    payload.update({'id': item.get('id')})
     item.update({'payload': payload})
 
     template = {
