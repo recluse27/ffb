@@ -5,9 +5,9 @@ from .constants import UNIT_REPLY_TEXT
 
 id_types = {
     'get_categories': {'self_id': 'category_id', "next_id": 'category_id'},
-    'get_category':  {'self_id': 'category_id', 'next_id': 'id'},
-    'add_product':  {'self_id': 'id', 'next_id': 'id'},
-    'remove_product':  {'self_id': 'id', 'next_id': 'id'},
+    'get_category': {'self_id': 'category_id', 'next_id': 'id'},
+    'add_product': {'self_id': 'id', 'next_id': 'id'},
+    'remove_product': {'self_id': 'id', 'next_id': 'id'},
     'get_basket': {'self_id': 'id', 'next_id': 'id'}
 }
 
@@ -27,6 +27,7 @@ text_types = {
     'get_started': 'Сделай заказ.',
     'add_product': 'Added.',
     'remove_product': 'Removed.',
+    'no_products': 'У вас нет продуктов в корзине.',
     'start_over': UNIT_REPLY_TEXT
 }
 
@@ -175,5 +176,11 @@ def quick_replies(reply_type, provider):
                                                              'provider': provider}),
                          quick_replies_template('Get Basket', {'type': 'get_basket',
                                                                'provider': provider})],
+        'no_products': [quick_replies_template('Categories', {'type': 'get_categories',
+                                                              'provider': provider}),
+                        quick_replies_template('Checkout', {'type': 'checkout',
+                                                            'provider': provider}),
+                        quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                              'provider': provider})],
 
     }[reply_type]
