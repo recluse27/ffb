@@ -93,23 +93,24 @@ class Controller:
         adapter = self.adapters.get(provider)
         reply_type = payload.get('type')
         orders = get_orders(sender) or []
-        if not orders:
-            responses = self.make_body('no_products',
-                                       sender,
-                                       payload.get('provider'),
-                                       orders)
-            return responses
 
         if reply_type == 'checkout':
-            data = adapter.checkout(**{'orders': orders})
-            responses.extend(self.make_body('checkout',
-                                            sender,
-                                            payload.get('provider'),
-                                            data))
-            responses.extend(self.make_body('receipt',
-                                            sender,
-                                            payload.get('provider'),
-                                            orders))
+
+            if not orders:
+                responses = self.make_body('no_products',
+                                           sender,
+                                           payload.get('provider'),
+                                           orders)
+            else:
+                data = adapter.checkout(**{'orders': orders})
+                responses.extend(self.make_body('checkout',
+                                                sender,
+                                                payload.get('provider'),
+                                                data))
+                responses.extend(self.make_body('receipt',
+                                                sender,
+                                                payload.get('provider'),
+                                                orders))
             clean_order(sender, provider)
         elif reply_type in adapter.methods.keys():
             id_type = id_types.get(reply_type, {}).get('self_id')
