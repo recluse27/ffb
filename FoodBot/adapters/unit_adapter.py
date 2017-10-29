@@ -14,7 +14,9 @@ class UnitAdapter(IAdapter):
         self.methods = {
             'get_categories': self.get_categories,
             'get_category': self.get_products,
-            'checkout': self.checkout
+            'checkout': self.checkout,
+            'add_product': self.add_product,
+            'remove_product': self.remove_product
         }
 
     def checkout(self, **kwargs):

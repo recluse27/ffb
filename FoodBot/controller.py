@@ -123,7 +123,7 @@ class Controller:
                                        items_to_show)
         else:
             items_to_show = get_orders(sender) or []
-            if not items_to_show:
+            if not items_to_show and payload.get('type') == 'get_basket':
                 responses = self.make_body('no_products',
                                            sender,
                                            payload.get('provider'),
