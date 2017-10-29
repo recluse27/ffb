@@ -402,7 +402,7 @@ def check_valid_response(data):
 
 def transform(orders):
     result, temp = [], []
-    div = 3 if len(orders) % 3 <= len(orders) % 4 else 4
+    div = 3 # if len(orders) % 3 <= len(orders) % 4 else 4
     for i in orders:
         temp.append(i)
         if len(temp) == div:
