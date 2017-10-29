@@ -22,12 +22,12 @@ class UnitAdapter(IAdapter):
     def checkout(self, **kwargs):
         orders = kwargs.get('orders')
         data = {'name': 'test_user',
-                'phone': kwargs.get('phone'),
-                'order_time': kwargs.get('order_time'),
+                'phone': kwargs.get('phone') or '380671234567',
+                'order_time': kwargs.get('order_time') or 'some time',
                 'delivery_type': 1,  # in unit
                 'coock_type': 2,  # all at once
                 'guests_count': 1,
-                'products': [{'product_id': int(product.get('product_id')),
+                'products': [{'product_id': int(product.get('id')),
                               'quantity': 1}
                              for product in orders]}
         result = rq.post(url=(self.url % 'order'),
