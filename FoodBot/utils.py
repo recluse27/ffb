@@ -416,7 +416,7 @@ def transform(orders):
 
 
 def get_orders(userid):
-    return mongo.db.orders.find_one({'userid': userid}, {'_id': 0, 'orders': 1})
+    return mongo.orders.find_one({'userid': userid}, {'_id': 0, 'orders': 1}).get('orders')
 
 
 def add_product(delimiter, sender):

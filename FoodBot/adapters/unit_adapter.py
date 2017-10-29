@@ -82,13 +82,14 @@ class UnitAdapter(IAdapter):
         sender = kwargs.get('user_id')
         check = kwargs.get('orders')
         mongo = kwargs.get('mongo')
+        provider = kwargs.get('provider')
         product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
         print(product)
         if product:
             if check:
-                mongo.db.orders.update({'userid': sender}, {"$push": {'orders': product[0]}})
+                mongo.orders.update({'userid': sender, 'provider': provider}, {"$push": {'orders': product[0]}})
             else:
-                mongo.db.orders.insert({'userid': sender, 'orders': product})
+                mongo.orders.insert({'userid': sender, 'orders': product, 'provider': provider})
 
     def remove_product(self, **kwargs):
         if not self.cached_products:
@@ -97,7 +98,8 @@ class UnitAdapter(IAdapter):
         sender = kwargs.get('user_id')
         orders = kwargs.get('orders')
         mongo = kwargs.get('mongo')
+        provider = kwargs.get('provider')
         product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
         if product:
             orders.remove(product[0])
-            mongo.db.orders.update({'userid': sender}, {"$set": {'orders': orders}})
+            mongo.orders.update({'userid': sender, 'provider': provider}, {"$set": {'orders': orders}})
