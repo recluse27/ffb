@@ -35,7 +35,6 @@ class Controller:
             payload = payloads.get(reply_type, {})
             payload.update({'provider': provider})
 
-            id_type = id_types.get(reply_type).get('next_id')
             button_type = button_types.get(reply_type)
 
             result = []
@@ -43,9 +42,9 @@ class Controller:
 
             for item in items:
                 if len(item) == 1:
-                    result.append(generic_template(id_type, item, button_type, **payload))
+                    result.append(generic_template(reply_type, item, button_type, **payload))
                 else:
-                    result.append((list_template(id_type, button_type, *item, **payload)))
+                    result.append((list_template(reply_type, button_type, *item, **payload)))
 
             data = [{
                 "recipient": {"id": user_id},
