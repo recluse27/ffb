@@ -110,6 +110,7 @@ class Controller:
                 **{
                     id_type: payload.get(id_type),
                     'user_id': sender,
+                    'provider': provider,
                     'mongo': mongo,
                     'orders': orders
                 }

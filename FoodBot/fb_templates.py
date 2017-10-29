@@ -1,5 +1,6 @@
 import json
 import time
+import copy
 
 from .constants import UNIT_REPLY_TEXT
 
@@ -34,7 +35,8 @@ text_types = {
 
 
 def list_template(id_type, button_type=None, *args, **kwargs):
-    for arg in args:
+    new_args = copy.copy(args)
+    for arg in new_args:
         payload = kwargs
         next_type = id_types.get(id_type).get('next_id')
         payload.update({next_type: arg.get(next_type)})
@@ -55,13 +57,14 @@ def list_template(id_type, button_type=None, *args, **kwargs):
                             "payload": json.dumps(item.get('payload'))
                         }
                     ]
-                } for item in args]
+                } for item in new_args]
         }
     }
     return template
 
 
-def generic_template(id_type, item, button_type=None, **kwargs):
+def generic_template(id_type, new_item, button_type=None, **kwargs):
+    item = copy.copy(new_item)
     payload = kwargs
     next_type = id_types.get(id_type, {}).get('next_id')
     payload.update({next_type: item.get(next_type)})

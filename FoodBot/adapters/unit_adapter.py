@@ -84,7 +84,6 @@ class UnitAdapter(IAdapter):
         mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
         product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
-        print(product)
         if product:
             if check:
                 mongo.orders.update({'userid': sender, 'provider': provider}, {"$push": {'orders': product[0]}})
