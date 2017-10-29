@@ -108,12 +108,16 @@ class Controller:
                                             data))
             clean_order(sender)
         elif reply_type in adapter.methods.keys():
+            id_type = id_types.get(reply_type, 'id')
+            print(id_type)
             items_to_show = adapter.methods.get(reply_type)(
-                **{id_types.get(reply_type, 'id'): payload.get(id_types.get(reply_type)),
-                   'user_id': sender,
-                   'mongo': mongo,
-                   'orders': orders})
-            print(items_to_show)
+                **{
+                    id_type: payload.get(id_type),
+                    'user_id': sender,
+                    'mongo': mongo,
+                    'orders': orders
+                }
+            )
             responses = self.make_body(payload.get('type'),
                                        sender,
                                        payload.get('provider'),
