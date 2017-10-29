@@ -79,7 +79,7 @@ class Controller:
         sender = self.get_sender(data)
         payload_data = self.get_message_payload(data)
         if not payload_data:
-            payload_data = "{'type': 'get_started','provider': 'unit'}"
+            payload_data = '{"type": "get_started","provider": "unit"}'
         try:
             payload = json.loads(payload_data)
         except ValueError:
