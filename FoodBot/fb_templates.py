@@ -5,7 +5,9 @@ from .constants import UNIT_REPLY_TEXT
 
 id_types = {
     'get_categories': 'category_id',
-    'get_category': 'category_id'
+    'get_category': 'category_id',
+    'add_product': 'id',
+    'remove_product': 'id'
 }
 
 button_types = {
