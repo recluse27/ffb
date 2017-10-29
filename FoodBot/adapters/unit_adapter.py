@@ -62,12 +62,12 @@ class UnitAdapter(IAdapter):
         self.cached_products = new_products
 
     def get_products(self, **kwargs):
-        category_id = kwargs.get('id')
+        category_id = kwargs.get('category_id')
         if not self.cached_products:
             self.get_products_from_api()
         products = list(
             filter(
-                lambda product: str(product['id']) == str(category_id),
+                lambda product: str(product['category_id']) == str(category_id),
                 self.cached_products
             )
         )

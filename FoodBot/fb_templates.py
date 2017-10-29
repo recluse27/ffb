@@ -5,7 +5,7 @@ from .constants import UNIT_REPLY_TEXT
 
 id_types = {
     'get_categories': 'category_id',
-    'get_category': 'product_id'
+    'get_category': 'id'
 }
 
 button_types = {
@@ -31,7 +31,7 @@ text_types = {
 def list_template(id_type, button_type=None, *args, **kwargs):
     for arg in args:
         payload = kwargs
-        payload.update({'id': arg.get('id')})
+        payload.update({'id': arg.get(id_types.get(id_type))})
         arg.update({'payload': json.dumps(payload)})
 
     template = {
@@ -57,7 +57,7 @@ def list_template(id_type, button_type=None, *args, **kwargs):
 
 def generic_template(id_type, item, button_type=None, **kwargs):
     payload = kwargs
-    payload.update({'id': item.get('id')})
+    payload.update({'id': item.get(id_types.get(id_type))})
     item.update({'payload': payload})
 
     template = {
