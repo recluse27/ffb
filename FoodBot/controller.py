@@ -31,6 +31,7 @@ class Controller:
         return data.get('sender').get('id')
 
     def make_body(self, reply_type, user_id, provider, items_to_show):
+        print(reply_type, payloads.keys())
         if reply_type in payloads.keys():
             payload = payloads.get(reply_type, {})
             payload.update({'provider': provider})
@@ -39,7 +40,6 @@ class Controller:
 
             result = []
             items = transform(items_to_show)
-            print(items)
 
             for item in items:
                 if len(item) == 1:
