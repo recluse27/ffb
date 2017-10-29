@@ -63,7 +63,7 @@ def list_template(id_type, button_type=None, *args, **kwargs):
 
 def generic_template(id_type, item, button_type=None, **kwargs):
     payload = kwargs
-    next_type = id_types.get(id_type, {}).get('next_type')
+    next_type = id_types.get(id_type, {}).get('next_id')
     payload.update({next_type: item.get(next_type)})
     item.update({'payload': payload})
 
