@@ -8,6 +8,7 @@ id_types = {
     'get_category':  {'self_id': 'category_id', 'next_id': 'id'},
     'add_product':  {'self_id': 'id', 'next_id': 'id'},
     'remove_product':  {'self_id': 'id', 'next_id': 'id'},
+    'get_basket': {'self_id': 'id', 'next_id': 'id'}
 }
 
 button_types = {
