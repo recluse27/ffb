@@ -33,7 +33,7 @@ text_types = {
 def list_template(id_type, button_type=None, *args, **kwargs):
     for arg in args:
         payload = kwargs
-        next_type = id_types.get(id_type, {}).get('next_type')
+        next_type = id_types.get(id_type, {}).get('next_id')
         payload.update({next_type: arg.get(next_type)})
         arg.update({'payload': json.dumps(payload)})
 
