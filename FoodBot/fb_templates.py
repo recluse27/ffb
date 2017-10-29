@@ -1,6 +1,6 @@
+import copy
 import json
 import time
-import copy
 
 from .constants import UNIT_REPLY_TEXT
 
@@ -143,7 +143,9 @@ def quick_replies(reply_type, provider):
         'get_started': [quick_replies_template('Categories', {'type': 'get_categories',
                                                               'provider': provider}),
                         quick_replies_template('Checkout', {'type': 'checkout',
-                                                            'provider': provider})],
+                                                            'provider': provider}),
+                        quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                              'provider': provider})],
 
         'start_over': [quick_replies_template('Categories', {'type': 'get_categories',
                                                              'provider': provider}),
@@ -152,7 +154,9 @@ def quick_replies(reply_type, provider):
                        quick_replies_template('Get Basket', {'type': 'get_basket',
                                                              'provider': provider})],
 
-        'get_categories': [quick_replies_template('Checkout', {'type': 'checkout',
+        'get_categories': [quick_replies_template('Categories', {'type': 'get_categories',
+                                                                 'provider': provider}),
+                           quick_replies_template('Checkout', {'type': 'checkout',
                                                                'provider': provider}),
                            quick_replies_template('Get Basket', {'type': 'get_basket',
                                                                  'provider': provider})],
@@ -171,10 +175,12 @@ def quick_replies(reply_type, provider):
                            quick_replies_template('Get Basket', {'type': 'get_basket',
                                                                  'provider': provider})],
 
-        'get_basket': [quick_replies_template('Categories', {'type': 'get_categories',
-                                                             'provider': provider}),
-                       quick_replies_template('Checkout', {'type': 'checkout',
-                                                           'provider': provider})],
+        'get_basket':  [quick_replies_template('Categories', {'type': 'get_categories',
+                                                              'provider': provider}),
+                        quick_replies_template('Checkout', {'type': 'checkout',
+                                                            'provider': provider}),
+                        quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                              'provider': provider})],
 
         'get_category': [quick_replies_template('Checkout', {'type': 'checkout',
                                                              'provider': provider}),
@@ -187,8 +193,16 @@ def quick_replies(reply_type, provider):
                         quick_replies_template('Get Basket', {'type': 'get_basket',
                                                               'provider': provider})],
         'checkout': [quick_replies_template('Categories', {'type': 'get_categories',
+                                                           'provider': provider}),
+                     quick_replies_template('Checkout', {'type': 'checkout',
+                                                         'provider': provider}),
+                     quick_replies_template('Get Basket', {'type': 'get_basket',
                                                            'provider': provider})],
         'receipt': [quick_replies_template('Categories', {'type': 'get_categories',
-                                                           'provider': provider})]
+                                                          'provider': provider}),
+                    quick_replies_template('Checkout', {'type': 'checkout',
+                                                        'provider': provider}),
+                    quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                          'provider': provider})]
 
     }[reply_type]

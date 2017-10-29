@@ -92,7 +92,7 @@ class Controller:
 
         adapter = self.adapters.get(provider)
         reply_type = payload.get('type')
-        orders = get_orders(sender)
+        orders = get_orders(sender) or []
         if reply_type == 'checkout':
             data = adapter.checkout(**{'orders': orders})
             responses.extend(self.make_body('checkout',
