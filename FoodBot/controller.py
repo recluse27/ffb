@@ -113,6 +113,7 @@ class Controller:
                    'user_id': sender,
                    'mongo': mongo,
                    'orders': orders})
+            print(items_to_show)
             responses = self.make_body(payload.get('type'),
                                        sender,
                                        payload.get('provider'),
