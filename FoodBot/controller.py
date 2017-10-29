@@ -85,6 +85,9 @@ class Controller:
         except ValueError:
             payload = {'type': 'get_started',
                        'provider': 'unit'}
+
+        print(payload)
+
         adapter = self.adapters.get(payload.get('provider'))
         reply_type = payload.get('type')
         orders = get_orders(sender)

@@ -18,6 +18,9 @@ def handle_incoming_messages():
 
     if controller.check_valid_response(data):
         new_data = controller.make_responses(**{'data': data})
+
+        print("Responses", new_data)
+
         for item in new_data:
             make_request(item)
 
