@@ -87,8 +87,10 @@ class Controller:
                        'provider': 'unit'}
 
         print(payload)
+        provider = payload.get('provider')
+        print(provider)
 
-        adapter = self.adapters.get(payload.get('provider'))
+        adapter = self.adapters.get(provider)
         reply_type = payload.get('type')
         orders = get_orders(sender)
         if reply_type == 'checkout':
