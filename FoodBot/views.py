@@ -22,6 +22,7 @@ def handle_incoming_messages():
         print("Responses", new_data)
 
         for item in new_data:
-            make_request(item)
+            response = make_request(item)
+            print(response)
 
     return "ok"
