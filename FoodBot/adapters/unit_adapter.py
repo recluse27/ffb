@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timedelta
 
 import requests as rq
 
@@ -45,9 +46,10 @@ class UnitAdapter(IAdapter):
             for category in categories
         ]
         self.cached_categories = new_categories
+        self.cached_categories_updated = datetime.utcnow()
 
     def get_categories(self, **kwargs):
-        if not self.cached_categories:
+        if not self.cached_categories or (self.cached_categories_updated + timedelta(days=1) < datetime.utcnow()):
             self.get_categories_from_api()
         return self.cached_categories
 
@@ -62,10 +64,11 @@ class UnitAdapter(IAdapter):
              'image_url': product.get('image', [{}])[0].get('image1')}
             for product in products]
         self.cached_products = new_products
+        self.cached_products_updated = datetime.utcnow()
 
     def get_products(self, **kwargs):
         category_id = kwargs.get('category_id')
-        if not self.cached_products:
+        if not self.cached_products or (self.cached_products_updated + timedelta(days=1) < datetime.utcnow()):
             self.get_products_from_api()
         products = list(
             filter(

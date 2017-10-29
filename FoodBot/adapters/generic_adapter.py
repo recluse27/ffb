@@ -4,6 +4,8 @@ class IAdapter:
     methods = []
     cached_products = []
     cached_categories = []
+    cached_categories_updated = None
+    cached_products_updated = None
 
     def get_categories_from_api(self):
         raise NotImplementedError
