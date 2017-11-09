@@ -1,3 +1,3 @@
-from main import get_app
+from FoodBot import app
 
-application = get_app()
+application = app
