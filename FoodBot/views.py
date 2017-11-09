@@ -27,3 +27,25 @@ def handle_incoming_messages():
             print(response, response.text)
 
     return "ok"
+
+
+@app.route('/unit/notify', methods=['POST'])
+def respond_on_notify():
+    order_id = request.json.get('order_id')
+    order_data = mongo.order_data.find_one({'order_id': order_id})
+    orders = get_orders(order_data.get('user_id'))
+
+    responses = [controller.make_body("unit_notify",
+                                      order_data.get('user_id'),
+                                      "unit",
+                                      order_data),
+                 controller.make_body("receipt",
+                                      order_data.get('user_id'),
+                                      "unit",
+                                      orders)]
+    for item in responses:
+        response = make_request(item)
+        print(response, response.text)
+
+
+    return "ok"

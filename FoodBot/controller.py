@@ -107,10 +107,6 @@ class Controller:
                                                 sender,
                                                 payload.get('provider'),
                                                 data))
-                responses.extend(self.make_body('receipt',
-                                                sender,
-                                                payload.get('provider'),
-                                                orders))
             clean_order(sender, provider)
         elif reply_type in adapter.methods.keys():
             id_type = id_types.get(reply_type, {}).get('self_id')

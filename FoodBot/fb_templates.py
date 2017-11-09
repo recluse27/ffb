@@ -30,6 +30,7 @@ text_types = {
     'remove_product': 'Removed.',
     'no_products': 'У вас нет продуктов в корзине.',
     'checkout': UNIT_REPLY_TEXT,
+    'unit_notify': UNIT_REPLY_TEXT,
     'start_over': 'Сделай заказ.'
 }
 
@@ -175,12 +176,12 @@ def quick_replies(reply_type, provider):
                            quick_replies_template('Get Basket', {'type': 'get_basket',
                                                                  'provider': provider})],
 
-        'get_basket':  [quick_replies_template('Categories', {'type': 'get_categories',
-                                                              'provider': provider}),
-                        quick_replies_template('Checkout', {'type': 'checkout',
-                                                            'provider': provider}),
-                        quick_replies_template('Get Basket', {'type': 'get_basket',
-                                                              'provider': provider})],
+        'get_basket': [quick_replies_template('Categories', {'type': 'get_categories',
+                                                             'provider': provider}),
+                       quick_replies_template('Checkout', {'type': 'checkout',
+                                                           'provider': provider}),
+                       quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                             'provider': provider})],
 
         'get_category': [quick_replies_template('Checkout', {'type': 'checkout',
                                                              'provider': provider}),
@@ -203,6 +204,12 @@ def quick_replies(reply_type, provider):
                     quick_replies_template('Checkout', {'type': 'checkout',
                                                         'provider': provider}),
                     quick_replies_template('Get Basket', {'type': 'get_basket',
-                                                          'provider': provider})]
+                                                          'provider': provider})],
+        'unit_notify': [quick_replies_template('Categories', {'type': 'get_categories',
+                                                              'provider': provider}),
+                        quick_replies_template('Checkout', {'type': 'checkout',
+                                                            'provider': provider}),
+                        quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                              'provider': provider})],
 
     }[reply_type]
