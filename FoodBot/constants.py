@@ -22,4 +22,4 @@ UNIT_PUB_KEY = "i93305383988"
 
 UNIT_PRIV_KEY = "NigKQ1DBXNaQUuHh8sG7yaU3bleRWApuaakbIfwm"
 
-SELF_URL = ""
+SELF_URL = "https://e832b8af.ngrok.io"
