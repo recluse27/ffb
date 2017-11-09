@@ -57,18 +57,21 @@ def get_payment(order_id):
 def respond_on_notify():
     order_id = request.json.get('order_id')
     order_data = mongo.order_data.find_one({'order_id': order_id})
-    orders = get_orders(order_data.get('user_id'))
+    if order_data:
+        orders = get_orders(order_data.get('user_id'))
 
-    responses = [controller.make_body("unit_notify",
-                                      order_data.get('user_id'),
-                                      "unit",
-                                      order_data),
-                 controller.make_body("receipt",
-                                      order_data.get('user_id'),
-                                      "unit",
-                                      orders)]
-    for item in responses:
-        response = make_request(item)
-        print(response, response.text)
+        responses = [controller.make_body("unit_notify",
+                                          order_data.get('user_id'),
+                                          "unit",
+                                          order_data),
+                     controller.make_body("receipt",
+                                          order_data.get('user_id'),
+                                          "unit",
+                                          orders)]
+        for item in responses:
+            response = make_request(item)
+            print(response, response.text)
+        clean_order(order_data.get('user_id'),
+                    "unit")
 
-    return "ok"
+    return {'order_id': order_id}
