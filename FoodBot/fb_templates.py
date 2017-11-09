@@ -2,7 +2,7 @@ import copy
 import json
 import time
 
-from .constants import UNIT_REPLY_TEXT
+from .constants import UNIT_REPLY_TEXT, SELF_URL
 
 id_types = {
     'get_categories': {'self_id': 'category_id', "next_id": 'category_id'},
@@ -24,12 +24,15 @@ payloads = {
     'get_basket': {'type': 'remove_product'}
 }
 
+link_types = {
+    'checkout': SELF_URL,
+}
+
 text_types = {
     'get_started': 'Сделай заказ.',
     'add_product': 'Added.',
     'remove_product': 'Removed.',
     'no_products': 'У вас нет продуктов в корзине.',
-    'checkout': UNIT_REPLY_TEXT,
     'unit_notify': UNIT_REPLY_TEXT,
     'start_over': 'Сделай заказ.'
 }
@@ -85,6 +88,29 @@ def generic_template(id_type, new_item, button_type=None, **kwargs):
                             "title": button_type or item.get('title'),
                             "type": "postback",
                             "payload": json.dumps(item.get('payload'))
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
+    return template
+
+
+def generic_link_template(URL, title):
+    template = {
+        "type": "template",
+        "payload": {
+            "template_type": "generic",
+            "elements": [
+                {
+                    "title": title,
+                    "buttons": [
+                        {
+                            "type": "web_url",
+                            "url": URL,
+                            "title": "View Website"
                         }
                     ]
                 }

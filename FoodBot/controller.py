@@ -64,6 +64,16 @@ class Controller:
                 "message": {"text": text,
                             "quick_replies": quick_replies(reply_type, provider)}
             }]
+        elif reply_type in link_types:
+            url = SELF_URL
+            save_order_data(user_id, items_to_show)
+            if reply_type == "checkout":
+                url = link_types.get(reply_type) + '/order/' + items_to_show.get('order_id')
+            data = [{
+                "recipient": {"id": user_id},
+                "message": {"attachment": generic_link_template(url, 'Pay'),
+                            "quick_replies": quick_replies(reply_type, provider)}
+            }]
         else:
             data = [{
                 "recipient": {"id": user_id},
