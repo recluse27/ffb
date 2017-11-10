@@ -34,7 +34,8 @@ text_types = {
     'remove_product': 'Removed.',
     'no_products': 'У вас нет продуктов в корзине.',
     'unit_notify': UNIT_REPLY_TEXT,
-    'start_over': 'Сделай заказ.'
+    'start_over': 'Сделай заказ.',
+    "pay_rejected": "При оплате произошла ошибка. Попробуйте ещё раз."
 }
 
 
@@ -237,5 +238,11 @@ def quick_replies(reply_type, provider):
                                                             'provider': provider}),
                         quick_replies_template('Get Basket', {'type': 'get_basket',
                                                               'provider': provider})],
+        "pay_rejected": [quick_replies_template('Categories', {'type': 'get_categories',
+                                                               'provider': provider}),
+                         quick_replies_template('Checkout', {'type': 'checkout',
+                                                             'provider': provider}),
+                         quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                               'provider': provider})],
 
     }[reply_type]

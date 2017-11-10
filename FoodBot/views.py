@@ -55,23 +55,34 @@ def get_payment(order_id):
 
 @app.route('/unit/notify', methods=['POST'])
 def respond_on_notify():
+    responses = []
+    payment_status = request.json.get("payment_status")
     order_id = request.json.get('order_id')
     order_data = mongo.order_data.find_one({'order_id': order_id})
-    if order_data:
+    if not order_data:
+        return {'order_id': order_id}
+
+    if payment_status:
         orders = get_orders(order_data.get('user_id'))
 
-        responses = [controller.make_body("unit_notify",
-                                          order_data.get('user_id'),
-                                          "unit",
-                                          order_data),
-                     controller.make_body("receipt",
-                                          order_data.get('user_id'),
-                                          "unit",
-                                          orders)]
-        for item in responses:
-            response = make_request(item)
-            print(response, response.text)
+        responses.extend(controller.make_body("unit_notify",
+                                              order_data.get('user_id'),
+                                              "unit",
+                                              order_data))
+        responses.extend(controller.make_body("receipt",
+                                              order_data.get('user_id'),
+                                              "unit",
+                                              orders))
         clean_order(order_data.get('user_id'),
                     "unit")
+    else:
+        responses.extend(controller.make_body("pay_rejected",
+                                              order_data.get('user_id'),
+                                              "unit",
+                                              order_data))
+
+    for item in responses:
+        response = make_request(item)
+        print(response, response.text)
 
     return {'order_id': order_id}
