@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import request
+from flask import request, jsonify
 from liqpay import LiqPay
 
 from .constants import *
@@ -60,7 +60,7 @@ def respond_on_notify():
     order_id = request.json.get('order_id')
     order_data = mongo.order_data.find_one({'order_id': order_id})
     if not order_data:
-        return {'order_id': order_id}
+        return jsonify({'order_id': order_id})
 
     if payment_status:
         orders = get_orders(order_data.get('user_id'))
@@ -85,4 +85,4 @@ def respond_on_notify():
         response = make_request(item)
         print(response, response.text)
 
-    return {'order_id': order_id}
+    return jsonify({'order_id': order_id})
