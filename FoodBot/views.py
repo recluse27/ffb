@@ -60,29 +60,32 @@ def respond_on_notify():
     order_id = request.json.get('order_id')
     order_data = mongo.order_data.find_one({'order_id': order_id})
     if not order_data:
-        return jsonify({'order_id': order_id})
+        return jsonify({'Error': 'No such order.'})
+    try:
+        if payment_status:
+            orders = get_orders(order_data.get('user_id'))
 
-    if payment_status:
-        orders = get_orders(order_data.get('user_id'))
+            responses.extend(controller.make_body("unit_notify",
+                                                  order_data.get('user_id'),
+                                                  "unit",
+                                                  order_data))
+            responses.extend(controller.make_body("receipt",
+                                                  order_data.get('user_id'),
+                                                  "unit",
+                                                  orders))
+            clean_order(order_data.get('user_id'),
+                        "unit")
+        else:
+            responses.extend(controller.make_body("pay_rejected",
+                                                  order_data.get('user_id'),
+                                                  "unit",
+                                                  order_data))
 
-        responses.extend(controller.make_body("unit_notify",
-                                              order_data.get('user_id'),
-                                              "unit",
-                                              order_data))
-        responses.extend(controller.make_body("receipt",
-                                              order_data.get('user_id'),
-                                              "unit",
-                                              orders))
-        clean_order(order_data.get('user_id'),
-                    "unit")
-    else:
-        responses.extend(controller.make_body("pay_rejected",
-                                              order_data.get('user_id'),
-                                              "unit",
-                                              order_data))
+        for item in responses:
+            response = make_request(item)
+            print(response, response.text)
 
-    for item in responses:
-        response = make_request(item)
-        print(response, response.text)
+    except Exception as e:
+        return jsonify({'Error': str(e)})
 
     return jsonify({'order_id': order_id})
