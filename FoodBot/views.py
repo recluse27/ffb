@@ -59,7 +59,7 @@ def respond_on_notify():
     payment_status = request.json.get("payment_status")
     order_id = request.json.get('order_id')
     order_data = mongo.order_data.find_one({'order_id': order_id})
-    if not order_data:
+    if not order_data or not order_id:
         return jsonify({'Error': 'No such order.'})
     try:
         if payment_status:
