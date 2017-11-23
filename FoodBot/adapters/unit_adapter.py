@@ -34,6 +34,7 @@ class UnitAdapter(IAdapter):
         result = rq.post(url=(self.url % 'order'),
                          headers=HEADERS,
                          json=data)
+        print(result.text)
         return json.loads(result.text)
 
     def get_categories_from_api(self):
@@ -54,7 +55,7 @@ class UnitAdapter(IAdapter):
         return self.cached_categories
 
     def get_products_from_api(self):
-        result = rq.get(url=(self.url % 'product'), headers=HEADERS)
+        result = rq.get(url=(self.url % 'product/available'), headers=HEADERS)
         products = json.loads(result.text)
         new_products = [
             {'title': product.get('name'),

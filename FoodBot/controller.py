@@ -31,6 +31,7 @@ class Controller:
         return data.get('sender').get('id')
 
     def make_body(self, reply_type, user_id, provider, items_to_show):
+        data = []
         if reply_type in payloads.keys():
             payload = payloads.get(reply_type, {})
             payload.update({'provider': provider})
@@ -68,12 +69,18 @@ class Controller:
             url = SELF_URL
             save_order_data(user_id, items_to_show)
             if reply_type == "checkout":
-                url = link_types.get(reply_type) + '/order/' + items_to_show.get('order_id')
-            data = [{
-                "recipient": {"id": user_id},
-                "message": {"attachment": generic_link_template(url, 'Pay'),
-                            "quick_replies": quick_replies(reply_type, provider)}
-            }]
+                if items_to_show.get('order_id'):
+                    url = link_types.get(reply_type) + '/order/' + items_to_show.get('order_id')
+                    data = [{
+                        "recipient": {"id": user_id},
+                        "message": {"attachment": generic_link_template(url, 'Pay'),
+                                    "quick_replies": quick_replies(reply_type, provider)}
+                    }]
+                else:
+                    data = [{
+                        "recipient": {"id": user_id},
+                        "message": {"text": "Сталася помилка, спробуйте ще.",
+                                    "quick_replies": quick_replies(reply_type, provider)}}]
         else:
             data = [{
                 "recipient": {"id": user_id},
