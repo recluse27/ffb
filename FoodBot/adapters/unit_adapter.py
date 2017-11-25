@@ -55,7 +55,7 @@ class UnitAdapter(IAdapter):
         return self.cached_categories
 
     def get_products_from_api(self):
-        result = rq.get(url=(self.url % 'product/available'), headers=HEADERS)
+        result = rq.get(url=(self.url % 'product'), headers=HEADERS)
         products = json.loads(result.text)
         new_products = [
             {'title': product.get('name'),
@@ -79,6 +79,15 @@ class UnitAdapter(IAdapter):
         )
         return products
 
+    def is_product_available(self, product_id):
+        result = rq.get(url=(self.url % '/product/{id}'.format(id=product_id)),
+                        headers=HEADERS)
+        try:
+            product_data = json.loads(result)
+            return bool(product_data.get('status'))
+        except:
+            return False
+
     def add_product(self, **kwargs):
         if not self.cached_products:
             self.get_products_from_api()
@@ -88,6 +97,9 @@ class UnitAdapter(IAdapter):
         mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
         product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
+        if not self.is_product_available(kwargs.get('id')):
+            return "Продукт наразі недоступний."
+
         if product:
             if 'payload' in product[0]:
                 product[0].pop('payload')

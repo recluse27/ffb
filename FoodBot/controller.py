@@ -59,14 +59,13 @@ class Controller:
                                                          order_code=items_to_show.get('order_code', ''),
                                                          confirm_code=items_to_show.get('confirm_code', ''))
             except Exception:
-                text = text_types.get(reply_type)
+                text = items_to_show or text_types.get(reply_type)
             data = [{
                 "recipient": {"id": user_id},
                 "message": {"text": text,
                             "quick_replies": quick_replies(reply_type, provider)}
             }]
         elif reply_type in link_types:
-            url = SELF_URL
             save_order_data(user_id, items_to_show)
             if reply_type == "checkout":
                 if items_to_show.get('order_id'):
