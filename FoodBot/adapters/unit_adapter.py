@@ -80,10 +80,10 @@ class UnitAdapter(IAdapter):
         return products
 
     def is_product_available(self, product_id):
-        result = rq.get(url=(self.url % '/product/{id}'.format(id=product_id)),
+        result = rq.get(url=(self.url % 'product/{id}'.format(id=product_id)),
                         headers=HEADERS)
         try:
-            product_data = json.loads(result)
+            product_data = json.loads(result)[0]
             return bool(product_data.get('status'))
         except:
             return False
