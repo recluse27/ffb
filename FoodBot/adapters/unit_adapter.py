@@ -82,10 +82,13 @@ class UnitAdapter(IAdapter):
     def is_product_available(self, product_id):
         result = rq.get(url=(self.url % 'product/{id}'.format(id=product_id)),
                         headers=HEADERS)
+        print(result.text)
         try:
             product_data = json.loads(result)[0]
+            print('NO ERROR')
             return bool(product_data.get('status'))
         except:
+            print('ERROR')
             return False
 
     def add_product(self, **kwargs):
