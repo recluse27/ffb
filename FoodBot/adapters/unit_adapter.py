@@ -105,7 +105,7 @@ class UnitAdapter(IAdapter):
         if product:
             if 'payload' in product[0]:
                 product[0].pop('payload')
-            if check:
+            if check is not None:
                 mongo.orders.update({'userid': sender, 'provider': provider}, {"$push": {'orders': product[0]}})
             else:
                 mongo.orders.insert({'userid': sender, 'orders': product, 'provider': provider})
