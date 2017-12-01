@@ -35,7 +35,7 @@ class UnitAdapter(IAdapter):
         result = rq.post(url=(self.url % 'order'),
                          headers=HEADERS,
                          json=data)
-        print(result.text)
+        print('ORDER DATA', result.text)
         return json.loads(result.text)
 
     def get_categories_from_api(self):
