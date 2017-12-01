@@ -35,7 +35,8 @@ def handle_incoming_messages():
 
 @app.route('/order/<order_id>', methods=["GET"])
 def get_payment(order_id):
-    data = mongo.order_data.find_one({'order_id': order_id})
+    print(type(order_id))
+    data = mongo.order_data.find_one({'order_id': int(order_id)})
     if data is None:
         return "Замовлення не знайдено"
     data_to_send = {"version": 3,
