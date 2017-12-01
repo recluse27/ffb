@@ -9,7 +9,7 @@ from ..constants import HEADERS
 
 class UnitAdapter(IAdapter):
     name = "Unit"
-    url = "https://unit.cafe/api/v1/ua/%s?token=jhy48fnc9sd"
+    url = "https://unit.cafe/api/v1/ua/%s?token=aTgEy4dtnF4"
 
     def __init__(self):
         self.methods = {
@@ -23,11 +23,12 @@ class UnitAdapter(IAdapter):
     def checkout(self, **kwargs):
         orders = kwargs.get('orders')
         data = {'name': 'test_user',
-                'phone': kwargs.get('phone') or '380671234567',
+                'phone': '38(000)444-55-66',
                 'order_time': kwargs.get('order_time') or 'some time',
                 'delivery_type': 1,  # in unit
                 'coock_type': 2,  # all at once
                 'guests_count': 1,
+                'order_type': 2,
                 'products': [{'product_id': int(product.get('id')),
                               'quantity': 1}
                              for product in orders]}
