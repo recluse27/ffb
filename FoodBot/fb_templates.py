@@ -111,7 +111,7 @@ def generic_link_template(URL, title):
                         {
                             "type": "web_url",
                             "url": URL,
-                            "title": "View Website"
+                            "title": "Перейти до оплати"
                         }
                     ]
                 }
