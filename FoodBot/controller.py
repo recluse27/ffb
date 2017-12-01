@@ -69,7 +69,7 @@ class Controller:
             save_order_data(user_id, items_to_show)
             if reply_type == "checkout":
                 if items_to_show.get('order_id') is not None:
-                    url = link_types.get(reply_type) + '/order/' + items_to_show.get('order_id')
+                    url = link_types.get(reply_type) + '/order/' + str(items_to_show.get('order_id'))
                     data = [{
                         "recipient": {"id": user_id},
                         "message": {"attachment": generic_link_template(url, 'Pay'),
