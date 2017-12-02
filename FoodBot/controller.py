@@ -59,7 +59,11 @@ class Controller:
                                                          order_code=items_to_show.get('order_code', ''),
                                                          confirm_code=items_to_show.get('confirm_code', ''))
             except Exception:
-                text = items_to_show or text_types.get(reply_type)
+                if isinstance(items_to_show, str):
+                    text = items_to_show
+                else:
+                    text = text_types.get(reply_type)
+
             data = [{
                 "recipient": {"id": user_id},
                 "message": {"text": text,
