@@ -76,7 +76,7 @@ class Controller:
                     url = link_types.get(reply_type) + '/order/' + str(items_to_show.get('order_id'))
                     data = [{
                         "recipient": {"id": user_id},
-                        "message": {"attachment": generic_link_template(url, 'Натисніть для оплати.'),
+                        "message": {"attachment": generic_link_template(url, 'Пожалуйста, оплатите ваш заказ.'),
                                     "quick_replies": quick_replies(reply_type, provider)}
                     }]
                 else:
