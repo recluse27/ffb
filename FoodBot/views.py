@@ -42,7 +42,7 @@ def get_payment(order_id):
     data_to_send = {"version": 3,
                     "public_key": UNIT_PUB_KEY,
                     "action": "pay",
-                    "amount": data.get('price'),
+                    "amount": str(data.get('price')),
                     "currency": "UAH",
                     "description": "{order_id} від {datetime} За замовлення в UNIT.cafe".format(order_id=order_id,
                                                                                                 datetime=datetime.now().isoformat()),
@@ -50,7 +50,10 @@ def get_payment(order_id):
                     "order_id": order_id}
 
     liqpay = LiqPay(UNIT_PUB_KEY, UNIT_PRIV_KEY)
-    html = liqpay.cnb_form(data_to_send)
+    try:
+        html = liqpay.cnb_form(data_to_send)
+    except:
+        return "Замовлення не знайдено"
     return html
 
 
