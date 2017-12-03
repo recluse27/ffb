@@ -1,1 +1,3 @@
-web: FLASK_APP=web.py python -m flask run --host=0.0.0.0 --port=$PORT
+web: python main.py
+web: gunicorn FoodBot:app --timeout 60
+heroku ps:scale web=1
