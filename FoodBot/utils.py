@@ -34,5 +34,9 @@ def clean_order(userid, provider):
 
 
 def save_order_data(userid, data):
+    check = mongo.order_data.find({'userid': userid})
+    if check:
+        for item in check:
+            mongo.order_data.remove({'_id': item['_id']})
     data.update({'userid': userid})
     mongo.order_data.insert(data)
