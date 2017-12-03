@@ -55,6 +55,7 @@ def list_template(id_type, button_type=None, *args, **kwargs):
                 {
                     "title": item.get('title'),
                     "image_url": item.get('image_url', ''),
+                    "subtitle": str(item.get('price')) + ' UAH' if 'price' in item else item.get('title') ,
                     "buttons": [
                         {
                             "title": button_type or item.get('title'),
