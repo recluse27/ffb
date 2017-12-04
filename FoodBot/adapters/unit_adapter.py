@@ -24,7 +24,7 @@ class UnitAdapter(IAdapter):
         orders = kwargs.get('orders')
         data = {'name': 'test_user',
                 'phone': '38(000)444-55-66',
-                'order_time': kwargs.get('order_time') or 'some time',
+                'order_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
                 'delivery_type': 1,  # in unit
                 'coock_type': 2,  # all at once
                 'guests_count': 1,
