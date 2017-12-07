@@ -26,7 +26,7 @@ class UnitAdapter(IAdapter):
                 'phone': '38(000)444-55-66',
                 'order_time': datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
                 'delivery_type': 1,  # in unit
-                'coock_type': 2,  # all at once
+                'cook_type': 2,  # all at once
                 'guests_count': 1,
                 'order_type': 2,
                 'products': [{'product_id': int(product.get('id')),
