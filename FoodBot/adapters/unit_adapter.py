@@ -100,6 +100,7 @@ class UnitAdapter(IAdapter):
         mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
         product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
+        print("ID", kwargs.get('id'))
         if not self.is_product_available(kwargs.get('id')):
             return "Продукт наразі недоступний."
 
