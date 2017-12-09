@@ -99,6 +99,9 @@ class UnitAdapter(IAdapter):
         check = kwargs.get('orders')
         mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
+        if not check:
+            mongo.orders.remove({"userid": sender, "provider": provider})
+
         product = list(filter(lambda p: str(p.get('id')) == str(kwargs.get('id')), self.cached_products))
         print("ID", kwargs.get('id'))
         if not self.is_product_available(kwargs.get('id')):
@@ -108,7 +111,7 @@ class UnitAdapter(IAdapter):
             print("PRODUCT", product)
             if 'payload' in product[0]:
                 product[0].pop('payload')
-            if check is not None:
+            if check:
                 mongo.orders.update({'userid': sender, 'provider': provider}, {"$push": {'orders': product[0]}})
             else:
                 mongo.orders.insert({'userid': sender, 'orders': product, 'provider': provider})
