@@ -70,18 +70,18 @@ def respond_on_notify():
             orders = get_orders(order_data.get('user_id'))
 
             responses.extend(controller.make_body("unit_notify",
-                                                  order_data.get('user_id'),
+                                                  order_data.get('userid'),
                                                   "unit",
                                                   order_data))
             responses.extend(controller.make_body("receipt",
-                                                  order_data.get('user_id'),
+                                                  order_data.get('userid'),
                                                   "unit",
                                                   orders))
             clean_order(order_data.get('user_id'),
                         "unit")
         else:
             responses.extend(controller.make_body("pay_rejected",
-                                                  order_data.get('user_id'),
+                                                  order_data.get('userid'),
                                                   "unit",
                                                   order_data))
 
