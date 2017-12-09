@@ -85,6 +85,8 @@ class Controller:
                         "message": {"text": "Сталася помилка, спробуйте ще.",
                                     "quick_replies": quick_replies(reply_type, provider)}}]
         else:
+            print("TYPE", reply_type)
+            print("ITEMS_TO_SHOW", items_to_show)
             data = [{
                 "recipient": {"id": user_id},
                 "message": {"attachment": receipt_template(**{'orders': items_to_show}),
