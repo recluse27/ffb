@@ -31,6 +31,7 @@ def get_orders(userid):
 
 def clean_order(userid, provider):
     mongo.orders.remove({"userid": userid, "provider": provider})
+    mongo.order_data.remove({"userid": userid})
 
 
 def save_order_data(userid, data):
