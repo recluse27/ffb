@@ -105,9 +105,9 @@ class UnitAdapter(IAdapter):
             return "Продукт наразі недоступний."
 
         if product:
+            print("PRODUCT", product)
             if 'payload' in product[0]:
                 product[0].pop('payload')
-                print("POPED")
             if check is not None:
                 mongo.orders.update({'userid': sender, 'provider': provider}, {"$push": {'orders': product[0]}})
             else:
