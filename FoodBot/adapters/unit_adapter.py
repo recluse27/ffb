@@ -101,6 +101,7 @@ class UnitAdapter(IAdapter):
         provider = kwargs.get('provider')
         if not check:
             mongo.orders.remove({"userid": sender, "provider": provider})
+            check = None
 
         product = list(filter(lambda p: str(p.get('id')) == str(kwargs.get('id')), self.cached_products))
         print("ID", kwargs.get('id'))
