@@ -105,12 +105,10 @@ class UnitAdapter(IAdapter):
             check = None
 
         product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
-        print("ID", kwargs.get('id'))
         if not self.is_product_available(kwargs.get('id')):
             return "Продукт наразі недоступний."
 
         if product:
-            print("PRODUCT", product)
             if 'payload' in product[0]:
                 product[0].pop('payload')
             if check:
@@ -127,8 +125,6 @@ class UnitAdapter(IAdapter):
         mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
         product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
-        print("ID", kwargs.get('id'))
-        print("PRODUCT", product)
         if product:
             if 'payload' in product[0]:
                 product[0].pop('payload')
