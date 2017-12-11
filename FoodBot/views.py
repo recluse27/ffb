@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from flask import request, jsonify
 from liqpay import LiqPay
@@ -35,7 +35,7 @@ def handle_incoming_messages():
 
 @app.route('/order/<order_id>', methods=["GET"])
 def get_payment(order_id):
-    print(type(order_id))
+    ukraine = timezone(timedelta(hours=2))
     data = mongo.order_data.find_one({'order_id': int(order_id)})
     if data is None:
         return "Замовлення не знайдено"
@@ -45,8 +45,10 @@ def get_payment(order_id):
                     "amount": str(data.get('price')),
                     "currency": "UAH",
                     "description": "{order_id} від {datetime} За замовлення в UNIT.cafe".format(order_id=order_id,
-                                                                                                datetime=datetime.now().isoformat()),
-                    "callback": "https://unit.cafe/index.php?route=extension/payment/liqpay/callback",
+                                                                                                datetime=datetime.now(
+                                                                                                    tz=ukraine).strftime(
+                                                                                                    "%Y-%m-%dT%H:%M:%S.%f")),
+                    "server_url": "https://unit.cafe/index.php?route=extension/payment/liqpay/callback",
                     "order_id": order_id}
 
     liqpay = LiqPay(UNIT_PUB_KEY, UNIT_PRIV_KEY)
