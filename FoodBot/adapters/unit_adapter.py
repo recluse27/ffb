@@ -104,7 +104,7 @@ class UnitAdapter(IAdapter):
             mongo.orders.remove({"userid": sender, "provider": provider})
             check = None
 
-        product = list(filter(lambda p: str(p.get('id')) == str(kwargs.get('id')), self.cached_products))
+        product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
         print("ID", kwargs.get('id'))
         if not self.is_product_available(kwargs.get('id')):
             return "Продукт наразі недоступний."
@@ -126,7 +126,7 @@ class UnitAdapter(IAdapter):
         orders = kwargs.get('orders')
         mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
-        product = list(filter(lambda p: str(p.get('id')) == str(kwargs.get('id')), self.cached_products))
+        product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
         print("PRODUCT", product)
         if product:
             if 'payload' in product[0]:
