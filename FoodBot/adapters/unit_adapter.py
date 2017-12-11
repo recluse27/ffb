@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 import requests as rq
 
@@ -21,10 +21,11 @@ class UnitAdapter(IAdapter):
         }
 
     def checkout(self, **kwargs):
+        ukraine = timezone(timedelta(hours=2))
         orders = kwargs.get('orders')
         data = {'name': 'test_user',
                 'phone': '38(000)444-55-66',
-                'order_time': datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
+                'order_time': datetime.now(tz=ukraine).strftime("%Y-%m-%dT%H:%M:%S.%f"),
                 'delivery_type': 1,  # in unit
                 'cook_type': 2,  # all at once
                 'guests_count': 1,
