@@ -127,8 +127,8 @@ class UnitAdapter(IAdapter):
         mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
         product = list(filter(lambda p: str(p.get('id')) == str(kwargs.get('id')), self.cached_products))
+        print("PRODUCT", product)
         if product:
-            print("PRODUCT", product)
             if 'payload' in product[0]:
                 product[0].pop('payload')
             orders.remove(product[0])
