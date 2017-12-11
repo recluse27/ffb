@@ -127,6 +127,7 @@ class UnitAdapter(IAdapter):
         mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
         product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
+        print("ID", kwargs.get('id'))
         print("PRODUCT", product)
         if product:
             if 'payload' in product[0]:
