@@ -8,7 +8,7 @@ from ..constants import HEADERS
 
 
 class UnitAdapter(IAdapter):
-    name = "Unit"
+    name = "unit"
     url = "https://unit.cafe/api/v1/ua/%s?token=aTgEy4dtnF4"
 
     def __init__(self):
