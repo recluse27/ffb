@@ -63,11 +63,12 @@ def respond_on_notify():
     payment_status = request.json.get("payment_status")
     order_id = request.json.get('order_id')
     order_data = mongo.order_data.find_one({'order_id': int(order_id)})
+    print(order_data)
     if not order_data or not order_id:
         return jsonify({'Error': 'No such order.'})
     try:
         if payment_status:
-            orders = get_orders(order_data.get('user_id'))
+            orders = get_orders(order_data.get('userid'))
 
             responses.extend(controller.make_body("unit_notify",
                                                   order_data.get('userid'),
@@ -77,7 +78,7 @@ def respond_on_notify():
                                                   order_data.get('userid'),
                                                   "unit",
                                                   orders))
-            clean_order(order_data.get('user_id'),
+            clean_order(order_data.get('userid'),
                         "unit")
         else:
             responses.extend(controller.make_body("pay_rejected",
