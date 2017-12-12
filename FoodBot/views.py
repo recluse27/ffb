@@ -97,3 +97,10 @@ def respond_on_notify():
         return jsonify({'Error': str(e)})
 
     return jsonify({'order_id': order_id})
+
+
+@app.route('/update/products')
+def update_products():
+    for key, adapter in controller.adapters.items():
+        adapter.get_products()
+    return "ok"

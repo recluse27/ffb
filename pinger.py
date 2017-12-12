@@ -2,7 +2,7 @@ import time
 
 import requests as rq
 
-ping_url = ""
+ping_url = "https://foodappbot.herokuapp.com"
 
 
 def ping(minutes):
