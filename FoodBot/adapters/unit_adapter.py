@@ -40,7 +40,7 @@ class UnitAdapter(IAdapter):
         return json.loads(result.text)
 
     def get_categories_from_api(self):
-        result = rq.get(url=(self.url % 'category'), headers=HEADERS)
+        result = rq.get(url=(self.url % 'facebookcategory'), headers=HEADERS)
         categories = json.loads(result.text)
         new_categories = [
             {'title': category.get('name'),
@@ -63,7 +63,7 @@ class UnitAdapter(IAdapter):
             {'title': product.get('name'),
              'price': product.get('price'),
              'id': product.get('product_id'),
-             'category_id': product.get('category_id'),
+             'category_id': product.get('facebook_category') or product.get('category_id'),
              'image_url': product.get('image', [{}])[0].get('image1')}
             for product in products]
         self.cached_products = new_products

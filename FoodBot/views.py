@@ -49,6 +49,7 @@ def get_payment(order_id):
                                                                                                     tz=ukraine).strftime(
                                                                                                     "%Y-%m-%dT%H:%M:%S.%f")),
                     "server_url": "https://unit.cafe/index.php?route=extension/payment/liqpay/callback",
+                    "result_url": "https://www.facebook.com/FriendlyFoodBot/",
                     "order_id": order_id}
 
     liqpay = LiqPay(UNIT_PUB_KEY, UNIT_PRIV_KEY)
