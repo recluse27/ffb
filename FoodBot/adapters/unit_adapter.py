@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import requests as rq
 
 from .generic_adapter import IAdapter
-from ..constants import HEADERS
+from ..constants import HEADERS, CACHE_UPDATE_DAYS
 
 
 class UnitAdapter(IAdapter):
@@ -52,7 +52,7 @@ class UnitAdapter(IAdapter):
         self.cached_categories_updated = datetime.utcnow()
 
     def get_categories(self, **kwargs):
-        if not self.cached_categories:  # or (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS) < datetime.utcnow()):
+        if not self.cached_categories or (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS) < datetime.utcnow()):
             self.get_categories_from_api()
         return self.cached_categories
 
@@ -71,7 +71,7 @@ class UnitAdapter(IAdapter):
 
     def get_products(self, **kwargs):
         category_id = kwargs.get('category_id')
-        if not self.cached_products:  # or (self.cached_products_updated + timedelta(days=CACHE_UPDATE_DAYS) < datetime.utcnow()):
+        if not self.cached_products or (self.cached_products_updated + timedelta(days=CACHE_UPDATE_DAYS) < datetime.utcnow()):
             self.get_products_from_api()
         products = list(
             filter(

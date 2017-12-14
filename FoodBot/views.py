@@ -102,5 +102,6 @@ def respond_on_notify():
 @app.route('/update/products')
 def update_products():
     for key, adapter in controller.adapters.items():
+        adapter.get_categories()
         adapter.get_products()
     return "ok"
