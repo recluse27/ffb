@@ -5,7 +5,7 @@ from .utils import *
 
 class Controller:
     adapters = {
-        'Unit': UnitAdapter()
+        'unit': UnitAdapter()
     }
 
     def check_valid_response(self, data):
@@ -85,6 +85,8 @@ class Controller:
                         "message": {"text": "Сталася помилка, спробуйте ще.",
                                     "quick_replies": quick_replies(reply_type, provider)}}]
         else:
+            print("TYPE", reply_type)
+            print("ITEMS_TO_SHOW", items_to_show)
             data = [{
                 "recipient": {"id": user_id},
                 "message": {"attachment": receipt_template(**{'orders': items_to_show}),
@@ -98,13 +100,13 @@ class Controller:
         sender = self.get_sender(data)
         payload_data = self.get_message_payload(data)
         if not payload_data:
-            payload_data = '{"type": "get_started","provider": "Unit"}'
+            payload_data = '{"type": "get_started","provider": "unit"}'
 
         try:
             payload = json.loads(payload_data)
         except ValueError:
             payload = {'type': 'get_started',
-                       'provider': 'Unit'}
+                       'provider': 'unit'}
 
         if isinstance(payload, str):
             payload = json.loads(payload)

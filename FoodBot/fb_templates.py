@@ -125,6 +125,7 @@ def generic_link_template(URL, title):
 
 def receipt_template(**kwargs):
     items = kwargs.get('orders')
+    print("ORDERS", items)
     total_cost = sum(item['price'] for item in items)
     return {
         "type": "template",
