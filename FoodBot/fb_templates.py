@@ -15,8 +15,8 @@ id_types = {
 }
 
 button_types = {
-    'get_category': 'Add',
-    'get_basket': 'Remove'
+    'get_category': 'Додати',
+    'get_basket': 'Видалити'
 }
 
 payloads = {
