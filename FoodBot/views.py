@@ -73,7 +73,11 @@ def respond_on_notify():
         if payment_status:
             orders = get_orders(order_data.get('userid'))
 
-            responses.extend(controller.make_body("unit_notify",
+            responses.extend(controller.make_body("unit_explain",
+                                                  order_data.get('userid'),
+                                                  "unit",
+                                                  order_data))
+            responses.extend(controller.make_body("unit_gift",
                                                   order_data.get('userid'),
                                                   "unit",
                                                   order_data))

@@ -2,7 +2,9 @@ import copy
 import json
 import time
 
-from .constants import UNIT_REPLY_TEXT, SELF_URL
+from .constants import (UNIT_REPLY_TEXT, SELF_URL,
+                        UNIT_REPLY_EXPLAIN, UNIT_REPLY_GIFT,
+                        GREETING)
 
 id_types = {
     'get_categories': {'self_id': 'category_id', "next_id": 'category_id'},
@@ -30,10 +32,13 @@ link_types = {
 
 text_types = {
     'get_started': 'Сделай заказ.',
+    'greeting': GREETING,
     'add_product': 'Added.',
     'remove_product': 'Removed.',
     'no_products': 'У вас нет продуктов в корзине.',
     'unit_notify': UNIT_REPLY_TEXT,
+    'unit_explain': UNIT_REPLY_EXPLAIN,
+    'unit_gift': UNIT_REPLY_GIFT,
     'start_over': 'Сделай заказ.',
     "pay_rejected": "При оплате произошла ошибка. Попробуйте ещё раз."
 }
@@ -55,7 +60,7 @@ def list_template(id_type, button_type=None, *args, **kwargs):
                 {
                     "title": item.get('title'),
                     "image_url": item.get('image_url', ''),
-                    "subtitle": str(item.get('price')) + ' UAH' if 'price' in item else item.get('title') ,
+                    "subtitle": str(item.get('price')) + ' UAH' if 'price' in item else item.get('title'),
                     "buttons": [
                         {
                             "title": button_type or item.get('title'),
@@ -238,6 +243,18 @@ def quick_replies(reply_type, provider):
                                                             'provider': provider}),
                         quick_replies_template('Get Basket', {'type': 'get_basket',
                                                               'provider': provider})],
+        'unit_explain': [quick_replies_template('Categories', {'type': 'get_categories',
+                                                               'provider': provider}),
+                         quick_replies_template('Checkout', {'type': 'checkout',
+                                                             'provider': provider}),
+                         quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                               'provider': provider})],
+        'unit_gift': [quick_replies_template('Categories', {'type': 'get_categories',
+                                                            'provider': provider}),
+                      quick_replies_template('Checkout', {'type': 'checkout',
+                                                          'provider': provider}),
+                      quick_replies_template('Get Basket', {'type': 'get_basket',
+                                                            'provider': provider})],
         "pay_rejected": [quick_replies_template('Categories', {'type': 'get_categories',
                                                                'provider': provider}),
                          quick_replies_template('Checkout', {'type': 'checkout',

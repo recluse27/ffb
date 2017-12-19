@@ -70,7 +70,7 @@ class Controller:
                             "quick_replies": quick_replies(reply_type, provider)}
             }]
         elif reply_type in link_types:
-            save_order_data(user_id, items_to_show)
+            save_order_data(user_id, items_to_show, provider)
             if reply_type == "checkout":
                 if items_to_show.get('order_id') is not None:
                     url = link_types.get(reply_type) + '/order/' + str(items_to_show.get('order_id'))
