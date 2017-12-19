@@ -1,5 +1,6 @@
 import json
 import time
+import os
 
 import requests as rq
 
@@ -268,3 +269,10 @@ def get_categories():
         for category in categories
     ]
     return new_categories
+
+def get_cafes():
+    mypath = './adapters'
+    files = [f for f in os.listdir(mypath) if os.path.isfile(os.path.join(mypath, f))]
+    cafes = [s.split('_')[0] for s in files if s.split('_')[0] != 'generic' and s != '__init__.py']
+    return cafes
+    

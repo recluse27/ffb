@@ -8,6 +8,7 @@ from .constants import (UNIT_REPLY_TEXT, SELF_URL,
 
 id_types = {
     'get_categories': {'self_id': 'category_id', "next_id": 'category_id'},
+    'get_cafes': {},
     'get_category': {'self_id': 'category_id', 'next_id': 'id'},
     'add_product': {'self_id': 'id', 'next_id': 'id'},
     'remove_product': {'self_id': 'id', 'next_id': 'id'},
@@ -21,6 +22,7 @@ button_types = {
 
 payloads = {
     'start_over': {'type': 'get_category'},
+    'get_cafes': {'type': ''},
     'get_categories': {'type': 'get_category'},
     'get_category': {'type': 'add_product'},
     'get_basket': {'type': 'remove_product'}
@@ -40,7 +42,7 @@ text_types = {
     'unit_explain': UNIT_REPLY_EXPLAIN,
     'unit_gift': UNIT_REPLY_GIFT,
     'start_over': 'Сделай заказ.',
-    "pay_rejected": "При оплате произошла ошибка. Попробуйте ещё раз."
+    'pay_rejected': "При оплате произошла ошибка. Попробуйте ещё раз."
 }
 
 
@@ -182,12 +184,20 @@ def quick_replies(reply_type, provider):
                         quick_replies_template('Get Basket', {'type': 'get_basket',
                                                               'provider': provider})],
 
-        'start_over': [quick_replies_template('Categories', {'type': 'get_categories',
+        'start_over': [quick_replies_template('Cafes', {'type': 'get_cafes',
                                                              'provider': provider}),
                        quick_replies_template('Checkout', {'type': 'checkout',
                                                            'provider': provider}),
                        quick_replies_template('Get Basket', {'type': 'get_basket',
                                                              'provider': provider})],
+
+        # 'start_over': [quick_replies_template('Categories', {'type': 'get_categories',
+        #                                                      'provider': provider}),
+        #                quick_replies_template('Checkout', {'type': 'checkout',
+        #                                                    'provider': provider}),
+        #                quick_replies_template('Get Basket', {'type': 'get_basket',
+        #                                                      'provider': provider})],
+
 
         'get_categories': [quick_replies_template('Categories', {'type': 'get_categories',
                                                                  'provider': provider}),
