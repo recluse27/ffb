@@ -55,8 +55,7 @@ class Controller:
 
         elif reply_type in text_types:
             try:
-                text = text_types.get(reply_type).format(order_id=items_to_show.get('order_id', ''),
-                                                         order_code=items_to_show.get('order_code', ''),
+                text = text_types.get(reply_type).format(order_code=items_to_show.get('order_code', ''),
                                                          confirm_code=items_to_show.get('confirm_code', ''))
             except Exception:
                 if isinstance(items_to_show, str):
