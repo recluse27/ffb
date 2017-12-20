@@ -123,7 +123,7 @@ class Controller:
                 orders
             )
 
-        if reply_type == 'checkout':
+        elif reply_type == 'checkout':
 
             if not orders:
                 responses = self.make_body('no_products',
