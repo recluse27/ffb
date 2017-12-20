@@ -115,6 +115,14 @@ class Controller:
         reply_type = payload.get('type')
         orders = get_orders(sender) or []
 
+        if not adapter:
+            responses = self.make_body(
+                'greetings',
+                sender,
+                'unit',
+                orders
+            )
+
         if reply_type == 'checkout':
 
             if not orders:
