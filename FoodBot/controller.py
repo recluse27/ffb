@@ -117,7 +117,7 @@ class Controller:
 
         if not adapter:
             responses = self.make_body(
-                'greetings',
+                'greeting',
                 sender,
                 'unit',
                 orders
