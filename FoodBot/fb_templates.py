@@ -182,6 +182,13 @@ def quick_replies(reply_type, provider):
                         quick_replies_template('Кошик', {'type': 'get_basket',
                                                          'provider': provider})],
 
+        'greeting': [quick_replies_template('Категорії', {'type': 'get_categories',
+                                                          'provider': provider}),
+                     quick_replies_template('До оплати', {'type': 'checkout',
+                                                          'provider': provider}),
+                     quick_replies_template('Кошик', {'type': 'get_basket',
+                                                      'provider': provider})],
+
         'start_over': [quick_replies_template('Категорії', {'type': 'get_categories',
                                                             'provider': provider}),
                        quick_replies_template('До оплати', {'type': 'checkout',
