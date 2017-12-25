@@ -1,6 +1,8 @@
 from .adapters.unit_adapter import UnitAdapter
 from .fb_templates import *
 from .utils import *
+from types import LambdaType
+from datetime import datetime
 
 
 class Controller:
@@ -54,15 +56,22 @@ class Controller:
             } for item in result]
 
         elif reply_type in text_types:
-            try:
-                text = text_types.get(reply_type).format(order_code=items_to_show.get('order_code', ''),
-                                                         confirm_code=items_to_show.get('confirm_code', ''))
-            except Exception:
+            if isinstance(text_types.get(reply_type), LambdaType):
+                try:
+                    kwargs = {'order_code': items_to_show.get('order_code', ''),
+                              'confirm_code': items_to_show.get('confirm_code', ''),
+                              'date': str(datetime.now().date())}
+                    text = text_types.get(reply_type)(**kwargs)
+                except Exception:
+                    if isinstance(items_to_show, str):
+                        text = items_to_show
+                    else:
+                        text = text_types.get(reply_type)
+            else:
                 if isinstance(items_to_show, str):
                     text = items_to_show
                 else:
                     text = text_types.get(reply_type)
-
             data = [{
                 "recipient": {"id": user_id},
                 "message": {"text": text,

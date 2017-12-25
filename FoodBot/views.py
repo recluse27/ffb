@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from liqpay import LiqPay
 
 from .constants import *
@@ -109,3 +109,8 @@ def update_products():
         adapter.get_categories()
         adapter.get_products()
     return "ok"
+
+
+@app.route('/bot/policy')
+def policy():
+    return render_template("policy.html")
