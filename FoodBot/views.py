@@ -12,7 +12,7 @@ controller = Controller()
 
 @app.route('/', methods=['GET'])
 def handle_verification():
-    return request.args.get('hub.challenge') or 'Hello, world'
+    return request.args.get('hub.challenge') or render_template("policy.html")
 
 
 @app.route('/', methods=['POST'])
