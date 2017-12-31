@@ -1,5 +1,6 @@
 import unittest
-from unit_adapter import UnitAdapter
+from ..adapters.generic_adapter import IAdapter
+from ..adapters.unit_adapter import UnitAdapter
 
 
 class TestUnit(unittest.TestCase):
@@ -23,3 +24,8 @@ class TestUnit(unittest.TestCase):
         for product_id in product_ids:
             with self.subTest(i=product_id):
                 self.assertTrue(self.is_product_available(i))
+
+
+if __name__ == '__main__':
+    print('test')
+    unittest.main()

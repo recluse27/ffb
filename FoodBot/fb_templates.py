@@ -8,7 +8,8 @@ from .constants import (UNIT_REPLY_TEXT, SELF_URL,
 
 id_types = {
     'get_categories': {'self_id': 'category_id', "next_id": 'category_id'},
-    'get_cafes': {},
+    'get_cafes': {'self_id': 'id', "next_id": 'id'},
+    'get_cafe': {'self_id': 'id', "next_id": 'id'},
     'get_category': {'self_id': 'category_id', 'next_id': 'id'},
     'add_product': {'self_id': 'id', 'next_id': 'id'},
     'remove_product': {'self_id': 'id', 'next_id': 'id'},
@@ -22,7 +23,8 @@ button_types = {
 
 payloads = {
     'start_over': {'type': 'get_category'},
-    'get_cafes': {'type': ''},
+    'get_cafes': {'type': 'get_cafe'},
+    'get_cafe': {'type': 'get_category'},
     'get_categories': {'type': 'get_category'},
     'get_category': {'type': 'add_product'},
     'get_basket': {'type': 'remove_product'}
