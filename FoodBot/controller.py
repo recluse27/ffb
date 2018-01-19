@@ -92,7 +92,7 @@ class Controller:
                         "recipient": {"id": user_id},
                         "message": {"text": "Сталася помилка, спробуйте ще.",
                                     "quick_replies": quick_replies(reply_type, provider)}}]
-        else:
+        elif reply_type == "receipt":
             print("TYPE", reply_type)
             print("ITEMS_TO_SHOW", items_to_show)
             data = [{

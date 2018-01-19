@@ -105,6 +105,38 @@ def generic_template(id_type, new_item, button_type=None, **kwargs):
     return template
 
 
+def generic_list_template(id_type, new_items, button_type=None, **kwargs):
+    items = [copy.copy(new_item) for new_item in new_items]
+    payload = kwargs
+    next_type = id_types.get(id_type, {}).get('next_id')
+    for item in items:
+        payload.update({next_type: item.get(next_type)})
+        item.update({'payload': payload})
+
+    template = {
+        "type": "template",
+        "payload": {
+            "template_type": "generic",
+            "elements": [
+                {
+                    "title": item.get('title'),
+                    "subtitle": str(item.get('price')) + ' UAH',
+                    "image_url": item.get('image_url', ''),
+                    "buttons": [
+                        {
+                            "title": button_type or item.get('title'),
+                            "type": "postback",
+                            "payload": json.dumps(item.get('payload'))
+                        }
+                    ]
+                } for item in items
+            ]
+        }
+    }
+
+    return template
+
+
 def generic_link_template(URL, title):
     template = {
         "type": "template",
