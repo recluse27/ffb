@@ -128,5 +128,8 @@ class UnitAdapter(IAdapter):
         if product:
             if 'payload' in product[0]:
                 product[0].pop('payload')
-            orders.remove(product[0])
+            if product[0] in orders:
+                orders.remove(product[0])
+            else:
+                return "Продукт наразі відсутній у кошику."
             mongo.orders.update({'userid': sender, 'provider': provider}, {"$set": {'orders': orders}})
