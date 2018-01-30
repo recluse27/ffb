@@ -212,7 +212,7 @@ QRs = {'categories': lambda provider: quick_replies_template('Категорії
                                                                         'provider': provider}),
        'basket': lambda provider: quick_replies_template('Кошик', {'type': 'get_basket',
                                                                    'provider': provider}),
-       'instruction': lambda provider: quick_replies_template('Кошик', {'type': 'get_instruction',
+       'instruction': lambda provider: quick_replies_template('Інструкція', {'type': 'get_instruction',
                                                                         'provider': provider})
        }
 
