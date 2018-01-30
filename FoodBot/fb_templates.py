@@ -109,6 +109,7 @@ def generic_list_template(id_type, *new_items, button_type=None, **kwargs):
     items = [copy.copy(new_item) for new_item in new_items]
     payload = kwargs
     next_type = id_types.get(id_type, {}).get('next_id')
+    print("OLD ITEMS:", new_items)
     print("ITEMS:", items)
     for item in items:
         payload.update({next_type: item.get(next_type)})
