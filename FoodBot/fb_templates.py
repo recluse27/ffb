@@ -4,7 +4,7 @@ import time
 
 from .constants import (UNIT_REPLY_TEXT, SELF_URL,
                         UNIT_REPLY_EXPLAIN, UNIT_REPLY_GIFT,
-                        GREETING)
+                        GREETING, INSTRUCTION)
 
 id_types = {
     'get_categories': {'self_id': 'category_id', "next_id": 'category_id'},
@@ -33,6 +33,7 @@ link_types = {
 text_types = {
     'get_started': 'Зробіть замовлення.',
     'greeting': GREETING,
+    'get_instruction': INSTRUCTION,
     'add_product': 'Додано.',
     'remove_product': 'Видалено.',
     'no_products': 'У вас нема продуктів у кошику.',
@@ -109,8 +110,6 @@ def generic_list_template(id_type, new_items, button_type=None, **kwargs):
     items = [copy.copy(new_item) for new_item in new_items]
     payload = kwargs
     next_type = id_types.get(id_type, {}).get('next_id')
-    print("OLD ITEMS:", new_items)
-    print("ITEMS:", items)
     for item in items:
         payload.update({next_type: item.get(next_type)})
         item.update({'payload': payload})
@@ -207,100 +206,51 @@ def quick_replies_template(title, payload):
     return template
 
 
+QRs = {'categories': lambda provider: quick_replies_template('Категорії', {'type': 'get_categories',
+                                                                           'provider': provider}),
+       'payment': lambda provider: quick_replies_template('До оплати', {'type': 'checkout',
+                                                                        'provider': provider}),
+       'basket': lambda provider: quick_replies_template('Кошик', {'type': 'get_basket',
+                                                                   'provider': provider}),
+       'instruction': lambda provider: quick_replies_template('Кошик', {'type': 'get_instruction',
+                                                                        'provider': provider})
+       }
+
+method_replies = {
+    'get_started': ['categories', 'payment', 'basket', 'instruction'],
+
+    'get_instruction': ['categories', 'payment', 'basket', 'instruction'],
+
+    'greeting': ['categories', 'payment', 'basket', 'instruction'],
+
+    'start_over': ['categories', 'payment', 'basket', 'instruction'],
+
+    'get_categories': ['categories', 'payment', 'basket', 'instruction'],
+
+    'add_product': ['categories', 'payment', 'basket', 'instruction'],
+
+    'remove_product': ['categories', 'payment', 'basket', 'instruction'],
+
+    'get_basket': ['categories', 'payment', 'basket', 'instruction'],
+
+    'get_category': ['payment', 'basket', 'instruction'],
+
+    'no_products': ['categories', 'payment', 'basket', 'instruction'],
+
+    'checkout': ['categories', 'basket', 'instruction'],
+
+    'receipt': ['categories', 'payment', 'basket', 'instruction'],
+
+    'unit_notify': ['categories', 'payment', 'basket', 'instruction'],
+
+    'unit_explain': ['categories', 'payment', 'basket', 'instruction'],
+
+    'unit_gift': ['categories', 'payment', 'basket', 'instruction'],
+
+    "pay_rejected": ['categories', 'payment', 'basket', 'instruction'],
+
+}
+
+
 def quick_replies(reply_type, provider):
-    return {
-        'get_started': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                             'provider': provider}),
-                        quick_replies_template('До оплати', {'type': 'checkout',
-                                                             'provider': provider}),
-                        quick_replies_template('Кошик', {'type': 'get_basket',
-                                                         'provider': provider})],
-
-        'greeting': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                          'provider': provider}),
-                     quick_replies_template('До оплати', {'type': 'checkout',
-                                                          'provider': provider}),
-                     quick_replies_template('Кошик', {'type': 'get_basket',
-                                                      'provider': provider})],
-
-        'start_over': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                            'provider': provider}),
-                       quick_replies_template('До оплати', {'type': 'checkout',
-                                                            'provider': provider}),
-                       quick_replies_template('Кошик', {'type': 'get_basket',
-                                                        'provider': provider})],
-
-        'get_categories': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                                'provider': provider}),
-                           quick_replies_template('До оплати', {'type': 'checkout',
-                                                                'provider': provider}),
-                           quick_replies_template('Кошик', {'type': 'get_basket',
-                                                            'provider': provider})],
-
-        'add_product': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                             'provider': provider}),
-                        quick_replies_template('До оплати', {'type': 'checkout',
-                                                             'provider': provider}),
-                        quick_replies_template('Кошик', {'type': 'get_basket',
-                                                         'provider': provider})],
-
-        'remove_product': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                                'provider': provider}),
-                           quick_replies_template('До оплати', {'type': 'checkout',
-                                                                'provider': provider}),
-                           quick_replies_template('Кошик', {'type': 'get_basket',
-                                                            'provider': provider})],
-
-        'get_basket': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                            'provider': provider}),
-                       quick_replies_template('До оплати', {'type': 'checkout',
-                                                            'provider': provider}),
-                       quick_replies_template('Кошик', {'type': 'get_basket',
-                                                        'provider': provider})],
-
-        'get_category': [quick_replies_template('До оплати', {'type': 'checkout',
-                                                              'provider': provider}),
-                         quick_replies_template('Кошик', {'type': 'get_basket',
-                                                          'provider': provider})],
-        'no_products': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                             'provider': provider}),
-                        quick_replies_template('До оплати', {'type': 'checkout',
-                                                             'provider': provider}),
-                        quick_replies_template('Кошик', {'type': 'get_basket',
-                                                         'provider': provider})],
-        'checkout': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                          'provider': provider}),
-                     quick_replies_template('Кошик', {'type': 'get_basket',
-                                                      'provider': provider})],
-        'receipt': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                         'provider': provider}),
-                    quick_replies_template('До оплати', {'type': 'checkout',
-                                                         'provider': provider}),
-                    quick_replies_template('Кошик', {'type': 'get_basket',
-                                                     'provider': provider})],
-        'unit_notify': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                             'provider': provider}),
-                        quick_replies_template('До оплати', {'type': 'checkout',
-                                                             'provider': provider}),
-                        quick_replies_template('Кошик', {'type': 'get_basket',
-                                                         'provider': provider})],
-        'unit_explain': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                              'provider': provider}),
-                         quick_replies_template('До оплати', {'type': 'checkout',
-                                                              'provider': provider}),
-                         quick_replies_template('Кошик', {'type': 'get_basket',
-                                                          'provider': provider})],
-        'unit_gift': [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                           'provider': provider}),
-                      quick_replies_template('До оплати', {'type': 'checkout',
-                                                           'provider': provider}),
-                      quick_replies_template('Кошик', {'type': 'get_basket',
-                                                       'provider': provider})],
-        "pay_rejected": [quick_replies_template('Категорії', {'type': 'get_categories',
-                                                              'provider': provider}),
-                         quick_replies_template('До оплати', {'type': 'checkout',
-                                                              'provider': provider}),
-                         quick_replies_template('Кошик', {'type': 'get_basket',
-                                                          'provider': provider})],
-
-    }[reply_type]
+    return [QRs.get(qr_type)(provider) for qr_type in method_replies.get(reply_type, "")]

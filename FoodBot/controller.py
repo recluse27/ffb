@@ -44,11 +44,11 @@ class Controller:
             items = transform(items_to_show)
 
             for item in items:
-                if len(item) == 1:
-                    result.append(generic_template(reply_type, item[0], button_type, **payload))
-                else:
-                    result.append(generic_list_template(reply_type, item, button_type, **payload))
-                    # result.append(list_template(reply_type, button_type, *item, **payload))
+                # if len(item) == 1:
+                #     result.append(generic_template(reply_type, item[0], button_type, **payload))
+                # else:
+                result.append(generic_list_template(reply_type, item, button_type, **payload))
+                # result.append(list_template(reply_type, button_type, *item, **payload))
 
             data = [{
                 "recipient": {"id": user_id},
