@@ -42,6 +42,7 @@ class Controller:
 
             result = []
             items = transform(items_to_show)
+            print(items)
 
             for item in items:
                 if len(item) == 1:
