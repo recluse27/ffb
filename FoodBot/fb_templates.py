@@ -105,7 +105,7 @@ def generic_template(id_type, new_item, button_type=None, **kwargs):
     return template
 
 
-def generic_list_template(id_type, new_items, button_type=None, **kwargs):
+def generic_list_template(id_type, *new_items, button_type=None, **kwargs):
     items = [copy.copy(new_item) for new_item in new_items]
     payload = kwargs
     next_type = id_types.get(id_type, {}).get('next_id')
