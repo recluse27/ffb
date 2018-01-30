@@ -1,11 +1,12 @@
 import requests
 
-from . import app, mongo
+from . import app, mongo, testing
 
 
 def make_request(data):
     resp = requests.post(
-        "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'],
+        "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'
+        if testing else "PAGE_TEST_TOKEN"],
         json=data)
     return resp
 
