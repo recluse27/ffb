@@ -2,9 +2,9 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-PAGE_TEST_TOKEN = ("EAABkCJJ1SwEBANHfnvtZCE5F2ZBSkMoAsZBdX0fuEOCPz496QLEXgZBWo2KF"
-                   "T1vKZAsG7XinDFWydfbp4ZBIOu3rsVjeHLbshl6iP0I6S6AsFazZBhPEOOii15"
-                   "XHjOZCqhgsKFGwsIFjZAIxFuZB5wSD2ClYZC2vuZA7vShGSW3KAPm5TQZDZD")
+PAGE_TEST_TOKEN = ("EAABkCJJ1SwEBADhvlEXaj0bIzExZCs8DGXpRXiNpByebSkx3RM3ZAKh"
+                   "wr39qKyIZAb0ZCUWUOYjoRUTRby2o7OmOEszNDRPJrasoUxBKro7q4ipKFa"
+                   "QqYsNXNl0sRlKnbWni6OZBjOQQH14Le5hnuJiap9QXSU92NlpLpIoA4VQZDZD")
 
 PAGE_ACCESS_TOKEN = ("EAABiGEYywpYBAGG93H0X5IUngG6gkFCSntD8lrTpLSloaUZAyD5EQ"
                      "aetjhZB8dgULlPkrQS38IfHVPZCinIWtnvyzXZA4Gp5aZChZAQfZATatCHx"
