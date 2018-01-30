@@ -11,6 +11,6 @@ PAGE_ACCESS_TOKEN = ("EAABiGEYywpYBAGG93H0X5IUngG6gkFCSntD8lrTpLSloaUZAyD5EQ"
                      "rGDwr28oevZCjOQG30fWhZCLNpnZCpWZAsry3ZBQ8Cill04JUyZB5sGH8ZC4KQOuEKRAZDZD")
 
 VERIFY_TOKEN = '7D2B6SPGAJ8ZKNR13OQ04UFT'
-VERIFY_TEST = ""
 
 MONGO_URI = "mongodb://heroku_dx30fc17:s3o4gk9bvmuqp60l43nq70eo2o@ds131432.mlab.com:31432/heroku_dx30fc17"
+MONGO_TEST = "mongodb://bot_user:bot_password@ds129386.mlab.com:29386/heroku_xrfxrbss"
