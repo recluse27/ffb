@@ -110,10 +110,10 @@ def generic_list_template(id_type, new_items, button_type=None, **kwargs):
     items = [copy.copy(new_item) for new_item in new_items]
     payload = kwargs
     next_type = id_types.get(id_type, {}).get('next_id')
-    for item in items:
-        payload.update({next_type: item.get(next_type)})
-        print("PAYLOAD: ", payload)
-        item.update({'payload': payload})
+    for some_item in items:
+        payload.update({next_type: some_item.get(next_type)})
+        some_item.update({'payload': payload})
+        print("PAYLOAD: ", some_item.get('payload'))
 
     template = {
         "type": "template",
