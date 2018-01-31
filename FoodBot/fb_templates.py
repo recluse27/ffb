@@ -218,37 +218,37 @@ QRs = {'categories': lambda provider: quick_replies_template('Категорії
        }
 
 method_replies = {
-    'get_started': ['categories', 'payment', 'basket', 'instruction'],
+    'get_started': ['categories', 'payment', 'basket'],
 
-    'get_instruction': ['categories', 'payment', 'basket', 'instruction'],
+    'get_instruction': ['categories', 'payment', 'basket'],
 
-    'greeting': ['categories', 'payment', 'basket', 'instruction'],
+    'greeting': ['categories', 'payment', 'basket'],
 
-    'start_over': ['categories', 'payment', 'basket', 'instruction'],
+    'start_over': ['categories', 'payment', 'basket'],
 
-    'get_categories': ['categories', 'payment', 'basket', 'instruction'],
+    'get_categories': ['categories', 'payment', 'basket'],
 
-    'add_product': ['categories', 'payment', 'basket', 'instruction'],
+    'add_product': ['categories', 'payment', 'basket'],
 
-    'remove_product': ['categories', 'payment', 'basket', 'instruction'],
+    'remove_product': ['categories', 'payment', 'basket'],
 
-    'get_basket': ['categories', 'payment', 'basket', 'instruction'],
+    'get_basket': ['categories', 'payment', 'basket'],
 
-    'get_category': ['categories', 'payment', 'basket', 'instruction'],
+    'get_category': ['categories', 'payment', 'basket'],
 
-    'no_products': ['categories', 'payment', 'basket', 'instruction'],
+    'no_products': ['categories', 'payment', 'basket'],
 
-    'checkout': ['categories', 'basket', 'instruction'],
+    'checkout': ['categories', 'basket'],
 
-    'receipt': ['categories', 'payment', 'basket', 'instruction'],
+    'receipt': ['categories', 'payment', 'basket'],
 
-    'unit_notify': ['categories', 'payment', 'basket', 'instruction'],
+    'unit_notify': ['categories', 'payment', 'basket'],
 
-    'unit_explain': ['categories', 'payment', 'basket', 'instruction'],
+    'unit_explain': ['categories', 'payment', 'basket'],
 
-    'unit_gift': ['categories', 'payment', 'basket', 'instruction'],
+    'unit_gift': ['categories', 'payment', 'basket'],
 
-    "pay_rejected": ['categories', 'payment', 'basket', 'instruction'],
+    "pay_rejected": ['categories', 'payment', 'basket'],
 
 }
 
