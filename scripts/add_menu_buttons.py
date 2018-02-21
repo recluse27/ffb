@@ -1,5 +1,4 @@
 import requests as rq
-from FoodBot import models
 
 url = "https://graph.facebook.com/v2.10/me/messenger_profile?access_token={token}"
 
@@ -38,6 +37,3 @@ def make_menu_buttons(access_token):
     res = rq.post(url=url.format(token=access_token), json=data)
     print(res)
     print(res.text)
-
-def redefine_database():
-    pass
