@@ -26,7 +26,6 @@ def get_or_create_order(document, user_id, provider):
 def require_provider(func):
     def wrapped(self, sender, **kwargs):
         provider = kwargs.get('provider')
-        print(provider)
         if not provider:
             return []
         return func(self, sender, provider, **kwargs)

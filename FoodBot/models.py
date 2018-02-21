@@ -42,8 +42,6 @@ class Message:
                                "quick_replies": self.quick_replies}}
 
         response = rq.post(url=url, json=message)
-        print(message)
-        print(response.text)
         return response
 
 

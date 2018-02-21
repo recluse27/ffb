@@ -134,7 +134,8 @@ class Controller:
         ]
 
     @require_provider
-    def get_categories(self, sender, provider, **kwargs):
+    def get_categories(self, sender, **kwargs):
+        provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
         result = adapter.get_categories(**kwargs)
