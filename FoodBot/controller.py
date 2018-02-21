@@ -26,14 +26,15 @@ class Controller:
     @staticmethod
     def get_message_payload(data):
         payload = None
+        print(data)
         if data.get('message', {}).get('quick_reply'):
             payload = data.get('message', {}).get('quick_reply', {}).get('payload')
         elif 'postback' in data:
             payload = data.get('postback', {}).get('payload')
         try:
             payload = json.loads(payload)
-        except ValueError:
-            payload = {'type': 'get_started'}
+        except (ValueError, TypeError):
+            payload = {'type': 'get_cafes'}
         return payload
 
     @staticmethod
