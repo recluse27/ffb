@@ -127,7 +127,7 @@ class UnitAdapter(IAdapter):
         orders.append(product.to_json())
         user_order.orders = orders
         user_order.save()
-        return f"Додано {product.title}."
+        return "Додано {title}.".format(title=product.title)
 
     def remove_product(self, **kwargs):
         if not self.cached_products:
@@ -146,4 +146,4 @@ class UnitAdapter(IAdapter):
         orders.remove(product.to_json())
         user_order.orders = orders
         user_order.save()
-        return f"Видалено {product.title}."
+        return "Видалено {title}.".format(title=product.title)
