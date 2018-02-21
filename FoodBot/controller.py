@@ -146,7 +146,7 @@ class Controller:
         for category_list in rearranged_categories:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
-                                    message_data=generic_list_template(category_list, {'provider': provider,
+                                    message_data=generic_list_template(category_list, **{'provider': provider,
                                                                                        'type': 'get_category'}),
                                     quick_replies=quick_replies_instance))
         return messages
@@ -165,7 +165,7 @@ class Controller:
         for product_list in rearranged_products:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
-                                    message_data=generic_list_template(product_list, {'provider': provider,
+                                    message_data=generic_list_template(product_list, **{'provider': provider,
                                                                                       'type': 'get_product'}),
                                     quick_replies=quick_replies_instance))
         return messages
@@ -190,7 +190,7 @@ class Controller:
         for product_list in rearranged_products:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
-                                    message_data=generic_list_template(product_list, {'provider': provider,
+                                    message_data=generic_list_template(product_list, **{'provider': provider,
                                                                                       'type': 'get_product'}),
                                     quick_replies=quick_replies_instance))
         return messages
@@ -260,7 +260,8 @@ class Controller:
         for cafe_list in rearranged_cafes:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
-                                    message_data=generic_list_template(cafe_list, {'type': 'get_cafe'}),
+                                    message_data=generic_list_template(cafe_list,
+                                                                       **{'type': 'get_cafe'}),
                                     quick_replies=quick_replies_instance))
         return messages
 
