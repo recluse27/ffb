@@ -19,10 +19,13 @@ def handle_verification():
 def handle_incoming_messages():
     data = request.json.get('entry', [{}])[0].get('messaging', [{}])[0]
 
+    print("DEBUG")
     if controller.is_response_valid(data):
+        print("VALID")
         responses = controller.handle_message(data=data)
 
         for response in responses:
+            print(response)
             response.send(url=BOT_URL)
 
     return "ok"
