@@ -21,7 +21,7 @@ def make_menu_buttons(access_token):
              "composer_input_disabled": True,
              "call_to_actions": [
                  {
-                     "title": "Заходи",
+                     "title": "Заклади",
                      "type": "postback",
                      "payload": "{\"type\":\"get_cafes\"}"
                  },
