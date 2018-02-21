@@ -26,7 +26,6 @@ class Controller:
     @staticmethod
     def get_message_payload(data):
         payload = None
-        print(data)
         if data.get('message', {}).get('quick_reply'):
             payload = data.get('message', {}).get('quick_reply', {}).get('payload')
         elif 'postback' in data:
