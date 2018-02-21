@@ -74,9 +74,10 @@ class UnitAdapter(IAdapter):
         self.cached_products_updated = datetime.utcnow()
 
     def get_categories(self, **kwargs):
-        expire_date = self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
+        expire_date = (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
+                       if self.cached_categories_updated else None)
 
-        if not self.cached_categories or (expire_date < datetime.utcnow()):
+        if not self.cached_categories or (expire_date and expire_date < datetime.utcnow()):
             self.get_categories_from_api()
 
         categories = [category.to_json() for category in self.cached_categories]
@@ -84,9 +85,10 @@ class UnitAdapter(IAdapter):
         return categories
 
     def get_products(self, **kwargs):
-        expire_date = self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
+        expire_date = (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
+                       if self.cached_products_updated else None)
         category_id = kwargs.get('id')
-        if not self.cached_products or (expire_date < datetime.utcnow()):
+        if not self.cached_products or (expire_date and expire_date < datetime.utcnow()):
             self.get_products_from_api()
 
         products = [product.to_json() for product in self.cached_products if product.category_id == category_id]
