@@ -1,21 +1,8 @@
-import requests
-
-from . import app, mongo, testing
-
-
-def make_request(data):
-    resp = requests.post(
-        "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'
-        if not testing else "PAGE_TEST_TOKEN"],
-        json=data)
-    return resp
-
-
-def transform(orders):
+def transform(items):
     result, temp = [], []
-    div = 10  # if len(orders) % 3 <= len(orders) % 4 else 4
-    for i in orders:
-        temp.append(i)
+    div = 10
+    for item in items:
+        temp.append(item)
         if len(temp) == div:
             result.append(temp)
             temp = []
@@ -26,19 +13,20 @@ def transform(orders):
     return result
 
 
-def get_orders(userid):
-    return (mongo.orders.find_one({'userid': userid}, {'_id': 0, 'orders': 1}) or {'orders': []}).get('orders')
+def get_or_create_order(document, user_id, provider):
+    instance = document.find_one({'user_id': user_id,
+                                  'provider': provider})
+    if not instance:
+        instance = document(**{'user_id': user_id,
+                               'provider': provider})
+        instance.commit()
+    return instance
 
 
-def clean_order(userid, provider):
-    mongo.orders.remove({"userid": userid, "provider": provider})
-    mongo.order_data.remove({"userid": userid})
-
-
-def save_order_data(userid, data, provider):
-    check = mongo.order_data.find({'userid': userid})
-    if check:
-        for item in check:
-            mongo.order_data.remove({'_id': item['_id']})
-    data.update({'userid': userid})
-    mongo.order_data.insert(data)
+def require_provider(func):
+    def wrapped(self, sender, **kwargs):
+        provider = kwargs.get('provider')
+        if not provider:
+            return []
+        return func(self, sender, provider, **kwargs)
+    return wrapped

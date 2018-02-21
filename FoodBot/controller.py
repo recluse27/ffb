@@ -1,8 +1,12 @@
-from .adapters.unit_adapter import UnitAdapter
-from .fb_templates import *
-from .utils import *
-from types import LambdaType
-from datetime import datetime
+import json
+
+from FoodBot.adapters.unit_adapter import UnitAdapter
+from FoodBot.constants import (GREETING, INSTRUCTION, SELF_URL, REPLY_TEXT, REPLY_EXPLAIN, REPLY_GIFT,
+                               TEXT, ATTACHMENT)
+from FoodBot.fb_templates import (generic_link_template, generic_list_template,
+                                  receipt_template, quick_replies)
+from FoodBot.models import Message, BotOrder, CafeOrder
+from FoodBot.utils import transform, require_provider, get_or_create_order
 
 
 class Controller:
@@ -10,167 +14,278 @@ class Controller:
         'unit': UnitAdapter()
     }
 
-    def check_valid_response(self, data):
-        if not data:
+    @staticmethod
+    def is_response_valid(data):
+        if (not data or
+                any([item in data for item in ['delivery', 'echo']]) or
+                    'is_echo' in data.get('message', {})):
             return False
-        if 'delivery' in data:
-            return False
-        if 'read' in data:
-            return False
-        if 'is_echo' in data.get('message', {}):
-            return False
+
         return True
 
-    def get_message_payload(self, data):
+    @staticmethod
+    def get_message_payload(data):
         payload = None
         if data.get('message', {}).get('quick_reply'):
             payload = data.get('message', {}).get('quick_reply', {}).get('payload')
         elif 'postback' in data:
             payload = data.get('postback', {}).get('payload')
+        try:
+            payload = json.loads(payload)
+        except ValueError:
+            payload = {'type': 'get_started'}
         return payload
 
-    def get_sender(self, data):
+    @staticmethod
+    def get_sender(data):
         return data.get('sender').get('id')
 
-    def make_body(self, reply_type, user_id, provider, items_to_show):
-        data = []
-        if reply_type in payloads.keys():
-            payload = payloads.get(reply_type, {})
-            payload.update({'provider': provider})
-
-            button_type = button_types.get(reply_type)
-
-            result = []
-            items = transform(items_to_show)
-
-            for item in items:
-                # if len(item) == 1:
-                #     result.append(generic_template(reply_type, item[0], button_type, **payload))
-                # else:
-                result.append(generic_list_template(reply_type, item, button_type, **payload))
-                # result.append(list_template(reply_type, button_type, *item, **payload))
-
-            data = [{
-                "recipient": {"id": user_id},
-                "message": {"attachment": item,
-                            "quick_replies": quick_replies(reply_type, provider)}
-            } for item in result]
-
-        elif reply_type in text_types:
-            if isinstance(text_types.get(reply_type), LambdaType):
-                try:
-                    kwargs = {'order_code': items_to_show.get('order_code', ''),
-                              'confirm_code': items_to_show.get('confirm_code', ''),
-                              'date': str(datetime.now().date())}
-                    text = text_types.get(reply_type)(**kwargs)
-                except Exception:
-                    if isinstance(items_to_show, str):
-                        text = items_to_show
-                    else:
-                        text = text_types.get(reply_type)
-            else:
-                if isinstance(items_to_show, str):
-                    text = items_to_show
-                else:
-                    text = text_types.get(reply_type)
-            data = [{
-                "recipient": {"id": user_id},
-                "message": {"text": text,
-                            "quick_replies": quick_replies(reply_type, provider)}
-            }]
-        elif reply_type in link_types:
-            save_order_data(user_id, items_to_show, provider)
-            if reply_type == "checkout":
-                if items_to_show.get('order_id') is not None:
-                    url = link_types.get(reply_type) + '/order/' + str(items_to_show.get('order_id'))
-                    data = [{
-                        "recipient": {"id": user_id},
-                        "message": {"attachment": generic_link_template(url, 'Будь ласка, здійсніть оплату.'),
-                                    "quick_replies": quick_replies(reply_type, provider)}
-                    }]
-                else:
-                    data = [{
-                        "recipient": {"id": user_id},
-                        "message": {"text": "Сталася помилка, спробуйте ще.",
-                                    "quick_replies": quick_replies(reply_type, provider)}}]
-        elif reply_type == "receipt":
-            print("TYPE", reply_type)
-            print("ITEMS_TO_SHOW", items_to_show)
-            data = [{
-                "recipient": {"id": user_id},
-                "message": {"attachment": receipt_template(**{'orders': items_to_show}),
-                            "quick_replies": quick_replies(reply_type, provider)}
-            }]
-        return data
-
-    def make_responses(self, **kwargs):
-        responses = []
-        data = kwargs.get('data')
+    def handle_message(self, data):
+        data = data.get('data')
         sender = self.get_sender(data)
-        payload_data = self.get_message_payload(data)
-        if not payload_data:
-            payload_data = '{"type": "get_started","provider": "unit"}'
+        payload = self.get_message_payload(data)
+        method = payload.get("type")
+        return self.__getattribute__(method)(sender, **payload)
 
-        try:
-            payload = json.loads(payload_data)
-        except ValueError:
-            payload = {'type': 'get_started',
-                       'provider': 'unit'}
+    def get_started(self, sender, **kwargs):
+        quick_replies_list = ['cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               kwargs.get('provider', 'unit'))
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data='Зробіть замовлення.',
+                          quick_replies=quick_replies_instance)
+        return [message]
 
-        if isinstance(payload, str):
-            payload = json.loads(payload)
-        provider = payload.get('provider')
+    def greeting(self, sender, **kwargs):
+        quick_replies_list = ['cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data=GREETING,
+                          quick_replies=quick_replies_instance)
+        return [message]
+
+    def get_instruction(self, sender, **kwargs):
+        quick_replies_list = ['cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data=INSTRUCTION,
+                          quick_replies=quick_replies_instance)
+        return [message]
+
+    @require_provider
+    def add_product(self, sender, provider, **kwargs):
+        adapter = self.adapters.get(provider)
+
+        result = adapter.add_product(**kwargs)
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data=result,
+                          quick_replies=quick_replies_instance)
+        return [message]
+
+    @require_provider
+    def remove_product(self, sender, provider, **kwargs):
+        adapter = self.adapters.get(provider)
+
+        result = adapter.remove_product(**kwargs)
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data=result,
+                          quick_replies=quick_replies_instance)
+        return [message]
+
+    def unit_notify(self, **kwargs):
+        cafe_order = CafeOrder.find_one({"order_id": kwargs.get('order_id')})
+        if cafe_order is None:
+            return []
+
+        sender = cafe_order.user_id
+        bot_order = get_or_create_order(BotOrder, cafe_order.user_id, cafe_order.provider)
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               cafe_order.provider)
+        return [
+            Message(user_id=sender,
+                    message_type=ATTACHMENT,
+                    message_data=receipt_template(**bot_order.to_json()),
+                    quick_replies=quick_replies_instance),
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=REPLY_EXPLAIN(**cafe_order.dump()),
+                    quick_replies=quick_replies_instance),
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=REPLY_GIFT(**cafe_order.dump()),
+                    quick_replies=quick_replies_instance),
+
+        ]
+
+    @require_provider
+    def get_categories(self, sender, provider, **kwargs):
+        adapter = self.adapters.get(provider)
+
+        result = adapter.get_categories(**kwargs)
+        rearranged_categories = transform(result)
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+
+        messages = []
+        for category_list in rearranged_categories:
+            messages.append(Message(user_id=sender,
+                                    message_type=ATTACHMENT,
+                                    message_data=generic_list_template(category_list, {'provider': provider,
+                                                                                       'type': 'get_category'}),
+                                    quick_replies=quick_replies_instance))
+        return messages
+
+    @require_provider
+    def get_category(self, sender, provider, **kwargs):
+        adapter = self.adapters.get(provider)
+
+        result = adapter.get_products(**kwargs)
+        rearranged_products = transform(result)
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+
+        messages = []
+        for product_list in rearranged_products:
+            messages.append(Message(user_id=sender,
+                                    message_type=ATTACHMENT,
+                                    message_data=generic_list_template(product_list, {'provider': provider,
+                                                                                      'type': 'get_product'}),
+                                    quick_replies=quick_replies_instance))
+        return messages
+
+    @require_provider
+    def get_basket(self, sender, provider, **kwargs):
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+
+        order = BotOrder.find_one({"user_id": sender,
+                                   "provider": provider})
+
+        if order is None or not order.orders:
+            return [Message(user_id=sender,
+                            message_type=TEXT,
+                            message_data='У вас нема продуктів у кошику.',
+                            quick_replies=quick_replies_instance)]
+
+        messages = []
+        rearranged_products = transform(order.orders)
+        for product_list in rearranged_products:
+            messages.append(Message(user_id=sender,
+                                    message_type=ATTACHMENT,
+                                    message_data=generic_list_template(product_list, {'provider': provider,
+                                                                                      'type': 'get_product'}),
+                                    quick_replies=quick_replies_instance))
+        return messages
+
+    @require_provider
+    def checkout(self, sender, provider, **kwargs):
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
 
         adapter = self.adapters.get(provider)
-        reply_type = payload.get('type')
-        orders = get_orders(sender) or []
 
-        if not adapter:
-            responses = self.make_body(
-                'greeting',
-                sender,
-                'unit',
-                orders
-            )
+        bot_order = BotOrder.find_one({"user_id": sender,
+                                       "provider": provider})
 
-        elif reply_type == 'checkout':
+        if bot_order is None or not bot_order.orders:
+            return [Message(user_id=sender,
+                            message_type=TEXT,
+                            message_data='У вас нема продуктів у кошику.',
+                            quick_replies=quick_replies_instance)]
 
-            if not orders:
-                responses = self.make_body('no_products',
-                                           sender,
-                                           payload.get('provider'),
-                                           orders)
-            else:
-                data = adapter.checkout(**{'orders': orders})
-                responses.extend(self.make_body('checkout',
-                                                sender,
-                                                payload.get('provider'),
-                                                data))
-        elif reply_type in adapter.methods.keys():
-            id_type = id_types.get(reply_type, {}).get('self_id')
-            items_to_show = adapter.methods.get(reply_type)(
-                **{
-                    id_type: payload.get(id_type),
-                    'user_id': sender,
-                    'provider': provider,
-                    'mongo': mongo,
-                    'orders': orders
-                }
-            )
-            responses = self.make_body(payload.get('type'),
-                                       sender,
-                                       payload.get('provider'),
-                                       items_to_show)
-        else:
-            items_to_show = get_orders(sender) or []
-            if not items_to_show and payload.get('type') == 'get_basket':
-                responses = self.make_body('no_products',
-                                           sender,
-                                           payload.get('provider'),
-                                           items_to_show)
-            else:
-                responses = self.make_body(payload.get('type'),
-                                           sender,
-                                           payload.get('provider'),
-                                           items_to_show)
-        return responses
+        result = adapter.checkout(**bot_order.dump())
+        result.update({"user_id": sender,
+                       "provider": provider,
+                       "bot_order": bot_order.pk})
+
+        cafe_order = CafeOrder(**result)
+        cafe_order.commit()
+        if adapter.testing:
+            return [
+                Message(user_id=sender,
+                        message_type=ATTACHMENT,
+                        message_data=receipt_template(**bot_order.to_json()),
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data=REPLY_TEXT(**cafe_order.dump()),
+                        quick_replies=quick_replies_instance)
+            ]
+
+        url = SELF_URL + '/order/' + str(cafe_order.order_id)
+
+        message = Message(user_id=sender,
+                          message_type=ATTACHMENT,
+                          message_data=generic_link_template(url, 'Будь ласка, здійсніть оплату.'),
+                          quick_replies=quick_replies_instance)
+        return [message]
+
+    def get_product(self, sender, **kwargs):
+        quick_replies_instance = {}
+        message = Message(user_id=sender,
+                          message_type="",
+                          message_data="",
+                          quick_replies=quick_replies_instance)
+        pass
+
+    def get_cafes(self, sender, **kwargs):
+        quick_replies_list = ['cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        cafes = [{'title': cafe_value.name,
+                  'id': cafe_key,
+                  'image_url': cafe_value.image_url} for cafe_key, cafe_value in self.adapters.items()]
+        rearranged_cafes = transform(cafes)
+
+        messages = []
+        for cafe_list in rearranged_cafes:
+            messages.append(Message(user_id=sender,
+                                    message_type=ATTACHMENT,
+                                    message_data=generic_list_template(cafe_list, {'type': 'get_cafe'}),
+                                    quick_replies=quick_replies_instance))
+        return messages
+
+    def get_cafe(self, sender, **kwargs):
+        provider = kwargs.get('id')
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data='Зробіть замовлення.',
+                          quick_replies=quick_replies_instance)
+        return [message]
+
+    def pay_rejected(self, **kwargs):
+        cafe_order = CafeOrder.find_one({"order_id": kwargs.get('order_id')})
+        if cafe_order is None:
+            return []
+
+        sender = cafe_order.user_id
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               cafe_order.provider)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Під час оплати сталася помилка. Спробуйте ще.",
+                        quick_replies=quick_replies_instance)]

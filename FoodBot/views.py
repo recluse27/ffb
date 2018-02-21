@@ -3,9 +3,10 @@ from datetime import datetime, timedelta, timezone
 from flask import request, jsonify, render_template
 from liqpay import LiqPay
 
-from .constants import *
-from .controller import Controller
-from .utils import *
+from FoodBot.constants import *
+from FoodBot.controller import Controller
+from FoodBot.utils import *
+from FoodBot.models import CafeOrder, Message
 
 controller = Controller()
 
@@ -17,18 +18,13 @@ def handle_verification():
 
 @app.route('/', methods=['POST'])
 def handle_incoming_messages():
-    print(request.json)
     data = request.json.get('entry', [{}])[0].get('messaging', [{}])[0]
-    print('Request data', data)
 
-    if controller.check_valid_response(data):
-        new_data = controller.make_responses(**{'data': data})
+    if controller.is_response_valid(data):
+        responses = controller.handle_message(data=data)
 
-        print("Responses", new_data)
-
-        for item in new_data:
-            response = make_request(item)
-            print(response, response.text)
+        for response in responses:
+            response.send(url=BOT_URL)
 
     return "ok"
 
@@ -36,13 +32,14 @@ def handle_incoming_messages():
 @app.route('/order/<order_id>', methods=["GET"])
 def get_payment(order_id):
     ukraine = timezone(timedelta(hours=2))
-    data = mongo.order_data.find_one({'order_id': int(order_id)})
+    data = CafeOrder.fine_one({"order_id": order_id})
     if data is None:
         return "Замовлення не знайдено"
+
     data_to_send = {"version": 3,
                     "public_key": UNIT_PUB_KEY,
                     "action": "pay",
-                    "amount": str(data.get('price')),
+                    "amount": str(data.price),
                     "currency": "UAH",
                     "description": "{order_id} від {datetime} За замовлення в UNIT.cafe".format(order_id=order_id,
                                                                                                 datetime=datetime.now(
@@ -62,40 +59,20 @@ def get_payment(order_id):
 
 @app.route('/unit/notify', methods=['POST'])
 def respond_on_notify():
-    responses = []
     payment_status = request.json.get("payment_status")
     order_id = request.json.get('order_id')
-    order_data = mongo.order_data.find_one({'order_id': int(order_id)})
-    print(order_data)
+    order_data = CafeOrder.find_one({"order_id": order_id})
     if not order_data or not order_id:
         return jsonify({'Error': 'No such order.'})
     try:
         if payment_status:
-            orders = get_orders(order_data.get('userid'))
-
-            responses.extend(controller.make_body("unit_explain",
-                                                  order_data.get('userid'),
-                                                  "unit",
-                                                  order_data))
-            responses.extend(controller.make_body("unit_gift",
-                                                  order_data.get('userid'),
-                                                  "unit",
-                                                  order_data))
-            responses.extend(controller.make_body("receipt",
-                                                  order_data.get('userid'),
-                                                  "unit",
-                                                  orders))
-            clean_order(order_data.get('userid'),
-                        "unit")
+            responses = controller.unit_notify(**request.json)
+            order_data.delete()
         else:
-            responses.extend(controller.make_body("pay_rejected",
-                                                  order_data.get('userid'),
-                                                  "unit",
-                                                  order_data))
+            responses = controller.pay_rejected(**request.json)
 
-        for item in responses:
-            response = make_request(item)
-            print(response, response.text)
+        for response in responses:
+            response.send(url=BOT_URL)
 
     except Exception as e:
         return jsonify({'Error': str(e)})

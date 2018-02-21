@@ -1,37 +1,43 @@
-import json
-
 import requests as rq
+from FoodBot import models
+
+url = "https://graph.facebook.com/v2.10/me/messenger_profile?access_token={token}"
 
 
-def make_buttons(access_token):
-    url = "https://graph.facebook.com/v2.10/me/messenger_profile?access_token={token}".format(token=access_token)
+def make_get_started(access_token):
     get_started = {
         "get_started": {"payload": "{\"type\":\"greeting\"}"}
     }
 
-    res = rq.post(url=url, json=get_started)
+    res = rq.post(url=url.format(token=access_token), json=get_started)
     print(res)
     print(res.text)
 
+
+def make_menu_buttons(access_token):
     data = {"persistent_menu":
         [
             {"locale": "default",
+             "composer_input_disabled": True,
              "call_to_actions": [
                  {
-                     "title": "Категорії",
+                     "title": "Заходи",
                      "type": "postback",
-                     "payload": "{\"type\":\"get_categories\", \"provider\":\"unit\"}"
+                     "payload": "{\"type\":\"get_cafes\"}"
                  },
                  {
                      "type": "postback",
                      "title": "Інструкція",
-                     "payload": "{\"type\":\"get_instruction\", \"provider\":\"unit\"}"
+                     "payload": "{\"type\":\"get_instruction\"}"
                  }
              ]
              }
         ]
     }
 
-    res = rq.post(url=url, json=data)
+    res = rq.post(url=url.format(token=access_token), json=data)
     print(res)
     print(res.text)
+
+def redefine_database():
+    pass

@@ -3,12 +3,17 @@ from datetime import datetime, timedelta, timezone
 
 import requests as rq
 
-from .generic_adapter import IAdapter
-from ..constants import HEADERS, CACHE_UPDATE_DAYS
+from FoodBot.adapters.generic_adapter import IAdapter
+from FoodBot.constants import HEADERS, CACHE_UPDATE_DAYS
+from FoodBot.models import Product, Category, BotOrder
+from FoodBot.utils import get_or_create_order
 
 
 class UnitAdapter(IAdapter):
-    name = "unit"
+    testing = False
+    image_url = "https://apply.unit.ua/assets/img/logo.png?v043"
+    provider_name = "unit"
+    name = "UnitCafe"
     url = "https://unit.cafe/api/v1/ua/%s?token=aTgEy4dtnF4"
 
     def __init__(self):
@@ -23,73 +28,86 @@ class UnitAdapter(IAdapter):
     def checkout(self, **kwargs):
         ukraine = timezone(timedelta(hours=2))
         orders = kwargs.get('orders')
-        data = {'name': 'test_user',
+
+        data = {'name': 'user',
                 'phone': '38(000)444-55-66',
                 'order_time': datetime.now(tz=ukraine).strftime("%Y-%m-%dT%H:%M:%S.%f"),
                 'delivery_type': 1,  # in unit
                 'cook_type': 2,  # all at once
                 'guests_count': 1,
                 'order_type': 2,
-                'products': [{'product_id': int(product.get('id')),
+                'products': [{'product_id': product.get('id'),
                               'quantity': 1}
                              for product in orders]}
+
         result = rq.post(url=(self.url % 'order'),
                          headers=HEADERS,
                          json=data)
-        print('ORDER DATA', result.text)
+
         return json.loads(result.text)
 
     def get_categories_from_api(self):
         result = rq.get(url=(self.url % 'facebookcategory'), headers=HEADERS)
         categories = json.loads(result.text)
         new_categories = [
-            {'title': category.get('name'),
-             'category_id': category.get('category_id'),
-             'image_url': category.get('image')}
+            Category(**{'title': category.get('name'),
+                        'category_id': category.get('category_id'),
+                        'image_url': category.get('image')})
             for category in categories
         ]
         self.cached_categories = new_categories
         self.cached_categories_updated = datetime.utcnow()
 
-    def get_categories(self, **kwargs):
-        if not self.cached_categories or (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS) < datetime.utcnow()):
-            self.get_categories_from_api()
-        return self.cached_categories
-
     def get_products_from_api(self):
         result = rq.get(url=(self.url % 'product'), headers=HEADERS)
         products = json.loads(result.text)
+
         new_products = [
-            {'title': product.get('name'),
-             'price': product.get('price'),
-             'id': product.get('product_id'),
-             'category_id': product.get('facebook_category') or product.get('category_id'),
-             'image_url': product.get('image', [{}])[0].get('image1')}
+            Product(**{'title': product.get('name'),
+                       'price': product.get('price'),
+                       'id': product.get('product_id'),
+                       'category_id': product.get('facebook_category') or product.get('category_id'),
+                       'image_url': product.get('image', [{}])[0].get('image1')})
             for product in products]
+
         self.cached_products = new_products
         self.cached_products_updated = datetime.utcnow()
 
+    def get_categories(self, **kwargs):
+        expire_date = self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
+
+        if not self.cached_categories or (expire_date < datetime.utcnow()):
+            self.get_categories_from_api()
+
+        categories = [category.to_json() for category in self.cached_categories]
+
+        return categories
+
     def get_products(self, **kwargs):
-        category_id = kwargs.get('category_id')
-        if not self.cached_products or (self.cached_products_updated + timedelta(days=CACHE_UPDATE_DAYS) < datetime.utcnow()):
+        expire_date = self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
+        category_id = kwargs.get('id')
+        if not self.cached_products or (expire_date < datetime.utcnow()):
             self.get_products_from_api()
-        products = list(
-            filter(
-                lambda product: str(product['category_id']) == str(category_id),
-                self.cached_products
-            )
-        )
+
+        products = [product.to_json() for product in self.cached_products if product.category_id == category_id]
+
         return products
+
+    def get_product_by_id(self, id):
+        expire_date = self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
+        if not self.cached_products or (expire_date < datetime.utcnow()):
+            self.get_products_from_api()
+
+        result = list(filter(lambda product: product.id == id, self.cached_products))
+        return result[0] if result else None
 
     def is_product_available(self, product_id):
         result = rq.get(url=(self.url % 'product/{id}'.format(id=product_id)),
                         headers=HEADERS)
         try:
             product_data = json.loads(result.text)[0]
-            print('NO ERROR')
             return bool(product_data.get('status'))
-        except:
-            print('ERROR')
+        except TypeError:
             return False
 
     def add_product(self, **kwargs):
@@ -97,39 +115,35 @@ class UnitAdapter(IAdapter):
             self.get_products_from_api()
 
         sender = kwargs.get('user_id')
-        check = kwargs.get('orders')
-        mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
-        if not check:
-            mongo.orders.remove({"userid": sender, "provider": provider})
-            check = None
+        product_id = kwargs.get('id')
+        user_order = get_or_create_order(BotOrder, sender, provider)
 
-        product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
-        if not self.is_product_available(kwargs.get('id')):
+        product = self.get_product_by_id(product_id)
+        if not self.is_product_available(product_id) or product is None:
             return "Продукт наразі недоступний."
 
-        if product:
-            if 'payload' in product[0]:
-                product[0].pop('payload')
-            if check:
-                mongo.orders.update({'userid': sender, 'provider': provider}, {"$push": {'orders': product[0]}})
-            else:
-                mongo.orders.insert({'userid': sender, 'orders': product, 'provider': provider})
+        orders = user_order.orders
+        orders.append(product.to_json())
+        user_order.orders = orders
+        user_order.save()
+        return f"Додано {product.title}."
 
     def remove_product(self, **kwargs):
         if not self.cached_products:
             self.get_products_from_api()
 
         sender = kwargs.get('user_id')
-        orders = kwargs.get('orders')
-        mongo = kwargs.get('mongo')
         provider = kwargs.get('provider')
-        product = list(filter(lambda p: p.get('id') == kwargs.get('id'), self.cached_products))
-        if product:
-            if 'payload' in product[0]:
-                product[0].pop('payload')
-            if product[0] in orders:
-                orders.remove(product[0])
-            else:
-                return "Продукт наразі відсутній у кошику."
-            mongo.orders.update({'userid': sender, 'provider': provider}, {"$set": {'orders': orders}})
+        product_id = kwargs.get('id')
+        user_order = get_or_create_order(BotOrder, sender, provider)
+
+        product = self.get_product_by_id(product_id)
+        if product is None:
+            return "Продукт наразі недоступний."
+
+        orders = user_order.orders
+        orders.remove(product.to_json())
+        user_order.orders = orders
+        user_order.save()
+        return f"Видалено {product.title}."

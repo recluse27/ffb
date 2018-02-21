@@ -3,4 +3,5 @@ Flask==0.12.2
 Flask-PyMongo==0.5.1
 pymongo
 gunicorn
+umongo
 git+https://github.com/liqpay/sdk-python#egg=liqpay
