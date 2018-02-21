@@ -41,8 +41,6 @@ class Controller:
         return data.get('sender').get('id')
 
     def handle_message(self, data):
-        print(data)
-        data = data.get('data')
         sender = self.get_sender(data)
         payload = self.get_message_payload(data)
         method = payload.get("type")
