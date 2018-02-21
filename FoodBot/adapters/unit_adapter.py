@@ -3,6 +3,8 @@ from datetime import datetime, timedelta, timezone
 
 import requests as rq
 
+from typing import Optional, List
+
 from FoodBot.adapters.generic_adapter import IAdapter
 from FoodBot.constants import HEADERS, CACHE_UPDATE_DAYS
 from FoodBot.models import Product, Category, BotOrder
@@ -10,22 +12,12 @@ from FoodBot.utils import get_or_create_order
 
 
 class UnitAdapter(IAdapter):
-    testing = False
     image_url = "https://apply.unit.ua/assets/img/logo.png?v043"
     provider_name = "unit"
     name = "UnitCafe"
     url = "https://unit.cafe/api/v1/ua/%s?token=aTgEy4dtnF4"
 
-    def __init__(self):
-        self.methods = {
-            'get_categories': self.get_categories,
-            'get_category': self.get_products,
-            'checkout': self.checkout,
-            'add_product': self.add_product,
-            'remove_product': self.remove_product
-        }
-
-    def checkout(self, **kwargs):
+    def checkout(self, **kwargs) -> dict:
         ukraine = timezone(timedelta(hours=2))
         orders = kwargs.get('orders')
 
@@ -46,7 +38,7 @@ class UnitAdapter(IAdapter):
 
         return json.loads(result.text)
 
-    def get_categories_from_api(self):
+    def get_categories_from_api(self) -> None:
         result = rq.get(url=(self.url % 'facebookcategory'), headers=HEADERS)
         categories = json.loads(result.text)
         new_categories = [
@@ -58,7 +50,7 @@ class UnitAdapter(IAdapter):
         self.cached_categories = new_categories
         self.cached_categories_updated = datetime.utcnow()
 
-    def get_products_from_api(self):
+    def get_products_from_api(self) -> None:
         result = rq.get(url=(self.url % 'product'), headers=HEADERS)
         products = json.loads(result.text)
 
@@ -73,7 +65,7 @@ class UnitAdapter(IAdapter):
         self.cached_products = new_products
         self.cached_products_updated = datetime.utcnow()
 
-    def get_categories(self, **kwargs):
+    def get_categories(self, **kwargs) -> List(dict):
         expire_date = (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
                        if self.cached_categories_updated else None)
 
@@ -84,7 +76,7 @@ class UnitAdapter(IAdapter):
 
         return categories
 
-    def get_products(self, **kwargs):
+    def get_products(self, **kwargs) -> List(dict):
         expire_date = (self.cached_products_updated + timedelta(days=CACHE_UPDATE_DAYS)
                        if self.cached_products_updated else None)
         category_id = kwargs.get('id')
@@ -95,7 +87,7 @@ class UnitAdapter(IAdapter):
 
         return products
 
-    def get_product_by_id(self, id):
+    def get_product_by_id(self, id) -> Optional(Product):
         expire_date = (self.cached_products_updated + timedelta(days=CACHE_UPDATE_DAYS)
                        if self.cached_products_updated else None)
 
@@ -105,7 +97,7 @@ class UnitAdapter(IAdapter):
         result = list(filter(lambda product: product.id == id, self.cached_products))
         return result[0] if result else None
 
-    def is_product_available(self, product_id):
+    def is_product_available(self, product_id) -> bool:
         result = rq.get(url=(self.url % 'product/{id}'.format(id=product_id)),
                         headers=HEADERS)
         try:
@@ -114,7 +106,7 @@ class UnitAdapter(IAdapter):
         except TypeError:
             return False
 
-    def add_product(self, **kwargs):
+    def add_product(self, **kwargs) -> str:
         if not self.cached_products:
             self.get_products_from_api()
 
@@ -133,7 +125,7 @@ class UnitAdapter(IAdapter):
         user_order.commit()
         return "Додано {title}.".format(title=product.title)
 
-    def remove_product(self, **kwargs):
+    def remove_product(self, **kwargs) -> str:
         if not self.cached_products:
             self.get_products_from_api()
 

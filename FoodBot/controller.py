@@ -1,13 +1,14 @@
 import json
+from typing import List
 
+from FoodBot import testing
 from FoodBot.adapters.unit_adapter import UnitAdapter
-from FoodBot.constants import (GREETING, INSTRUCTION, SELF_URL, REPLY_TEXT, REPLY_EXPLAIN, REPLY_GIFT,
+from FoodBot.constants import (GREETING, INSTRUCTION, SELF_URL, REPLY_EXPLAIN, REPLY_GIFT,
                                TEXT, ATTACHMENT)
 from FoodBot.fb_templates import (generic_link_template, generic_list_template,
                                   receipt_template, quick_replies)
 from FoodBot.models import Message, BotOrder, CafeOrder
 from FoodBot.utils import transform, require_provider, get_or_create_order
-from FoodBot import testing
 
 
 class Controller:
@@ -16,7 +17,7 @@ class Controller:
     }
 
     @staticmethod
-    def is_response_valid(data):
+    def is_response_valid(data) -> bool:
         if (not data or
                 any([item in data for item in ['delivery', 'read']]) or
                     'is_echo' in data.get('message', {})):
@@ -25,7 +26,7 @@ class Controller:
         return True
 
     @staticmethod
-    def get_message_payload(data):
+    def get_message_payload(data) -> dict:
         payload = None
         if data.get('message', {}).get('quick_reply'):
             payload = data.get('message', {}).get('quick_reply', {}).get('payload')
@@ -38,10 +39,10 @@ class Controller:
         return payload
 
     @staticmethod
-    def get_sender(data):
+    def get_sender(data) -> str:
         return data.get('sender').get('id')
 
-    def handle_message(self, data):
+    def handle_message(self, data) -> List(Message):
         sender = self.get_sender(data)
         payload = self.get_message_payload(data)
         payload.update({"user_id": sender})
@@ -49,7 +50,7 @@ class Controller:
         print(method.upper())
         return self.__getattribute__(method)(sender, **payload)
 
-    def get_started(self, sender, **kwargs):
+    def get_started(self, sender, **kwargs) -> List(Message):
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                kwargs.get('provider', 'unit'))
@@ -59,7 +60,7 @@ class Controller:
                           quick_replies=quick_replies_instance)
         return [message]
 
-    def greeting(self, sender, **kwargs):
+    def greeting(self, sender, **kwargs) -> List(Message):
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
@@ -69,7 +70,7 @@ class Controller:
                           quick_replies=quick_replies_instance)
         return [message]
 
-    def get_instruction(self, sender, **kwargs):
+    def get_instruction(self, sender, **kwargs) -> List(Message):
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
@@ -79,40 +80,60 @@ class Controller:
                           quick_replies=quick_replies_instance)
         return [message]
 
-    @require_provider
-    def add_product(self, sender, **kwargs):
-        provider = kwargs.get('provider')
-        adapter = self.adapters.get(provider)
+    def get_product(self, sender, **kwargs) -> List(Message):
+        quick_replies_instance = {}
+        message = Message(user_id=sender,
+                          message_type="",
+                          message_data="",
+                          quick_replies=quick_replies_instance)
+        pass
 
-        result = adapter.add_product(**kwargs)
+    def get_cafes(self, sender, **kwargs) -> List(Message):
+        quick_replies_list = ['cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        cafes = [{'title': cafe_value.name,
+                  'id': cafe_key,
+                  'image_url': cafe_value.image_url} for cafe_key, cafe_value in self.adapters.items()]
+        rearranged_cafes = transform(cafes)
+
+        messages = []
+        for cafe_list in rearranged_cafes:
+            messages.append(Message(user_id=sender,
+                                    message_type=ATTACHMENT,
+                                    message_data=generic_list_template(cafe_list,
+                                                                       **{'type': 'get_cafe'}),
+                                    quick_replies=quick_replies_instance))
+        return messages
+
+    def get_cafe(self, sender, **kwargs) -> List(Message):
+        provider = kwargs.get('id')
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
-
         message = Message(user_id=sender,
                           message_type=TEXT,
-                          message_data=result,
+                          message_data='Зробіть замовлення.',
                           quick_replies=quick_replies_instance)
         return [message]
 
-    @require_provider
-    def remove_product(self, sender, **kwargs):
-        provider = kwargs.get('provider')
-        adapter = self.adapters.get(provider)
-
-        result = adapter.remove_product(**kwargs)
-        quick_replies_list = ['categories', 'payment', 'basket']
-        quick_replies_instance = quick_replies(quick_replies_list,
-                                               provider)
-
-        message = Message(user_id=sender,
-                          message_type=TEXT,
-                          message_data=result,
-                          quick_replies=quick_replies_instance)
-        return [message]
-
-    def unit_notify(self, **kwargs):
+    def pay_rejected(self, **kwargs) -> List(Message):
         cafe_order = CafeOrder.find_one({"order_id": kwargs.get('order_id')})
+        if cafe_order is None:
+            return []
+
+        sender = cafe_order.user_id
+        quick_replies_list = ['cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               cafe_order.provider)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Під час оплати сталася помилка. Спробуйте ще.",
+                        quick_replies=quick_replies_instance)]
+
+    def notify(self, **kwargs) -> List(Message):
+        cafe_order = CafeOrder.find_one({"order_id": kwargs.get('order_id'),
+                                         "provider": kwargs.get("provider")})
         if cafe_order is None:
             return []
 
@@ -137,7 +158,39 @@ class Controller:
         ]
 
     @require_provider
-    def get_categories(self, sender, **kwargs):
+    def add_product(self, sender, **kwargs) -> List(Message):
+        provider = kwargs.get('provider')
+        adapter = self.adapters.get(provider)
+
+        result = adapter.add_product(**kwargs)
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data=result,
+                          quick_replies=quick_replies_instance)
+        return [message]
+
+    @require_provider
+    def remove_product(self, sender, **kwargs) -> List(Message):
+        provider = kwargs.get('provider')
+        adapter = self.adapters.get(provider)
+
+        result = adapter.remove_product(**kwargs)
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data=result,
+                          quick_replies=quick_replies_instance)
+        return [message]
+
+    @require_provider
+    def get_categories(self, sender, **kwargs) -> List(Message):
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
@@ -157,7 +210,7 @@ class Controller:
         return messages
 
     @require_provider
-    def get_category(self, sender, **kwargs):
+    def get_category(self, sender, **kwargs) -> List(Message):
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
@@ -177,7 +230,7 @@ class Controller:
         return messages
 
     @require_provider
-    def get_basket(self, sender, **kwargs):
+    def get_basket(self, sender, **kwargs) -> List(Message):
         provider = kwargs.get('provider')
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
@@ -204,7 +257,7 @@ class Controller:
         return messages
 
     @require_provider
-    def checkout(self, sender, **kwargs):
+    def checkout(self, sender, **kwargs) -> List(Message):
         provider = kwargs.get('provider')
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
@@ -257,54 +310,3 @@ class Controller:
         bot_order.orders = []
         bot_order.commit()
         return [message]
-
-    def get_product(self, sender, **kwargs):
-        quick_replies_instance = {}
-        message = Message(user_id=sender,
-                          message_type="",
-                          message_data="",
-                          quick_replies=quick_replies_instance)
-        pass
-
-    def get_cafes(self, sender, **kwargs):
-        quick_replies_list = ['cafes']
-        quick_replies_instance = quick_replies(quick_replies_list,
-                                               None)
-        cafes = [{'title': cafe_value.name,
-                  'id': cafe_key,
-                  'image_url': cafe_value.image_url} for cafe_key, cafe_value in self.adapters.items()]
-        rearranged_cafes = transform(cafes)
-
-        messages = []
-        for cafe_list in rearranged_cafes:
-            messages.append(Message(user_id=sender,
-                                    message_type=ATTACHMENT,
-                                    message_data=generic_list_template(cafe_list,
-                                                                       **{'type': 'get_cafe'}),
-                                    quick_replies=quick_replies_instance))
-        return messages
-
-    def get_cafe(self, sender, **kwargs):
-        provider = kwargs.get('id')
-        quick_replies_list = ['categories', 'payment', 'basket']
-        quick_replies_instance = quick_replies(quick_replies_list,
-                                               provider)
-        message = Message(user_id=sender,
-                          message_type=TEXT,
-                          message_data='Зробіть замовлення.',
-                          quick_replies=quick_replies_instance)
-        return [message]
-
-    def pay_rejected(self, **kwargs):
-        cafe_order = CafeOrder.find_one({"order_id": kwargs.get('order_id')})
-        if cafe_order is None:
-            return []
-
-        sender = cafe_order.user_id
-        quick_replies_list = ['categories', 'payment', 'basket']
-        quick_replies_instance = quick_replies(quick_replies_list,
-                                               cafe_order.provider)
-        return [Message(user_id=sender,
-                        message_type=TEXT,
-                        message_data="Під час оплати сталася помилка. Спробуйте ще.",
-                        quick_replies=quick_replies_instance)]

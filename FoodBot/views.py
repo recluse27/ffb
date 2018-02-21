@@ -56,19 +56,26 @@ def get_payment(order_id):
     return html
 
 
-@app.route('/unit/notify', methods=['POST'])
-def respond_on_notify():
+@app.route('/<provider>/notify', methods=['POST'])
+def respond_on_notify(provider):
     payment_status = request.json.get("payment_status")
-    order_id = request.json.get('order_id')
-    order_data = CafeOrder.find_one({"order_id": order_id})
-    if not order_data or not order_id:
+    json_data = request.json
+    order_id = json_data.get('order_id')
+
+    order_data = CafeOrder.find_one({"order_id": order_id,
+                                     "provider": provider})
+
+    if not order_data:
         return jsonify({'Error': 'No such order.'})
+
+    json_data.update({"provider": provider})
+
     try:
         if payment_status:
-            responses = controller.unit_notify(**request.json)
+            responses = controller.notify(**json_data)
             order_data.delete()
         else:
-            responses = controller.pay_rejected(**request.json)
+            responses = controller.pay_rejected(**json_data)
 
         for response in responses:
             response.send(url=BOT_URL)
