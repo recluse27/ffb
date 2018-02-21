@@ -26,7 +26,7 @@ class CafeOrder(Document):
     special_price = fields.IntField()
     price = fields.IntField()
     order_code = fields.StrField()
-    bot_order = fields.ObjectId()
+    bot_order = fields.ObjectIdField()
 
 
 class Message:

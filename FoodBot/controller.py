@@ -7,6 +7,7 @@ from FoodBot.fb_templates import (generic_link_template, generic_list_template,
                                   receipt_template, quick_replies)
 from FoodBot.models import Message, BotOrder, CafeOrder
 from FoodBot.utils import transform, require_provider, get_or_create_order
+from FoodBot import testing
 
 
 class Controller:
@@ -132,8 +133,7 @@ class Controller:
             Message(user_id=sender,
                     message_type=TEXT,
                     message_data=REPLY_GIFT(**cafe_order.dump()),
-                    quick_replies=quick_replies_instance),
-
+                    quick_replies=quick_replies_instance)
         ]
 
     @require_provider
@@ -228,7 +228,7 @@ class Controller:
 
         cafe_order = CafeOrder(**result)
         cafe_order.commit()
-        if adapter.testing:
+        if testing:
             return [
                 Message(user_id=sender,
                         message_type=ATTACHMENT,
@@ -236,7 +236,11 @@ class Controller:
                         quick_replies=quick_replies_instance),
                 Message(user_id=sender,
                         message_type=TEXT,
-                        message_data=REPLY_TEXT(**cafe_order.dump()),
+                        message_data=REPLY_EXPLAIN(**cafe_order.dump()),
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data=REPLY_GIFT(**cafe_order.dump()),
                         quick_replies=quick_replies_instance)
             ]
 
