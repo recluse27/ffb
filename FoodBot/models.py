@@ -37,7 +37,7 @@ class Message:
         self.user_id = user_id
 
     def send(self, url):
-        message = {"recepient": {"id": self.user_id},
+        message = {"recipient": {"id": self.user_id},
                    "message": {self.message_type: self.message_data,
                                "quick_replies": self.quick_replies}}
 
