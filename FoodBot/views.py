@@ -23,7 +23,6 @@ def handle_incoming_messages():
         responses = controller.handle_message(data=data)
 
         for response in responses:
-            print(response)
             response.send(url=BOT_URL)
 
     return "ok"

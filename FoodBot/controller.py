@@ -17,7 +17,7 @@ class Controller:
     @staticmethod
     def is_response_valid(data):
         if (not data or
-                any([item in data for item in ['delivery', 'echo']]) or
+                any([item in data for item in ['delivery', 'read']]) or
                     'is_echo' in data.get('message', {})):
             return False
 
