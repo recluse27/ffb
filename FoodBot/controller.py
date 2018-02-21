@@ -44,6 +44,7 @@ class Controller:
         sender = self.get_sender(data)
         payload = self.get_message_payload(data)
         method = payload.get("type")
+        print(method.upper())
         return self.__getattribute__(method)(sender, **payload)
 
     def get_started(self, sender, **kwargs):
@@ -169,8 +170,8 @@ class Controller:
         for product_list in rearranged_products:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
-                                    message_data=generic_list_template(product_list, **{'provider': provider,
-                                                                                      'type': 'get_product'}),
+                                    message_data=generic_list_template(product_list, 'Додати', **{'provider': provider,
+                                                                                        'type': 'get_product'}),
                                     quick_replies=quick_replies_instance))
         return messages
 
@@ -195,7 +196,7 @@ class Controller:
         for product_list in rearranged_products:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
-                                    message_data=generic_list_template(product_list, **{'provider': provider,
+                                    message_data=generic_list_template(product_list, 'Видалити', **{'provider': provider,
                                                                                       'type': 'get_product'}),
                                     quick_replies=quick_replies_instance))
         return messages
