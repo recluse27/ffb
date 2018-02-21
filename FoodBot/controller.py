@@ -151,7 +151,7 @@ class Controller:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
                                     message_data=generic_list_template(category_list, **{'provider': provider,
-                                                                                       'type': 'get_category'}),
+                                                                                         'type': 'get_category'}),
                                     quick_replies=quick_replies_instance))
         return messages
 
@@ -171,7 +171,7 @@ class Controller:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
                                     message_data=generic_list_template(product_list, 'Додати', **{'provider': provider,
-                                                                                        'type': 'get_product'}),
+                                                                                                  'type': 'add_product'}),
                                     quick_replies=quick_replies_instance))
         return messages
 
@@ -196,8 +196,9 @@ class Controller:
         for product_list in rearranged_products:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
-                                    message_data=generic_list_template(product_list, 'Видалити', **{'provider': provider,
-                                                                                      'type': 'get_product'}),
+                                    message_data=generic_list_template(product_list, 'Видалити',
+                                                                       **{'provider': provider,
+                                                                          'type': 'remove_product'}),
                                     quick_replies=quick_replies_instance))
         return messages
 
