@@ -124,7 +124,7 @@ class Controller:
         return [
             Message(user_id=sender,
                     message_type=ATTACHMENT,
-                    message_data=receipt_template(**bot_order.to_json()),
+                    message_data=receipt_template(**bot_order.dump()),
                     quick_replies=quick_replies_instance),
             Message(user_id=sender,
                     message_type=TEXT,
@@ -232,7 +232,7 @@ class Controller:
             return [
                 Message(user_id=sender,
                         message_type=ATTACHMENT,
-                        message_data=receipt_template(**bot_order.to_json()),
+                        message_data=receipt_template(**bot_order.dump()),
                         quick_replies=quick_replies_instance),
                 Message(user_id=sender,
                         message_type=TEXT,
