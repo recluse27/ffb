@@ -1,4 +1,4 @@
-from FoodBot import testing
+from FoodBot import testing, app
 
 HEADERS = {'Content-Type': 'application/json',
            'user-agent': 'Mozilla/5.0 (Macintosh; '
@@ -92,4 +92,4 @@ UNIT_PRIV_KEY = "NigKQ1DBXNaQUuHh8sG7yaU3bleRWApuaakbIfwm"
 SELF_URL = "http://friendlybot.westeurope.cloudapp.azure.com"
 
 BOT_URL = "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'
-if not testing else "PAGE_TEST_TOKEN"],
+if not testing else "PAGE_TEST_TOKEN"]
