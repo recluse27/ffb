@@ -28,5 +28,5 @@ def require_provider(func):
         provider = kwargs.get('provider')
         if not provider:
             return []
-        return func(self, sender, provider, **kwargs)
+        return func(self, sender, **kwargs)
     return wrapped

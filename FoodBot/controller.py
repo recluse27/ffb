@@ -78,7 +78,8 @@ class Controller:
         return [message]
 
     @require_provider
-    def add_product(self, sender, provider, **kwargs):
+    def add_product(self, sender, **kwargs):
+        provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
         result = adapter.add_product(**kwargs)
@@ -93,7 +94,8 @@ class Controller:
         return [message]
 
     @require_provider
-    def remove_product(self, sender, provider, **kwargs):
+    def remove_product(self, sender, **kwargs):
+        provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
         result = adapter.remove_product(**kwargs)
@@ -154,7 +156,8 @@ class Controller:
         return messages
 
     @require_provider
-    def get_category(self, sender, provider, **kwargs):
+    def get_category(self, sender, **kwargs):
+        provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
         result = adapter.get_products(**kwargs)
@@ -173,7 +176,8 @@ class Controller:
         return messages
 
     @require_provider
-    def get_basket(self, sender, provider, **kwargs):
+    def get_basket(self, sender, **kwargs):
+        provider = kwargs.get('provider')
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
@@ -198,7 +202,8 @@ class Controller:
         return messages
 
     @require_provider
-    def checkout(self, sender, provider, **kwargs):
+    def checkout(self, sender, **kwargs):
+        provider = kwargs.get('provider')
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
