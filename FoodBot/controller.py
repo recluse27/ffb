@@ -43,6 +43,7 @@ class Controller:
     def handle_message(self, data):
         sender = self.get_sender(data)
         payload = self.get_message_payload(data)
+        payload.update({"user_id": sender})
         method = payload.get("type")
         print(method.upper())
         return self.__getattribute__(method)(sender, **payload)

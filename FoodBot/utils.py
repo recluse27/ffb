@@ -17,8 +17,8 @@ def get_or_create_order(document, user_id, provider):
     instance = document.find_one({'user_id': user_id,
                                   'provider': provider})
     if not instance:
-        instance = document({'user_id': user_id,
-                             'provider': provider})
+        instance = document(**{'user_id': user_id,
+                               'provider': provider})
         instance.commit()
     return instance
 
