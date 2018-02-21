@@ -5,7 +5,6 @@ from liqpay import LiqPay
 
 from FoodBot.constants import *
 from FoodBot.controller import Controller
-from FoodBot.utils import *
 from FoodBot.models import CafeOrder, Message
 
 controller = Controller()
@@ -24,7 +23,8 @@ def handle_incoming_messages():
         responses = controller.handle_message(data=data)
 
         for response in responses:
-            response.send(url=BOT_URL)
+            print(response)
+            print(response.send(url=BOT_URL))
 
     return "ok"
 
