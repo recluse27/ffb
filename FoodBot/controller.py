@@ -21,7 +21,7 @@ class Controller:
                     'is_echo' in data.get('message', {})):
             return False
 
-        return True
+        return False
 
     @staticmethod
     def get_message_payload(data):
