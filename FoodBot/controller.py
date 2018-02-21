@@ -42,7 +42,7 @@ class Controller:
     def get_sender(data) -> str:
         return data.get('sender').get('id')
 
-    def handle_message(self, data) -> List(Message):
+    def handle_message(self, data) -> List[Message]:
         sender = self.get_sender(data)
         payload = self.get_message_payload(data)
         payload.update({"user_id": sender})
@@ -50,7 +50,7 @@ class Controller:
         print(method.upper())
         return self.__getattribute__(method)(sender, **payload)
 
-    def get_started(self, sender, **kwargs) -> List(Message):
+    def get_started(self, sender, **kwargs) -> List[Message]:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                kwargs.get('provider', 'unit'))
@@ -60,7 +60,7 @@ class Controller:
                           quick_replies=quick_replies_instance)
         return [message]
 
-    def greeting(self, sender, **kwargs) -> List(Message):
+    def greeting(self, sender, **kwargs) -> List[Message]:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
@@ -70,7 +70,7 @@ class Controller:
                           quick_replies=quick_replies_instance)
         return [message]
 
-    def get_instruction(self, sender, **kwargs) -> List(Message):
+    def get_instruction(self, sender, **kwargs) -> List[Message]:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
@@ -80,15 +80,15 @@ class Controller:
                           quick_replies=quick_replies_instance)
         return [message]
 
-    def get_product(self, sender, **kwargs) -> List(Message):
+    def get_product(self, sender, **kwargs) -> List[Message]:
         quick_replies_instance = {}
         message = Message(user_id=sender,
                           message_type="",
                           message_data="",
                           quick_replies=quick_replies_instance)
-        pass
+        return [message]
 
-    def get_cafes(self, sender, **kwargs) -> List(Message):
+    def get_cafes(self, sender, **kwargs) -> List[Message]:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
@@ -106,7 +106,7 @@ class Controller:
                                     quick_replies=quick_replies_instance))
         return messages
 
-    def get_cafe(self, sender, **kwargs) -> List(Message):
+    def get_cafe(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('id')
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
@@ -117,7 +117,7 @@ class Controller:
                           quick_replies=quick_replies_instance)
         return [message]
 
-    def pay_rejected(self, **kwargs) -> List(Message):
+    def pay_rejected(self, **kwargs) -> List[Message]:
         cafe_order = CafeOrder.find_one({"order_id": kwargs.get('order_id')})
         if cafe_order is None:
             return []
@@ -131,7 +131,7 @@ class Controller:
                         message_data="Під час оплати сталася помилка. Спробуйте ще.",
                         quick_replies=quick_replies_instance)]
 
-    def notify(self, **kwargs) -> List(Message):
+    def notify(self, **kwargs) -> List[Message]:
         cafe_order = CafeOrder.find_one({"order_id": kwargs.get('order_id'),
                                          "provider": kwargs.get("provider")})
         if cafe_order is None:
@@ -158,7 +158,7 @@ class Controller:
         ]
 
     @require_provider
-    def add_product(self, sender, **kwargs) -> List(Message):
+    def add_product(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
@@ -174,7 +174,7 @@ class Controller:
         return [message]
 
     @require_provider
-    def remove_product(self, sender, **kwargs) -> List(Message):
+    def remove_product(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
@@ -190,7 +190,7 @@ class Controller:
         return [message]
 
     @require_provider
-    def get_categories(self, sender, **kwargs) -> List(Message):
+    def get_categories(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
@@ -210,7 +210,7 @@ class Controller:
         return messages
 
     @require_provider
-    def get_category(self, sender, **kwargs) -> List(Message):
+    def get_category(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
@@ -230,7 +230,7 @@ class Controller:
         return messages
 
     @require_provider
-    def get_basket(self, sender, **kwargs) -> List(Message):
+    def get_basket(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
@@ -257,7 +257,7 @@ class Controller:
         return messages
 
     @require_provider
-    def checkout(self, sender, **kwargs) -> List(Message):
+    def checkout(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,

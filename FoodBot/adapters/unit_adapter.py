@@ -65,7 +65,7 @@ class UnitAdapter(IAdapter):
         self.cached_products = new_products
         self.cached_products_updated = datetime.utcnow()
 
-    def get_categories(self, **kwargs) -> List(dict):
+    def get_categories(self, **kwargs) -> List[dict]:
         expire_date = (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
                        if self.cached_categories_updated else None)
 
@@ -76,7 +76,7 @@ class UnitAdapter(IAdapter):
 
         return categories
 
-    def get_products(self, **kwargs) -> List(dict):
+    def get_products(self, **kwargs) -> List[dict]:
         expire_date = (self.cached_products_updated + timedelta(days=CACHE_UPDATE_DAYS)
                        if self.cached_products_updated else None)
         category_id = kwargs.get('id')
@@ -87,7 +87,7 @@ class UnitAdapter(IAdapter):
 
         return products
 
-    def get_product_by_id(self, id) -> Optional(Product):
+    def get_product_by_id(self, id) -> Optional[Product]:
         expire_date = (self.cached_products_updated + timedelta(days=CACHE_UPDATE_DAYS)
                        if self.cached_products_updated else None)
 

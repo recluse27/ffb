@@ -26,14 +26,14 @@ class IAdapter:
     def add_product(self, **kwargs) -> str:
         raise NotImplementedError
 
-    def get_product_by_id(self, id) -> Optional(Product):
+    def get_product_by_id(self, id) -> Optional[Product]:
         raise NotImplementedError
 
     def remove_product(self, **kwargs) -> str:
         raise NotImplementedError
 
-    def get_products(self, **kwargs) -> List(dict):
+    def get_products(self, **kwargs) -> List[dict]:
         raise NotImplementedError
 
-    def get_categories(self, **kwargs) -> List(dict):
+    def get_categories(self, **kwargs) -> List[dict]:
         raise NotImplementedError
