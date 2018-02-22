@@ -280,9 +280,9 @@ class Controller:
         data_to_checkout.update({"user_id": sender})
 
         result = adapter.checkout(**data_to_checkout)
-        rework_checkout_data(result, {"user_id": sender,
-                                      "provider": provider,
-                                      "bot_order": bot_order.pk})
+        rework_checkout_data(result, **{"user_id": sender,
+                                        "provider": provider,
+                                        "bot_order": bot_order.pk})
 
         cafe_order = CafeOrder(**result)
         cafe_order.commit()
