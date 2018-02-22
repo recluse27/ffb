@@ -29,7 +29,7 @@ class DruziAdapter(IAdapter):
                          headers=HEADERS,
                          json=data)
 
-        return json.loads(result.text)
+        return json.loads(result.text).get('order')
 
     def get_categories_from_api(self) -> None:
         result = rq.get(url=(self.url + "categories/"), headers=HEADERS)
