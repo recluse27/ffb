@@ -9,7 +9,7 @@ from FoodBot.constants import (GREETING, INSTRUCTION, SELF_URL, REPLY_EXPLAIN, R
 from FoodBot.fb_templates import (generic_link_template, generic_list_template,
                                   receipt_template, quick_replies)
 from FoodBot.models import Message, BotOrder, CafeOrder
-from FoodBot.utils import transform, require_provider, get_or_create_order
+from FoodBot.utils import transform, require_provider, get_or_create_order, rework_checkout_data
 
 
 class Controller:
@@ -280,9 +280,9 @@ class Controller:
         data_to_checkout.update({"user_id": sender})
 
         result = adapter.checkout(**data_to_checkout)
-        result.update({"user_id": sender,
-                       "provider": provider,
-                       "bot_order": bot_order.pk})
+        rework_checkout_data(result, {"user_id": sender,
+                                      "provider": provider,
+                                      "bot_order": bot_order.pk})
 
         cafe_order = CafeOrder(**result)
         cafe_order.commit()

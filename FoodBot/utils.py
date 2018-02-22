@@ -30,3 +30,10 @@ def require_provider(func):
             return []
         return func(self, sender, **kwargs)
     return wrapped
+
+
+def rework_checkout_data(data, **kwargs):
+    data.update({'cook_time': str(data.get('cook_time')),
+                 'order_id': str(data.get('order_id'))})
+    data.update(kwargs)
+    return data
