@@ -35,7 +35,7 @@ class DruziAdapter(IAdapter):
             Category(**{'title': category.get('name'),
                         'category_id': category.get('id'),
                         'image_url': category.get('image_url')})
-            for category in categories
+            for category in categories.get('categories')
         ]
         self.cached_categories = new_categories
         self.cached_categories_updated = datetime.utcnow()
@@ -50,7 +50,7 @@ class DruziAdapter(IAdapter):
                        'id': product.get('id'),
                        'category_id': product.get('category_id'),
                        'image_url': product.get('image_url')})
-            for product in products]
+            for product in products.get('products')]
 
         self.cached_products = new_products
         self.cached_products_updated = datetime.utcnow()
