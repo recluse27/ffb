@@ -12,7 +12,7 @@ class DruziAdapter(IAdapter):
     image_url = "http://druzicafe.com.ua/wp-includes/img/logo.png"
     provider_name = "druzi"
     name = "DruziCafe"
-    url = "https://cafesystem.herokuapp.com/cafes/druzi/"
+    url = "https://cafesystem.herokuapp.com/bot/cafes/druzi/"
 
     def checkout(self, **kwargs) -> dict:
         ukraine = timezone(timedelta(hours=2))
