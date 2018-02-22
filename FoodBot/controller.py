@@ -1,8 +1,9 @@
 import json
+from datetime import datetime
 from typing import List
 
 from FoodBot import testing
-from FoodBot.adapters.unit_adapter import UnitAdapter
+from FoodBot.adapters import UnitAdapter, DruziAdapter
 from FoodBot.constants import (GREETING, INSTRUCTION, SELF_URL, REPLY_EXPLAIN, REPLY_GIFT,
                                TEXT, ATTACHMENT)
 from FoodBot.fb_templates import (generic_link_template, generic_list_template,
@@ -13,7 +14,8 @@ from FoodBot.utils import transform, require_provider, get_or_create_order
 
 class Controller:
     adapters = {
-        'unit': UnitAdapter()
+        'unit': UnitAdapter(),
+        'druzi': DruziAdapter()
     }
 
     @staticmethod
@@ -274,7 +276,10 @@ class Controller:
                             message_data='У вас нема продуктів у кошику.',
                             quick_replies=quick_replies_instance)]
 
-        result = adapter.checkout(**bot_order.dump())
+        data_to_checkout = bot_order.dump()
+        data_to_checkout.update({"user_id": sender})
+
+        result = adapter.checkout(**data_to_checkout)
         result.update({"user_id": sender,
                        "provider": provider,
                        "bot_order": bot_order.pk})
@@ -282,6 +287,9 @@ class Controller:
         cafe_order = CafeOrder(**result)
         cafe_order.commit()
         if testing:
+            data_to_show = cafe_order.dump()
+            data_to_show.update({"date": str(datetime.now().date()),
+                                 "cafe_name": adapter.name})
             messages = [
                 Message(user_id=sender,
                         message_type=ATTACHMENT,
