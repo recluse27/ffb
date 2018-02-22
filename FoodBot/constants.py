@@ -32,7 +32,7 @@ REPLY_GIFT = lambda **kwargs: ("Якщо Ви читаєте це повідом
                                "допоможе Вам пригостити Ваших друзів. Смачного!😉").format(
     order_code=kwargs.get('order_code'),
     confirm_code=kwargs.get('confirm_code'),
-    cafe_name=kwargs.get('cage_name'),
+    cafe_name=kwargs.get('cafe_name'),
     date=kwargs.get('date')
 )
 
