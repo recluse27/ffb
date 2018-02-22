@@ -14,6 +14,10 @@ class DruziAdapter(IAdapter):
     name = "DruziCafe"
     url = "https://cafesystem.herokuapp.com/bot/cafes/druzi/"
 
+
+    def is_product_available(self, product_id) -> bool:
+        return True
+
     def checkout(self, **kwargs) -> dict:
         ukraine = timezone(timedelta(hours=2))
         orders = kwargs.get('orders')

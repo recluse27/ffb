@@ -61,3 +61,12 @@ class UnitAdapter(IAdapter):
 
         self.cached_products = new_products
         self.cached_products_updated = datetime.utcnow()
+
+    def is_product_available(self, product_id) -> bool:
+        result = rq.get(url=(self.url % 'product/{id}'.format(id=product_id)),
+                        headers=HEADERS)
+        try:
+            product_data = json.loads(result.text)[0]
+            return bool(product_data.get('status'))
+        except TypeError:
+            return False

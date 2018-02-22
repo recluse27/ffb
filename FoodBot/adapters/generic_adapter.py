@@ -29,6 +29,9 @@ class IAdapter:
     def checkout(self, **kwargs) -> dict:
         raise NotImplementedError
 
+    def is_product_available(self, product_id) -> bool:
+        raise NotImplementedError
+
     def get_categories(self, **kwargs) -> List[dict]:
         expire_date = (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
                        if self.cached_categories_updated else None)
@@ -60,15 +63,6 @@ class IAdapter:
 
         result = list(filter(lambda product: product.id == product_id, self.cached_products))
         return result[0] if result else None
-
-    def is_product_available(self, product_id) -> bool:
-        result = rq.get(url=(self.url % 'product/{id}'.format(id=product_id)),
-                        headers=HEADERS)
-        try:
-            product_data = json.loads(result.text)[0]
-            return bool(product_data.get('status'))
-        except TypeError:
-            return False
 
     def add_product(self, **kwargs) -> str:
         if not self.cached_products:
