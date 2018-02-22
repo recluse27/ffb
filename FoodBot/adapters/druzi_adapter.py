@@ -48,7 +48,7 @@ class DruziAdapter(IAdapter):
             Product(**{'title': product.get('name'),
                        'price': product.get('price'),
                        'id': product.get('id'),
-                       'category_id': product.get('category_id'),
+                       'category_id': product.get('category'),
                        'image_url': product.get('image_url')})
             for product in products.get('products')]
 
