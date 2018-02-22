@@ -297,11 +297,11 @@ class Controller:
                         quick_replies=quick_replies_instance),
                 Message(user_id=sender,
                         message_type=TEXT,
-                        message_data=REPLY_EXPLAIN(**cafe_order.dump()),
+                        message_data=REPLY_EXPLAIN(**data_to_show),
                         quick_replies=quick_replies_instance),
                 Message(user_id=sender,
                         message_type=TEXT,
-                        message_data=REPLY_GIFT(**cafe_order.dump()),
+                        message_data=REPLY_GIFT(**data_to_show),
                         quick_replies=quick_replies_instance)
             ]
             cafe_order.delete()
