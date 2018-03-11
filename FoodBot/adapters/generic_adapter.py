@@ -68,7 +68,7 @@ class GenericAdapter:
         return json.loads(result.text).get('order')
 
     def is_product_available(self, product_id) -> bool:
-        raise NotImplementedError
+        return True
 
     def get_categories(self, **kwargs) -> List[dict]:
         expire_date = (self.cached_categories_updated + timedelta(days=CACHE_UPDATE_DAYS)
