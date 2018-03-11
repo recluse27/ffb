@@ -24,7 +24,7 @@ class GenericAdapter:
         self.name = cafe.name
         self.image_url = cafe.image_url
         self.provider_name = cafe.provider_name
-        self.url = CAFE_SYSTEM_URL + "/cafes/{name}/".format(name=cafe.provider_name)
+        self.url = CAFE_SYSTEM_URL + "bot/cafes/{name}/".format(name=cafe.provider_name)
 
     def get_categories_from_api(self) -> None:
         result = rq.get(url=(self.url + "categories/"), headers=HEADERS)
