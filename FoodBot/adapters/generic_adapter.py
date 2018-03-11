@@ -10,6 +10,7 @@ from FoodBot.utils import get_or_create_order
 
 
 class GenericAdapter:
+    cafe = None
     name = None
     url = None
     image_url = None
@@ -21,6 +22,7 @@ class GenericAdapter:
     cached_products_updated = None
 
     def __init__(self, cafe: Cafe):
+        self.cafe = cafe
         self.name = cafe.name
         self.image_url = cafe.image_url
         self.provider_name = cafe.provider_name
