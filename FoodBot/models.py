@@ -55,7 +55,7 @@ class Cafe:
         self.address = kwargs.get("address")
         self.info = kwargs.get("info")
         self.image_url = kwargs.get("image_url")
-        self.testing = bool(kwargs.get("api_reference"))
+        self.testing = not bool(kwargs.get("api_reference"))
 
 
 class Product:
