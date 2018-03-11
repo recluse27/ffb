@@ -13,7 +13,7 @@ from FoodBot.utils import transform, require_provider, get_or_create_order, rewo
 
 
 class Controller:
-    cafe_system_url = "http://cafesystem.herokuapp.com/bot/"
+    cafe_system_url = "http://cafesystem.herokuapp.com/"
     adapters = {
     }
 
@@ -93,7 +93,7 @@ class Controller:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
-        result = rq.get(self.cafe_system_url + "cafes/")
+        result = rq.get(self.cafe_system_url + "bot/cafes/")
 
         cafes_list = json.loads(result.text).get("cafes")
         for cafe in cafes_list:
@@ -316,7 +316,11 @@ class Controller:
             bot_order.commit()
             return messages
 
-        url = self.cafe_system_url + '{url}/payments/{name}/{order_id}/{payment_type}' + str(cafe_order.order_id)
+        url = '{url}/payments/{name}/{order_id}/{payment_type}' + str(cafe_order.order_id)
+        url = url.format(url=self.cafe_system_url,
+                         name=adapter.cafe.provider_name,
+                         order_id=result.get("order_id"),
+                         payment_type=adapter.cafe.payment_type)
 
         message = Message(user_id=sender,
                           message_type=ATTACHMENT,
