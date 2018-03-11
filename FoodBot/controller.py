@@ -13,7 +13,7 @@ from FoodBot.utils import transform, require_provider, get_or_create_order, rewo
 
 
 class Controller:
-    cafe_system_url = "http://cafesystem.herokuapp.com"
+    cafe_system_url = "http://cafesystem.herokuapp.com/bot/"
     adapters = {
     }
 
