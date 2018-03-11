@@ -47,6 +47,17 @@ class Message:
         return response
 
 
+class Cafe:
+    def __init__(self, **kwargs):
+        self.name = kwargs.get("name")
+        self.provider_name = kwargs.get("provider_name")
+        self.payment_type = kwargs.get("payment_type")
+        self.address = kwargs.get("address")
+        self.info = kwargs.get("info")
+        self.image_url = kwargs.get("image_url")
+        self.testing = bool(kwargs.get("api_reference"))
+
+
 class Product:
     def __init__(self, **kwargs):
         self.title = kwargs.get('title')

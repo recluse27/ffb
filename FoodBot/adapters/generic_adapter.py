@@ -1,15 +1,15 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, List
 
 import requests as rq
 
-from FoodBot.constants import CACHE_UPDATE_DAYS, HEADERS
-from FoodBot.models import Product, BotOrder
+from FoodBot.constants import CACHE_UPDATE_DAYS, HEADERS, CAFE_SYSTEM_URL
+from FoodBot.models import Product, BotOrder, Category, Cafe
 from FoodBot.utils import get_or_create_order
 
 
-class IAdapter:
+class GenericAdapter:
     name = None
     url = None
     image_url = None
@@ -20,14 +20,52 @@ class IAdapter:
     cached_categories_updated = None
     cached_products_updated = None
 
+    def __init__(self, cafe: Cafe):
+        self.name = cafe.name
+        self.image_url = cafe.image_url
+        self.provider_name = cafe.provider_name
+        self.url = CAFE_SYSTEM_URL + "/cafes/{name}".format(name=cafe.provider_name)
+
     def get_categories_from_api(self) -> None:
-        raise NotImplementedError
+        result = rq.get(url=(self.url + "categories/"), headers=HEADERS)
+        categories = json.loads(result.text)
+        new_categories = [
+            Category(**{'title': category.get('name'),
+                        'category_id': category.get('id'),
+                        'image_url': category.get('image_url')})
+            for category in categories.get('categories')
+        ]
+        self.cached_categories = new_categories
+        self.cached_categories_updated = datetime.utcnow()
 
     def get_products_from_api(self) -> None:
-        raise NotImplementedError
+        result = rq.get(url=(self.url + 'products/'), headers=HEADERS)
+        products = json.loads(result.text)
+
+        new_products = [
+            Product(**{'title': product.get('name'),
+                       'price': product.get('price'),
+                       'id': product.get('id'),
+                       'category_id': product.get('category'),
+                       'image_url': product.get('image_url')})
+            for product in products.get('products')]
+
+        self.cached_products = new_products
+        self.cached_products_updated = datetime.utcnow()
 
     def checkout(self, **kwargs) -> dict:
-        raise NotImplementedError
+        ukraine = timezone(timedelta(hours=2))
+        orders = kwargs.get('orders')
+
+        data = {'user_id': kwargs.get('user_id'),
+                'order_time': datetime.now(tz=ukraine).strftime("%Y-%m-%dT%H:%M:%S.%f"),
+                'orders': [product.get('id') for product in orders]}
+
+        result = rq.post(url=(self.url + 'checkout/'),
+                         headers=HEADERS,
+                         json=data)
+
+        return json.loads(result.text).get('order')
 
     def is_product_available(self, product_id) -> bool:
         raise NotImplementedError

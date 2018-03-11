@@ -58,8 +58,8 @@ def get_payment(order_id):
 
 @app.route('/<provider>/notify', methods=['POST'])
 def respond_on_notify(provider):
-    payment_status = request.json.get("payment_status")
     json_data = request.json
+    payment_status = json_data.get("payment_status")
     order_id = json_data.get('order_id')
 
     order_data = CafeOrder.find_one({"order_id": str(order_id),

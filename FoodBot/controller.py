@@ -1,21 +1,20 @@
 import json
 from datetime import datetime
 from typing import List
+import requests as rq
 
-from FoodBot import testing
-from FoodBot.adapters import UnitAdapter, DruziAdapter
-from FoodBot.constants import (GREETING, INSTRUCTION, SELF_URL, REPLY_EXPLAIN, REPLY_GIFT,
+from FoodBot.adapters import GenericAdapter
+from FoodBot.constants import (GREETING, INSTRUCTION, REPLY_EXPLAIN, REPLY_GIFT,
                                TEXT, ATTACHMENT)
 from FoodBot.fb_templates import (generic_link_template, generic_list_template,
                                   receipt_template, quick_replies)
-from FoodBot.models import Message, BotOrder, CafeOrder
+from FoodBot.models import Message, BotOrder, CafeOrder, Cafe
 from FoodBot.utils import transform, require_provider, get_or_create_order, rework_checkout_data
 
 
 class Controller:
+    cafe_system_url = "http://cafesystem.herokuapp.com"
     adapters = {
-        'unit': UnitAdapter(),
-        'druzi': DruziAdapter()
     }
 
     @staticmethod
@@ -94,6 +93,14 @@ class Controller:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
+        result = rq.get(self.cafe_system_url + "cafes/")
+
+        cafes_list = json.loads(result.text).get("cafes")
+        for cafe in cafes_list:
+            cafe_model = Cafe(**cafe)
+            adapter = GenericAdapter(cafe_model)
+            self.adapters[cafe.get("provider_name")] = adapter
+
         cafes = [{'title': cafe_value.name,
                   'id': cafe_key,
                   'image_url': cafe_value.image_url} for cafe_key, cafe_value in self.adapters.items()]
@@ -286,7 +293,7 @@ class Controller:
 
         cafe_order = CafeOrder(**result)
         cafe_order.commit()
-        if testing:
+        if adapter.cafe.testing:
             data_to_show = cafe_order.dump()
             data_to_show.update({"date": str(datetime.now().date()),
                                  "cafe_name": adapter.name})
@@ -309,7 +316,7 @@ class Controller:
             bot_order.commit()
             return messages
 
-        url = SELF_URL + '/order/' + str(cafe_order.order_id)
+        url = self.cafe_system_url + '{url}/payments/{name}/{order_id}/{payment_type}' + str(cafe_order.order_id)
 
         message = Message(user_id=sender,
                           message_type=ATTACHMENT,
