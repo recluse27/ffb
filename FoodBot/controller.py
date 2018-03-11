@@ -17,6 +17,9 @@ class Controller:
     adapters = {
     }
 
+    def __init__(self):
+        self.get_cafes("Loader")
+
     @staticmethod
     def is_response_valid(data) -> bool:
         if (not data or
@@ -316,11 +319,10 @@ class Controller:
             bot_order.commit()
             return messages
 
-        url = '{url}/payments/{name}/{order_id}/{payment_type}' + str(cafe_order.order_id)
+        url = '{url}/payments/{name}/{order_id}/'
         url = url.format(url=self.cafe_system_url,
                          name=adapter.cafe.provider_name,
-                         order_id=result.get("order_id"),
-                         payment_type=adapter.cafe.payment_type)
+                         order_id=result.get("order_id"))
 
         message = Message(user_id=sender,
                           message_type=ATTACHMENT,
