@@ -154,7 +154,7 @@ class Controller:
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                cafe_order.provider)
-        return [
+        messages = [
             Message(user_id=sender,
                     message_type=ATTACHMENT,
                     message_data=receipt_template(**bot_order.dump()),
@@ -168,6 +168,10 @@ class Controller:
                     message_data=REPLY_GIFT(**cafe_order.dump()),
                     quick_replies=quick_replies_instance)
         ]
+
+        bot_order.orders = []
+        bot_order.commit()
+        return messages
 
     @require_provider
     def add_product(self, sender, **kwargs) -> List[Message]:
@@ -328,6 +332,4 @@ class Controller:
                           message_type=ATTACHMENT,
                           message_data=generic_link_template(url, 'Будь ласка, здійсніть оплату.'),
                           quick_replies=quick_replies_instance)
-        bot_order.orders = []
-        bot_order.commit()
         return [message]
