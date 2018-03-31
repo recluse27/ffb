@@ -5,7 +5,7 @@ from liqpay import LiqPay
 
 from FoodBot.constants import *
 from FoodBot.controller import Controller
-from FoodBot.models import CafeOrder, Message
+from FoodBot.models import CafeOrder
 
 controller = Controller()
 
@@ -61,7 +61,6 @@ def respond_on_notify(provider):
     json_data = request.json
     payment_status = json_data.get("payment_status")
     order_id = json_data.get('order_id')
-
     order_data = CafeOrder.find_one({"order_id": str(order_id),
                                      "provider": provider})
 
@@ -79,7 +78,6 @@ def respond_on_notify(provider):
 
         for response in responses:
             response.send(url=BOT_URL)
-
     except Exception as e:
         return jsonify({'Error': str(e)})
 
