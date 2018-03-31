@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 from typing import List
+
 import requests as rq
 
 from FoodBot.adapters import GenericAdapter
@@ -24,7 +25,7 @@ class Controller:
     def is_response_valid(data) -> bool:
         if (not data or
                 any([item in data for item in ['delivery', 'read']]) or
-                    'is_echo' in data.get('message', {})):
+                'is_echo' in data.get('message', {})):
             return False
 
         return True
@@ -210,11 +211,12 @@ class Controller:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
-        result = adapter.get_categories(**kwargs)
-        rearranged_categories = transform(result)
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
+
+        result = adapter.get_categories(**kwargs)
+        rearranged_categories = transform(result)
 
         messages = []
         for category_list in rearranged_categories:
@@ -230,11 +232,18 @@ class Controller:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
-        result = adapter.get_products(**kwargs)
-        rearranged_products = transform(result)
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
+
+        result = adapter.get_products(**kwargs)
+        if not result:
+            return [Message(user_id=sender,
+                            message_type=TEXT,
+                            message_data="У цій категорії нема продуктів.",
+                            quick_replies=quick_replies_instance)]
+
+        rearranged_products = transform(result)
 
         messages = []
         for product_list in rearranged_products:
