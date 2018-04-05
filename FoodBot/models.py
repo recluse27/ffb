@@ -19,7 +19,7 @@ class BotOrder(Document):
 class CafeOrder(Document):
     user_id = fields.StrField()
     provider = fields.StrField()
-    confirm_code = fields.IntField()
+    confirm_code = fields.StrField()
     order_id = fields.StrField()
     order_time = fields.StrField()
     cook_time = fields.StrField()
