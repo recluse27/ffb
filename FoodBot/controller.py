@@ -6,7 +6,9 @@ import requests as rq
 
 from FoodBot.adapters import GenericAdapter
 from FoodBot.constants import (GREETING, INSTRUCTION, REPLY_EXPLAIN, REPLY_GIFT,
-                               TEXT, ATTACHMENT)
+                               TEXT, ATTACHMENT, INSTRUCTION_PART_1,
+                               INSTRUCTION_PART_2, INSTRUCTION_PART_3,
+                               INSTRUCTION_PART_4, INSTRUCTION_PART_5)
 from FoodBot.fb_templates import (generic_link_template, generic_list_template,
                                   receipt_template, quick_replies)
 from FoodBot.models import Message, BotOrder, CafeOrder, Cafe
@@ -84,11 +86,31 @@ class Controller:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
-        message = Message(user_id=sender,
-                          message_type=TEXT,
-                          message_data=INSTRUCTION,
-                          quick_replies=quick_replies_instance)
-        return [message]
+
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=INSTRUCTION_PART_1,
+                    quick_replies=quick_replies_instance),
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=INSTRUCTION_PART_2,
+                    quick_replies=quick_replies_instance),
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=INSTRUCTION_PART_3,
+                    quick_replies=quick_replies_instance),
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=INSTRUCTION_PART_4,
+                    quick_replies=quick_replies_instance),
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=INSTRUCTION_PART_5,
+                    quick_replies=quick_replies_instance),
+
+        ]
+        return messages
 
     def get_product(self, sender, **kwargs) -> List[Message]:
         quick_replies_instance = {}
