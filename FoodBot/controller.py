@@ -59,6 +59,7 @@ class Controller:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                kwargs.get('provider', 'unit'))
+
         message = Message(user_id=sender,
                           message_type=TEXT,
                           message_data='Зробіть замовлення.',
@@ -69,6 +70,10 @@ class Controller:
         quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
+
+        rq.post(url=self.cafe_system_url + "bot/users/",
+                json={'user_id': sender})
+
         message = Message(user_id=sender,
                           message_type=TEXT,
                           message_data=GREETING,
@@ -126,7 +131,10 @@ class Controller:
                                                provider)
         message = Message(user_id=sender,
                           message_type=TEXT,
-                          message_data='Зробіть замовлення.',
+                          message_data='Чудовий вибір!🙂 '
+                                       'Тепер час обрати подаруночок🎁! '
+                                       'Натисніть «Категорії», щоб обрати '
+                                       'необхідну позицію у меню😉',
                           quick_replies=quick_replies_instance)
         return [message]
 
