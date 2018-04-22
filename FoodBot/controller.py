@@ -5,7 +5,7 @@ from typing import List
 import requests as rq
 
 from FoodBot.adapters import GenericAdapter
-from FoodBot.constants import (GREETING, INSTRUCTION, REPLY_EXPLAIN, REPLY_GIFT,
+from FoodBot.constants import (GREETING, REPLY_EXPLAIN, REPLY_GIFT,
                                TEXT, ATTACHMENT, INSTRUCTION_PART_1,
                                INSTRUCTION_PART_2, INSTRUCTION_PART_3,
                                INSTRUCTION_PART_4, INSTRUCTION_PART_5)
@@ -183,7 +183,9 @@ class Controller:
         ukraine = timezone(timedelta(hours=2))
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
-        order_time = datetime.now(tz=ukraine) + timedelta(days=adapter.cafe.days_expire)
+        order_time = (datetime.now(tz=ukraine) + timedelta(days=adapter.cafe.days_expire)).strftime("%d-%m-%Y")
+        text_data = {"date": order_time,
+                     "cafe_name": adapter.cafe.name}
 
         sender = cafe_order.user_id
         bot_order = get_or_create_order(BotOrder, cafe_order.user_id, cafe_order.provider)
@@ -193,8 +195,8 @@ class Controller:
 
         cafe_order_data = cafe_order.dump()
         bot_order_data = bot_order.dump()
-        cafe_order_data.update({"date": order_time})
-        bot_order_data.update({"date": order_time})
+        cafe_order_data.update(text_data)
+        bot_order_data.update(text_data)
 
         messages = [
             Message(user_id=sender,
