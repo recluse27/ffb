@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import List
 
 import requests as rq
@@ -180,23 +180,34 @@ class Controller:
         if cafe_order is None:
             return []
 
+        ukraine = timezone(timedelta(hours=2))
+        provider = kwargs.get('provider')
+        adapter = self.adapters.get(provider)
+        order_time = datetime.now(tz=ukraine) + timedelta(days=adapter.cafe.days_expire)
+
         sender = cafe_order.user_id
         bot_order = get_or_create_order(BotOrder, cafe_order.user_id, cafe_order.provider)
         quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                cafe_order.provider)
+
+        cafe_order_data = cafe_order.dump()
+        bot_order_data = bot_order.dump()
+        cafe_order_data.update({"date": order_time})
+        bot_order_data.update({"date": order_time})
+
         messages = [
             Message(user_id=sender,
                     message_type=ATTACHMENT,
-                    message_data=receipt_template(**bot_order.dump()),
+                    message_data=receipt_template(**bot_order_data),
                     quick_replies=quick_replies_instance),
             Message(user_id=sender,
                     message_type=TEXT,
-                    message_data=REPLY_EXPLAIN(**cafe_order.dump()),
+                    message_data=REPLY_EXPLAIN(**cafe_order_data),
                     quick_replies=quick_replies_instance),
             Message(user_id=sender,
                     message_type=TEXT,
-                    message_data=REPLY_GIFT(**cafe_order.dump()),
+                    message_data=REPLY_GIFT(**cafe_order_data),
                     quick_replies=quick_replies_instance)
         ]
 
