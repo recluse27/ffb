@@ -1,6 +1,6 @@
 from flask import Flask
 from pymongo import MongoClient
-testing = True
+testing = False
 
 app = Flask('FoodBot')
 app.config.from_object('config')
