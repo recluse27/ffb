@@ -31,7 +31,7 @@ def handle_incoming_messages():
 @app.route('/order/<order_id>', methods=["GET"])
 def get_payment(order_id):
     ukraine = timezone(timedelta(hours=2))
-    data = CafeOrder.fine_one({"order_id": str(order_id)})
+    data = CafeOrder.find_one({"order_id": str(order_id)})
     if data is None:
         return "Замовлення не знайдено"
 
