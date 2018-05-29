@@ -5,7 +5,7 @@ from typing import List
 import requests as rq
 
 from FoodBot.adapters import GenericAdapter
-from FoodBot.constants import (GREETING, REPLY_EXPLAIN, REPLY_GIFT,
+from FoodBot.constants import (GREETING, REPLY_EXPLAIN, REPLY_GIFT, CAFE_SYSTEM_URL,
                                TEXT, ATTACHMENT, INSTRUCTION_PART_1,
                                INSTRUCTION_PART_2, INSTRUCTION_PART_3,
                                INSTRUCTION_PART_4, INSTRUCTION_PART_5)
@@ -16,7 +16,7 @@ from FoodBot.utils import transform, require_provider, get_or_create_order, rewo
 
 
 class Controller:
-    cafe_system_url = "http://cafesystem.herokuapp.com/"
+    cafe_system_url = CAFE_SYSTEM_URL
     adapters = {
     }
 
