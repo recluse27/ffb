@@ -145,4 +145,4 @@ SELF_URL = "http://friendlybot.westeurope.cloudapp.azure.com"
 BOT_URL = "https://graph.facebook.com/v2.9/me/messages?access_token=" + app.config['PAGE_ACCESS_TOKEN'
 if not testing else "PAGE_TEST_TOKEN"]
 
-CAFE_SYSTEM_URL = "http://cafesystem.herokuapp.com/"
+CAFE_SYSTEM_URL = "http://cafesystem.herokuapp.com/" if not testing else "http://cafetestsystem.herokuapp.com/"
