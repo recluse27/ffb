@@ -1,4 +1,6 @@
-from FoodBot import app
+from FoodBot import app, testing
+
+print(testing)
 
 app.run(debug=True,
         host="10.0.0.4",
