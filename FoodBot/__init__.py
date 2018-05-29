@@ -2,7 +2,7 @@ from flask import Flask
 from pymongo import MongoClient
 import envparse as env
 
-testing = env.env.bool("TESTING", default=False)
+testing = True
 
 app = Flask('FoodBot')
 app.config.from_object('config')
