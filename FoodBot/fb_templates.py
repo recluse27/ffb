@@ -108,7 +108,9 @@ QRs = {
                                                                 'provider': provider}),
     'cafes': lambda provider: quick_replies_template('Заклади', {'type': 'get_cafes'}),
 
-    'instruction': lambda provider: quick_replies_template('Інструкція', {'type': 'get_instruction'})
+    'instruction': lambda provider: quick_replies_template('Інструкція', {'type': 'get_instruction'}),
+
+    'why_bot': lambda provider: quick_replies_template('Нащо мені це?', {'type': 'why_bot'}),
 }
 
 

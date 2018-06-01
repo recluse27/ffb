@@ -8,7 +8,8 @@ from FoodBot.adapters import GenericAdapter
 from FoodBot.constants import (GREETING, REPLY_EXPLAIN, REPLY_GIFT, CAFE_SYSTEM_URL,
                                TEXT, ATTACHMENT, INSTRUCTION_PART_1,
                                INSTRUCTION_PART_2, INSTRUCTION_PART_3,
-                               INSTRUCTION_PART_4, INSTRUCTION_PART_5)
+                               INSTRUCTION_PART_4, INSTRUCTION_PART_5,
+                               WHY_BOT)
 from FoodBot.fb_templates import (generic_link_template, generic_list_template,
                                   receipt_template, quick_replies)
 from FoodBot.models import Message, BotOrder, CafeOrder, Cafe
@@ -58,7 +59,7 @@ class Controller:
         return self.__getattribute__(method)(sender, **payload)
 
     def get_started(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['cafes']
+        quick_replies_list = ['cafes', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                kwargs.get('provider', 'unit'))
 
@@ -69,7 +70,7 @@ class Controller:
         return [message]
 
     def greeting(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['cafes']
+        quick_replies_list = ['cafes', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
 
@@ -83,7 +84,7 @@ class Controller:
         return [message]
 
     def get_instruction(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['cafes']
+        quick_replies_list = ['cafes', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
 
@@ -121,7 +122,7 @@ class Controller:
         return [message]
 
     def get_cafes(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['cafes']
+        quick_replies_list = ['cafes', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
         result = rq.get(self.cafe_system_url + "bot/cafes/")
@@ -148,7 +149,7 @@ class Controller:
 
     def get_cafe(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('id')
-        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
         message = Message(user_id=sender,
@@ -217,13 +218,23 @@ class Controller:
         bot_order.commit()
         return messages
 
+    def why_bot(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['cafes', 'why_bot']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        message = Message(user_id=sender,
+                          message_type=TEXT,
+                          message_data=WHY_BOT,
+                          quick_replies=quick_replies_instance)
+        return [message]
+
     @require_provider
     def add_product(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
         result = adapter.add_product(**kwargs)
-        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -239,7 +250,7 @@ class Controller:
         adapter = self.adapters.get(provider)
 
         result = adapter.remove_product(**kwargs)
-        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -254,7 +265,7 @@ class Controller:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
-        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -275,7 +286,7 @@ class Controller:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
-        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -300,7 +311,7 @@ class Controller:
     @require_provider
     def get_basket(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
-        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -327,7 +338,7 @@ class Controller:
     @require_provider
     def checkout(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
-        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket', 'why_bot']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
