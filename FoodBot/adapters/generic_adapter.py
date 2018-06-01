@@ -137,7 +137,12 @@ class GenericAdapter:
             return "Продукт наразі недоступний."
 
         orders = user_order.orders
-        orders.remove(product.to_json())
+        product_json = product.to_json()
+        for actual_product in orders:
+            if actual_product.get('id') == product.id:
+                product_json = actual_product
+
+        orders.remove(product_json)
         user_order.orders = orders
         user_order.commit()
         return "Видалено {title}.".format(title=product.title)
