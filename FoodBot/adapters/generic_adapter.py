@@ -134,17 +134,14 @@ class GenericAdapter:
 
         product = self.get_product_by_id(product_id)
         orders = user_order.orders
+        product_json = {}
         if product is None:
-            product_json = {}
             for actual_product in orders:
                 if actual_product.get('id') == product_id:
                     product_json = actual_product
 
         else:
             product_json = product.to_json()
-            for actual_product in orders:
-                if actual_product.get('id') == product.id:
-                    product_json = actual_product
 
         orders.remove(product_json)
         user_order.orders = orders
