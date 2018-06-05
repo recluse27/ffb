@@ -133,16 +133,20 @@ class GenericAdapter:
         user_order = get_or_create_order(BotOrder, sender, provider)
 
         product = self.get_product_by_id(product_id)
-        if product is None:
-            return "Продукт наразі недоступний."
-
         orders = user_order.orders
-        product_json = product.to_json()
-        for actual_product in orders:
-            if actual_product.get('id') == product.id:
-                product_json = actual_product
+        if product is None:
+            product_json = {}
+            for actual_product in orders:
+                if actual_product.get('id') == product_id:
+                    product_json = actual_product
+
+        else:
+            product_json = product.to_json()
+            for actual_product in orders:
+                if actual_product.get('id') == product.id:
+                    product_json = actual_product
 
         orders.remove(product_json)
         user_order.orders = orders
         user_order.commit()
-        return "Видалено {title}.".format(title=product.title)
+        return "Видалено {title}.".format(title=product_json.get('title'))
