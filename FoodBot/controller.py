@@ -55,6 +55,8 @@ class Controller:
         payload = self.get_message_payload(data)
         payload.update({"user_id": sender})
         method = payload.get("type")
+        print(payload)
+        print(self.adapters.keys())
         print(method.upper())
         return self.__getattribute__(method)(sender, **payload)
 
