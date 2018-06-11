@@ -110,7 +110,15 @@ QRs = {
 
     'instruction': lambda provider: quick_replies_template('Інструкція', {'type': 'get_instruction'}),
 
+    'how_to_buy': lambda provider: quick_replies_template('Як придбати?', {'type': 'how_to_buy'}),
+
+    'how_to_present': lambda provider: quick_replies_template('Як подарувати?', {'type': 'how_to_present'}),
+
+    'how_details': lambda provider: quick_replies_template('Деталi', {'type': 'how_details'}),
+
     'why_bot': lambda provider: quick_replies_template('Нащо мені це?', {'type': 'why_bot'}),
+
+
 }
 
 

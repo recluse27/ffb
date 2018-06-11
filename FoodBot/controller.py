@@ -86,7 +86,7 @@ class Controller:
         return [message]
 
     def get_instruction(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['why_bot', 'cafes']
+        quick_replies_list = ['how_to_buy']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
 
@@ -95,24 +95,41 @@ class Controller:
                     message_type=TEXT,
                     message_data=INSTRUCTION_PART_1,
                     quick_replies=quick_replies_instance),
-            Message(user_id=sender,
-                    message_type=TEXT,
-                    message_data=INSTRUCTION_PART_2,
-                    quick_replies=quick_replies_instance),
-            Message(user_id=sender,
-                    message_type=TEXT,
-                    message_data=INSTRUCTION_PART_3,
-                    quick_replies=quick_replies_instance),
-            Message(user_id=sender,
-                    message_type=TEXT,
-                    message_data=INSTRUCTION_PART_4,
-                    quick_replies=quick_replies_instance),
-            Message(user_id=sender,
-                    message_type=TEXT,
-                    message_data=INSTRUCTION_PART_5,
-                    quick_replies=quick_replies_instance),
-
         ]
+        return messages
+
+    def how_to_buy(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['how_to_present']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        messages = [Message(user_id=sender,
+                            message_type=TEXT,
+                            message_data=INSTRUCTION_PART_2,
+                            quick_replies=quick_replies_instance),
+                    Message(user_id=sender,
+                            message_type=TEXT,
+                            message_data=INSTRUCTION_PART_3,
+                            quick_replies=quick_replies_instance), ]
+        return messages
+
+    def how_to_present(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['how_details']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        messages = [Message(user_id=sender,
+                            message_type=TEXT,
+                            message_data=INSTRUCTION_PART_4,
+                            quick_replies=quick_replies_instance), ]
+        return messages
+
+    def how_details(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['why_bot', 'cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        messages = [Message(user_id=sender,
+                            message_type=TEXT,
+                            message_data=INSTRUCTION_PART_5,
+                            quick_replies=quick_replies_instance), ]
         return messages
 
     def get_product(self, sender, **kwargs) -> List[Message]:
