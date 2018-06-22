@@ -30,11 +30,12 @@ class CafeOrder(Document):
 
 
 class Message:
-    def __init__(self, message_data, user_id, quick_replies=None, message_type="text"):
+    def __init__(self, message_data, user_id, quick_replies=None, message_type="text", timeout=0):
         self.message_type = message_type
         self.message_data = message_data
         self.quick_replies = quick_replies
         self.user_id = user_id
+        self.timeout = timeout
 
     def send(self, url):
         message = {"recipient": {"id": self.user_id},

@@ -6,6 +6,7 @@ from liqpay import LiqPay
 from FoodBot.constants import *
 from FoodBot.controller import Controller
 from FoodBot.models import CafeOrder
+import time
 
 controller = Controller()
 
@@ -23,6 +24,8 @@ def handle_incoming_messages():
         responses = controller.handle_message(data=data)
 
         for response in responses:
+            if response.timeout != 0:
+                time.sleep(response.timeout)
             response.send(url=BOT_URL)
 
     return "ok"

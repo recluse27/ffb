@@ -5,10 +5,8 @@ from typing import List
 import requests as rq
 
 from FoodBot.adapters import GenericAdapter
-from FoodBot.constants import (GREETING, REPLY_EXPLAIN, REPLY_GIFT, CAFE_SYSTEM_URL,
-                               TEXT, ATTACHMENT, INSTRUCTION_PART_1,
-                               INSTRUCTION_PART_2, INSTRUCTION_PART_3,
-                               INSTRUCTION_PART_4, INSTRUCTION_PART_5,
+from FoodBot.constants import (REPLY_EXPLAIN, REPLY_GIFT, CAFE_SYSTEM_URL,
+                               TEXT, ATTACHMENT, INSTRUCTION, GREETING,
                                WHY_BOT)
 from FoodBot.fb_templates import (generic_link_template, generic_list_template,
                                   receipt_template, quick_replies)
@@ -79,57 +77,88 @@ class Controller:
         rq.post(url=self.cafe_system_url + "bot/users/",
                 json={'user_id': sender})
 
-        message = Message(user_id=sender,
-                          message_type=TEXT,
-                          message_data=GREETING,
-                          quick_replies=quick_replies_instance)
-        return [message]
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=text,
+                    timeout=1,
+                    quick_replies=quick_replies_instance) for text in GREETING
+        ]
+        return messages
 
     def get_instruction(self, sender, **kwargs) -> List[Message]:
         quick_replies_list = ['how_to_buy']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
+        texts = INSTRUCTION.get("initial")
 
         messages = [
             Message(user_id=sender,
                     message_type=TEXT,
-                    message_data=INSTRUCTION_PART_1,
-                    quick_replies=quick_replies_instance),
+                    message_data=text,
+                    timeout=1,
+                    quick_replies=quick_replies_instance) for text in texts
         ]
         return messages
 
     def how_to_buy(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['how_to_pay']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        texts = INSTRUCTION.get("how_to_buy")
+
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=text,
+                    timeout=1,
+                    quick_replies=quick_replies_instance) for text in texts
+        ]
+        return messages
+
+    def how_to_pay(self, sender, **kwargs) -> List[Message]:
         quick_replies_list = ['how_to_present']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
-        messages = [Message(user_id=sender,
-                            message_type=TEXT,
-                            message_data=INSTRUCTION_PART_2,
-                            quick_replies=quick_replies_instance),
-                    Message(user_id=sender,
-                            message_type=TEXT,
-                            message_data=INSTRUCTION_PART_3,
-                            quick_replies=quick_replies_instance), ]
+        texts = INSTRUCTION.get("how_to_pay")
+
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=text,
+                    timeout=1,
+                    quick_replies=quick_replies_instance) for text in texts
+        ]
         return messages
 
     def how_to_present(self, sender, **kwargs) -> List[Message]:
         quick_replies_list = ['how_details']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
-        messages = [Message(user_id=sender,
-                            message_type=TEXT,
-                            message_data=INSTRUCTION_PART_4,
-                            quick_replies=quick_replies_instance), ]
+        texts = INSTRUCTION.get("how_to_present")
+
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=text,
+                    timeout=1,
+                    quick_replies=quick_replies_instance) for text in texts
+        ]
         return messages
 
     def how_details(self, sender, **kwargs) -> List[Message]:
         quick_replies_list = ['why_bot', 'cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
-        messages = [Message(user_id=sender,
-                            message_type=TEXT,
-                            message_data=INSTRUCTION_PART_5,
-                            quick_replies=quick_replies_instance), ]
+        texts = INSTRUCTION.get("how_details")
+
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=text,
+                    timeout=1,
+                    quick_replies=quick_replies_instance) for text in texts
+        ]
         return messages
 
     def get_product(self, sender, **kwargs) -> List[Message]:
@@ -157,7 +186,12 @@ class Controller:
                   'image_url': cafe_value.image_url} for cafe_key, cafe_value in self.adapters.items()]
         rearranged_cafes = transform(cafes)
 
-        messages = []
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data="Щоб обрати заклад - натисніть на його назву.",
+                    quick_replies=quick_replies_instance),
+        ]
         for cafe_list in rearranged_cafes:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
@@ -257,11 +291,17 @@ class Controller:
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
-        message = Message(user_id=sender,
-                          message_type=TEXT,
-                          message_data=result,
-                          quick_replies=quick_replies_instance)
-        return [message]
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=' Додайте щось іще або проведіть оплату💳, натиснувши клавішу "До оплати"',
+                    quick_replies=quick_replies_instance),
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data=result,
+                    quick_replies=quick_replies_instance)
+        ]
+        return messages
 
     @require_provider
     def remove_product(self, sender, **kwargs) -> List[Message]:
@@ -291,7 +331,12 @@ class Controller:
         result = adapter.get_categories(**kwargs)
         rearranged_categories = transform(result)
 
-        messages = []
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data="Щоб обрати категорію меню - натисніть на її назву.",
+                    quick_replies=quick_replies_instance)
+        ]
         for category_list in rearranged_categories:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
@@ -318,7 +363,12 @@ class Controller:
 
         rearranged_products = transform(result)
 
-        messages = []
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data='Щоб додати позицію до кошику 🛒  - натисніть клавішу "Додати"',
+                    quick_replies=quick_replies_instance)
+        ]
         for product_list in rearranged_products:
             messages.append(Message(user_id=sender,
                                     message_type=ATTACHMENT,
