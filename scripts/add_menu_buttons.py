@@ -1,5 +1,7 @@
 import requests as rq
 
+from config import PAGE_ACCESS_TOKEN, PAGE_TEST_TOKEN
+
 url = "https://graph.facebook.com/v2.10/me/messenger_profile?access_token={token}"
 
 
@@ -25,6 +27,11 @@ def make_menu_buttons(access_token):
                      "payload": "{\"type\":\"get_cafes\"}"
                  },
                  {
+                     "title": 'Нащо мені це?',
+                     "type": "postback",
+                     "payload": "{\"type\":\"why_bot\"}"
+                 },
+                 {
                      "type": "postback",
                      "title": "Інструкція",
                      "payload": "{\"type\":\"get_instruction\"}"
@@ -37,3 +44,11 @@ def make_menu_buttons(access_token):
     res = rq.post(url=url.format(token=access_token), json=data)
     print(res)
     print(res.text)
+
+
+def make_actual_buttons():
+    make_menu_buttons(PAGE_ACCESS_TOKEN)
+
+
+def make_test_buttons():
+    make_menu_buttons(PAGE_TEST_TOKEN)

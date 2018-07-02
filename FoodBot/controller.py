@@ -272,14 +272,153 @@ class Controller:
         return messages
 
     def why_bot(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['why_bot', 'cafes']
+        quick_replies_list = ['happens', 'no_memory']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
-        message = Message(user_id=sender,
-                          message_type=TEXT,
-                          message_data=WHY_BOT,
-                          quick_replies=quick_replies_instance)
-        return [message]
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Буває, що комусь хочете зробити приємність чи віддячити",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="проте людина далеко і у вас нема часу із нею зустрітись?😬",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="(або бажання😄)",
+                        quick_replies=quick_replies_instance)]
+
+    def happens(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['something_else', 'cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Ну ось! А тепер можете з моєю допомогою купити щось смачне і надіслати тому, кого треба віддячити🙂",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="І людина сама забере ваш їстівний подарунок в зручний час і буде аж на сьомому небі від щастя😁",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Натисніть на «Заклади» і зробимо це прямо зараз😉",
+                        quick_replies=quick_replies_instance)]
+
+    def no_memory(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['yeah', 'half']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Ну дивіться",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Буває так що у вашої половинки❤️ жахливий настрій☹️, а ви не поруч і не можете втішити чи допомогти?🤷‍",
+                        quick_replies=quick_replies_instance)]
+
+    def something_else(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['yeah', 'half']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Ну дивіться",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Буває так що у вашої половинки❤️ жахливий настрій☹️, а ви не поруч і не можете втішити чи допомогти?🤷‍",
+                        quick_replies=quick_replies_instance)]
+
+    def yeah(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['something_hmm_else', 'cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="То тепер ви знаєте, що завжди можете на відстані підняти настрій своїй половинці❤️",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Чи то надіславши морозиво🍦, чи то тірамісу🍮 із кавою",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Тисніть на «Заклади» і порадуєм вашу любов❤️ прямо зараз🙂",
+                        quick_replies=quick_replies_instance)]
+
+    def something_hmm_else(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['that_is_me', 'cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Тільки чесно!",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Проспорили другові бургер🍔 і ніяк не віддасте, бо нема часу зустрітись?😅",
+                        quick_replies=quick_replies_instance)]
+
+    def half(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['that_is_me', 'not_really']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Не зважайте😅",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Тоді ось що",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Тільки чесно!",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Проспорили другові бургер🍔 і ніяк не віддасте, бо нема часу зустрітись?😅",
+                        quick_replies=quick_replies_instance)]
+
+    def that_is_me(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Ну то давайте прямо зараз оберемо якийсь смачнющий бургер🍔 і надішлемо йому!🙂",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="А він забере його коли буде час",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Натискайте «Заклади» та обирайте потрібний😉",
+                        quick_replies=quick_replies_instance)]
+
+    def not_really(self, sender, **kwargs) -> List[Message]:
+        quick_replies_list = ['cafes']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               None)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="А ви точно з цієї планети?😂",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Та я жартую)",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Ну то давайте придбаємо щось цікаве для вашого знайомого, в якого був нещодавно день народження, а ви забули привітати😅",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Нажміть на «Заклади» і обирайте щось смачне😋 і оригінальне😁",
+                        quick_replies=quick_replies_instance)]
 
     @require_provider
     def add_product(self, sender, **kwargs) -> List[Message]:
@@ -294,11 +433,11 @@ class Controller:
         messages = [
             Message(user_id=sender,
                     message_type=TEXT,
-                    message_data=' Додайте щось іще або проведіть оплату💳, натиснувши клавішу "До оплати"',
+                    message_data=result,
                     quick_replies=quick_replies_instance),
             Message(user_id=sender,
                     message_type=TEXT,
-                    message_data=result,
+                    message_data=' Додайте щось іще або проведіть оплату💳, натиснувши клавішу "До оплати"',
                     quick_replies=quick_replies_instance)
         ]
         return messages

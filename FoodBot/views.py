@@ -98,3 +98,8 @@ def update_products():
 @app.route('/bot/policy')
 def policy():
     return render_template("policy.html")
+
+
+@app.route('/send/', methods=["POST"])
+def send():
+    pass

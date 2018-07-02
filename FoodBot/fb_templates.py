@@ -120,7 +120,21 @@ QRs = {
 
     'why_bot': lambda provider: quick_replies_template('Нащо мені це?', {'type': 'why_bot'}),
 
+    'happens': lambda provider: quick_replies_template('Трапляється', {'type': 'happens'}),
 
+    'no_memory': lambda provider: quick_replies_template('Не пригадую', {'type': 'no_memory'}),
+
+    'something_else': lambda provider: quick_replies_template('А що ще?', {'type': 'something_else'}),
+
+    'something_hmm_else': lambda provider: quick_replies_template('Хмм.А що ще?', {'type': 'something_hmm_else'}),
+
+    'yeah': lambda provider: quick_replies_template('Та да', {'type': 'yeah'}),
+
+    'half': lambda provider: quick_replies_template('Половинка?😰', {'type': 'half'}),
+
+    'that_is_me': lambda provider: quick_replies_template('Це про мене😄', {'type': 'that_is_me'}),
+
+    'not_really': lambda provider: quick_replies_template('Та наче ні', {'type': 'not_really'}),
 }
 
 
