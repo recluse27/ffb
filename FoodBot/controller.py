@@ -205,14 +205,27 @@ class Controller:
         quick_replies_list = ['why_bot', 'categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
-        message = Message(user_id=sender,
-                          message_type=TEXT,
-                          message_data='Чудовий вибір!🙂 '
-                                       'Тепер час обрати подаруночок🎁! '
-                                       'Натисніть «Категорії», щоб обрати '
-                                       'необхідну позицію у меню😉',
-                          quick_replies=quick_replies_instance)
-        return [message]
+
+        kwargs['provider'] = provider
+        adapter = self.adapters.get(provider)
+
+        result = adapter.get_categories(**kwargs)
+        rearranged_categories = transform(result)
+
+        messages = [
+            Message(user_id=sender,
+                    message_type=TEXT,
+                    message_data='Чудовий вибір!🙂 '
+                                 'Щоб обрати категорію меню - натисніть на її назву.😉',
+                    quick_replies=quick_replies_instance)
+        ]
+        for category_list in rearranged_categories:
+            messages.append(Message(user_id=sender,
+                                    message_type=ATTACHMENT,
+                                    message_data=generic_list_template(category_list, **{'provider': provider,
+                                                                                         'type': 'get_category'}),
+                                    quick_replies=quick_replies_instance))
+        return messages
 
     def pay_rejected(self, **kwargs) -> List[Message]:
         cafe_order = CafeOrder.find_one({"order_id": kwargs.get('order_id')})
