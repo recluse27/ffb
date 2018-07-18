@@ -75,7 +75,7 @@ class Controller:
                                                None)
 
         rq.post(url=self.cafe_system_url + "bot/users/",
-                json={'user_id': sender})
+                json={'user_id': sender, "network": "facebook"})
 
         messages = [
             Message(user_id=sender,
