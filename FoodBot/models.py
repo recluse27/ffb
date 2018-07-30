@@ -57,6 +57,8 @@ class Cafe:
         self.info = kwargs.get("info")
         self.image_url = kwargs.get("image_url")
         self.days_expire = kwargs.get("days_expire")
+        self.instagram_url = kwargs.get("instagram_url")
+        self.facebook_url = kwargs.get("facebook_url")
         self.testing = False
 
 

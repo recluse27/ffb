@@ -1,13 +1,12 @@
 import json
 from datetime import datetime, timezone, timedelta
-from typing import List
+from typing import List, Dict
 
 import requests as rq
 
 from FoodBot.adapters import GenericAdapter
 from FoodBot.constants import (REPLY_EXPLAIN, REPLY_GIFT, CAFE_SYSTEM_URL,
-                               TEXT, ATTACHMENT, INSTRUCTION, GREETING,
-                               WHY_BOT)
+                               TEXT, ATTACHMENT, INSTRUCTION, GREETING)
 from FoodBot.fb_templates import (generic_link_template, generic_list_template,
                                   receipt_template, quick_replies)
 from FoodBot.models import Message, BotOrder, CafeOrder, Cafe
@@ -16,7 +15,7 @@ from FoodBot.utils import transform, require_provider, get_or_create_order, rewo
 
 class Controller:
     cafe_system_url = CAFE_SYSTEM_URL
-    adapters = {
+    adapters: Dict['GenericAdapter'] = {
     }
 
     def __init__(self):
@@ -59,7 +58,7 @@ class Controller:
         return self.__getattribute__(method)(sender, **payload)
 
     def get_started(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['why_bot', 'cafes']
+        quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                kwargs.get('provider', 'unit'))
 
@@ -70,7 +69,7 @@ class Controller:
         return [message]
 
     def greeting(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['why_bot', 'cafes']
+        quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
 
@@ -147,7 +146,7 @@ class Controller:
         return messages
 
     def how_details(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['why_bot', 'cafes']
+        quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
         texts = INSTRUCTION.get("how_details")
@@ -170,7 +169,7 @@ class Controller:
         return [message]
 
     def get_cafes(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['why_bot', 'cafes']
+        quick_replies_list = ['cafes']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
         result = rq.get(self.cafe_system_url + "bot/cafes/")
@@ -202,7 +201,7 @@ class Controller:
 
     def get_cafe(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('id')
-        quick_replies_list = ['why_bot', 'categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket', 'about_cafe']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -345,7 +344,7 @@ class Controller:
                         quick_replies=quick_replies_instance)]
 
     def yeah(self, sender, **kwargs) -> List[Message]:
-        quick_replies_list = ['something_hmm_else', 'cafes']
+        quick_replies_list = ['something_hmm_else']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                None)
         return [Message(user_id=sender,
@@ -439,7 +438,7 @@ class Controller:
         adapter = self.adapters.get(provider)
 
         result = adapter.add_product(**kwargs)
-        quick_replies_list = ['categories', 'payment', 'basket', 'why_bot']
+        quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -461,7 +460,7 @@ class Controller:
         adapter = self.adapters.get(provider)
 
         result = adapter.remove_product(**kwargs)
-        quick_replies_list = ['why_bot', 'categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -476,7 +475,7 @@ class Controller:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
-        quick_replies_list = ['why_bot', 'categories', 'payment', 'basket']
+        quick_replies_list = ['payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -502,7 +501,7 @@ class Controller:
         provider = kwargs.get('provider')
         adapter = self.adapters.get(provider)
 
-        quick_replies_list = ['why_bot', 'categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -532,7 +531,7 @@ class Controller:
     @require_provider
     def get_basket(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
-        quick_replies_list = ['why_bot', 'categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 
@@ -557,9 +556,32 @@ class Controller:
         return messages
 
     @require_provider
+    def about_cafe(self, sender, **kwargs) -> List[Message]:
+        provider = kwargs.get('provider')
+        quick_replies_list = ['categories', 'payment', 'basket']
+        quick_replies_instance = quick_replies(quick_replies_list,
+                                               provider)
+        adapter = self.adapters.get(provider)
+        return [Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data=f"{adapter.cafe.name} - це чудовий заклад🍽 з "
+                                     f"різноманітними стравами та напоями🍹",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data=f"Для отримання інформації щодо часу⏳ "
+                                     f"роботи та адреси закладу перегляньте сторінки {adapter.cafe.name} "
+                                     f"у соцмережах {adapter.cafe.facebook_url}, {adapter.cafe.instagram_url}.",
+                        quick_replies=quick_replies_instance),
+                Message(user_id=sender,
+                        message_type=TEXT,
+                        message_data="Щоб придбати подарунок🎁 у цьому закладі натисніть «Категорії»",
+                        quick_replies=quick_replies_instance)]
+
+    @require_provider
     def checkout(self, sender, **kwargs) -> List[Message]:
         provider = kwargs.get('provider')
-        quick_replies_list = ['why_bot', 'categories', 'payment', 'basket']
+        quick_replies_list = ['categories', 'payment', 'basket']
         quick_replies_instance = quick_replies(quick_replies_list,
                                                provider)
 

@@ -106,6 +106,8 @@ QRs = {
                                                                      'provider': provider}),
     'basket': lambda provider: quick_replies_template('Кошик', {'type': 'get_basket',
                                                                 'provider': provider}),
+    'about_cafe': lambda provider: quick_replies_template('Про заклад', {'type': 'about_cafe',
+                                                                         'provider': provider}),
     'cafes': lambda provider: quick_replies_template('Заклади', {'type': 'get_cafes'}),
 
     'instruction': lambda provider: quick_replies_template('Інструкція', {'type': 'get_instruction'}),
